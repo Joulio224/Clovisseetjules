@@ -299,7 +299,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 
   <div class="tab-bar">
     <button class="tab active" id="tab-new" onclick="switchTab('new')">Nouveau</button>
-    <button class="tab" id="tab-saved" onclick="switchTab('saved')">Réponses</button>
+    <button class="tab hidden" id="tab-saved" onclick="switchTab('saved')">Réponses</button>
   </div>
 
   <!-- GAME SELECT -->
@@ -659,8 +659,9 @@ function saveToLocalStorage(){var data={pseudo:currentPseudo,names:names,estimat
 function loadFromLocalStorage(){try{var raw=localStorage.getItem(SAVE_KEY);if(!raw)return null;return JSON.parse(raw);}catch(e){return null;}}
 function clearLocalStorage(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
 function savePauseToFirebase(callback){
-  var data={pseudo:currentPseudo,names:names,estimated:estimated,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
-  db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data).then(function(){if(callback)callback(null);}).catch(function(err){if(callback)callback(err);});
+  var est=estimated||estimateTotal(names.length)||1;
+  var data={pseudo:currentPseudo,names:names,estimated:est,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
+  db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data).then(function(){if(callback)callback(null,data);}).catch(function(err){if(callback)callback(err,null);});
 }
 function loadPauseFromFirebase(pseudo,callback){
   db.collection("pauses").doc(pseudo.toLowerCase()).get().then(function(doc){callback(null,doc.exists?doc.data():null);}).catch(function(err){callback(err,null);});
@@ -670,9 +671,10 @@ function clearPauseFromFirebase(){if(!currentPseudo)return;db.collection("pauses
 function showResumeScreen(saved){
   var d=new Date(saved.savedAt);
   var dateStr=d.toLocaleDateString("fr-FR")+" à "+d.getHours()+"h"+String(d.getMinutes()).padStart(2,"0");
-  var pct=Math.min(Math.round((saved.sortState.comparisons/saved.estimated)*100),98);
+  var est=saved.estimated||estimateTotal((saved.names||[]).length)||1;
+  var pct=Math.min(Math.round((saved.sortState.comparisons/est)*100),98);
   document.getElementById("resume-meta").innerHTML=
-    "<b style='color:#fff'>"+escHtml(saved.pseudo)+"</b> · "+saved.names.length+" personnes<br>"+
+    "<b style='color:#fff'>"+escHtml(saved.pseudo)+"</b> · "+(saved.names||[]).length+" personnes<br>"+
     "Avancement : "+pct+"% ("+saved.sortState.comparisons+" questions)<br>"+
     "<span style='color:#444;font-size:11px'>Mis en pause le "+dateStr+"</span>";
   hideAll(); show("screen-resume");
@@ -723,6 +725,8 @@ document.getElementById('btn-logout').addEventListener('click', function(){
   authClearLocalStorage();
   currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
   document.getElementById('auth-user-bar').classList.add('hidden');
+  document.getElementById('tab-saved').classList.add('hidden');
+  document.getElementById('tab-new').classList.add('active');
   document.getElementById('auth-pseudo').value='';
   document.getElementById('auth-mdp').value='';
   authClearError();
@@ -739,6 +743,7 @@ function authSuccess(pseudo){
   document.getElementById('subtitle-name').textContent = 'Classement de '+pseudo;
   document.getElementById('au-name-display').textContent = '👤 '+pseudo;
   document.getElementById('auth-user-bar').classList.remove('hidden');
+  document.getElementById('tab-saved').classList.remove('hidden');
   // Vérifie pause Firebase
   var btnS = document.getElementById('auth-btn-submit');
   btnS.disabled=true; btnS.textContent='Chargement...';
@@ -764,6 +769,7 @@ function init(){
     currentPseudo = session.pseudo;
     document.getElementById('au-name-display').textContent = '👤 '+session.pseudo;
     document.getElementById('auth-user-bar').classList.remove('hidden');
+    document.getElementById('tab-saved').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
     // Charge la pause depuis Firebase
     loadPauseFromFirebase(session.pseudo, function(err, saved){
@@ -880,10 +886,14 @@ document.getElementById("btn-undo").addEventListener("click",function(){
 document.getElementById("btn-pause").addEventListener("click",function(){
   var btnP=document.getElementById("btn-pause");
   btnP.disabled=true;btnP.textContent="⏸ Sauvegarde...";
-  savePauseToFirebase(function(err){
-    btnP.disabled=false;btnP.textContent="⏸ Pause — reprendre plus tard";
-    if(err){showToast("❌ Erreur lors de la sauvegarde","error");}
-    else{showToast("⏸ Pause sauvegardée !","info"); loadPauseFromFirebase(currentPseudo,function(e,saved){if(!e&&saved)showResumeScreen(saved);});}
+  savePauseToFirebase(function(err,savedData){
+    if(err){
+      btnP.disabled=false;btnP.textContent="⏸ Pause — reprendre plus tard";
+      showToast("❌ Erreur lors de la sauvegarde","error");
+    }else{
+      showToast("⏸ Pause sauvegardée !","info");
+      showResumeScreen(savedData);
+    }
   });
 });
 
