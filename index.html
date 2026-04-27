@@ -658,15 +658,74 @@ var SAVE_KEY="classement_pause";
 function saveToLocalStorage(){var data={pseudo:currentPseudo,names:names,estimated:estimated,sortState:sortState,savedAt:new Date().toISOString()};try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}}
 function loadFromLocalStorage(){try{var raw=localStorage.getItem(SAVE_KEY);if(!raw)return null;return JSON.parse(raw);}catch(e){return null;}}
 function clearLocalStorage(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+
 function savePauseToFirebase(callback){
   var est=estimated||estimateTotal(names.length)||1;
   var data={pseudo:currentPseudo,names:names,estimated:est,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
-  db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data).then(function(){if(callback)callback(null,data);}).catch(function(err){if(callback)callback(err,null);});
+  // Sauvegarde aussi en localStorage comme filet de sécurité
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}
+  var done=false;
+  var timer=setTimeout(function(){
+    if(done)return; done=true;
+    // Timeout : on considère comme sauvegardé via localStorage
+    callback(null,data);
+  },6000);
+  db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data)
+    .then(function(){
+      if(done)return; done=true;
+      clearTimeout(timer);
+      callback(null,data);
+    })
+    .catch(function(err){
+      if(done)return; done=true;
+      clearTimeout(timer);
+      // Échec Firebase mais localStorage ok, on continue quand même
+      callback(null,data);
+    });
 }
+
 function loadPauseFromFirebase(pseudo,callback){
-  db.collection("pauses").doc(pseudo.toLowerCase()).get().then(function(doc){callback(null,doc.exists?doc.data():null);}).catch(function(err){callback(err,null);});
+  var done=false;
+  var timer=setTimeout(function(){
+    if(done)return; done=true;
+    // Timeout : essaie localStorage
+    try{
+      var raw=localStorage.getItem(SAVE_KEY);
+      if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
+    }catch(e){}
+    callback(null,null);
+  },5000);
+  db.collection("pauses").doc(pseudo.toLowerCase()).get()
+    .then(function(doc){
+      if(done)return; done=true;
+      clearTimeout(timer);
+      if(doc.exists){callback(null,doc.data());}
+      else{
+        // Pas dans Firebase, essaie localStorage
+        try{
+          var raw=localStorage.getItem(SAVE_KEY);
+          if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
+        }catch(e){}
+        callback(null,null);
+      }
+    })
+    .catch(function(err){
+      if(done)return; done=true;
+      clearTimeout(timer);
+      // Erreur Firebase : essaie localStorage
+      try{
+        var raw=localStorage.getItem(SAVE_KEY);
+        if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
+      }catch(e){}
+      callback(err,null);
+    });
 }
-function clearPauseFromFirebase(){if(!currentPseudo)return;db.collection("pauses").doc(currentPseudo.toLowerCase()).delete().catch(function(){});}
+
+function clearPauseFromFirebase(){
+  if(!currentPseudo)return;
+  clearLocalStorage();
+  db.collection("pauses").doc(currentPseudo.toLowerCase()).delete().catch(function(){});
+}
 
 function showResumeScreen(saved){
   var d=new Date(saved.savedAt);
@@ -749,7 +808,7 @@ function authSuccess(pseudo){
   btnS.disabled=true; btnS.textContent='Chargement...';
   loadPauseFromFirebase(pseudo, function(err, saved){
     btnS.disabled=false; btnS.textContent='Se connecter →';
-    if(!err && saved && saved.sortState && !saved.sortState.done){
+    if(!err && saved && saved.sortState && saved.sortState.done !== true){
       showResumeScreen(saved);
     } else {
       hideAll(); show('screen-game-select');
@@ -759,10 +818,6 @@ function authSuccess(pseudo){
 }
 
 function init(){
-  // Initialise kmk_resultats si besoin
-  db.collection('kmk_resultats').doc('_init').set({createdAt: firebase.firestore.FieldValue.serverTimestamp()})
-    .then(function(){ db.collection('kmk_resultats').doc('_init').delete(); })
-    .catch(function(){});
   // Vérifie session locale
   var session = authGetSession();
   if(session && session.pseudo){
@@ -773,7 +828,7 @@ function init(){
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
     // Charge la pause depuis Firebase
     loadPauseFromFirebase(session.pseudo, function(err, saved){
-      if(!err && saved && saved.sortState && !saved.sortState.done){
+      if(!err && saved && saved.sortState && saved.sortState.done !== true){
         showResumeScreen(saved);
       } else {
         hideAll(); show('screen-game-select');
