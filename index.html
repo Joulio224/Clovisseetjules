@@ -393,8 +393,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <div class="auth-title">JEUX DE<br>COLLÉGIENS</div>
     <div class="auth-sub">Connecte-toi pour jouer</div>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Connexion</button>
-      <button class="auth-tab" id="auth-tab-signup" onclick="switchAuthTab('signup')">Inscription</button>
+      <button class="auth-tab active" id="auth-tab-login">Connexion</button>
     </div>
     <input class="input-field" id="auth-pseudo" type="text" placeholder="Pseudo..." maxlength="30" autocomplete="username" />
     <input class="input-field" id="auth-mdp" type="password" placeholder="Mot de passe..." maxlength="50" autocomplete="current-password" />
@@ -697,44 +696,19 @@ function authClearSession(){
 function authShowError(msg){ document.getElementById('auth-error').textContent = msg; }
 function authClearError(){ document.getElementById('auth-error').textContent = ''; }
 
-var currentAuthTab = 'login';
-function switchAuthTab(tab){
-  currentAuthTab = tab;
-  document.getElementById('auth-tab-login').className = 'auth-tab'+(tab==='login'?' active':'');
-  document.getElementById('auth-tab-signup').className = 'auth-tab'+(tab==='signup'?' active':'');
-  document.getElementById('auth-btn-submit').textContent = tab==='login' ? 'Se connecter →' : "S'inscrire →";
-  authClearError();
-}
-
 document.getElementById('auth-btn-submit').addEventListener('click', function(){
   var pseudo = document.getElementById('auth-pseudo').value.trim().toLowerCase();
   var mdp = document.getElementById('auth-mdp').value;
   if(!pseudo){ authShowError('Entre un pseudo.'); return; }
   if(!mdp){ authShowError('Entre un mot de passe.'); return; }
-  if(pseudo.length < 2){ authShowError('Pseudo trop court (min 2 caractères).'); return; }
   var btn = this; btn.disabled=true; btn.textContent='...';
   authClearError();
-
-  if(currentAuthTab === 'login'){
-    // Connexion
-    db.collection('users').doc(pseudo).get().then(function(doc){
-      btn.disabled=false; btn.textContent='Se connecter →';
-      if(!doc.exists){ authShowError('Pseudo introuvable.'); return; }
-      if(doc.data().mdp !== mdp){ authShowError('Mot de passe incorrect.'); return; }
-      authSuccess(pseudo);
-    }).catch(function(err){ btn.disabled=false; btn.textContent='Se connecter →'; authShowError('Erreur : '+err.message); });
-  } else {
-    // Inscription
-    if(mdp.length < 4){ authShowError('Mot de passe trop court (min 4 caractères).'); btn.disabled=false; btn.textContent="S'inscrire →"; return; }
-    db.collection('users').doc(pseudo).get().then(function(doc){
-      if(doc.exists){ btn.disabled=false; btn.textContent="S'inscrire →"; authShowError('Ce pseudo est déjà pris.'); return; }
-      return db.collection('users').doc(pseudo).set({ pseudo:pseudo, mdp:mdp, createdAt:firebase.firestore.FieldValue.serverTimestamp() });
-    }).then(function(res){
-      if(res===undefined) return; // déjà géré (pseudo pris)
-      btn.disabled=false; btn.textContent="S'inscrire →";
-      authSuccess(pseudo);
-    }).catch(function(err){ btn.disabled=false; btn.textContent="S'inscrire →"; authShowError('Erreur : '+err.message); });
-  }
+  db.collection('users').doc(pseudo).get().then(function(doc){
+    btn.disabled=false; btn.textContent='Se connecter →';
+    if(!doc.exists){ authShowError('Pseudo introuvable.'); return; }
+    if(doc.data().mdp !== mdp){ authShowError('Mot de passe incorrect.'); return; }
+    authSuccess(pseudo);
+  }).catch(function(err){ btn.disabled=false; btn.textContent='Se connecter →'; authShowError('Erreur : '+err.message); });
 });
 
 // Connexion avec Entrée
@@ -751,7 +725,7 @@ document.getElementById('btn-logout').addEventListener('click', function(){
   document.getElementById('auth-user-bar').classList.add('hidden');
   document.getElementById('auth-pseudo').value='';
   document.getElementById('auth-mdp').value='';
-  switchAuthTab('login');
+  authClearError();
   hideAll(); show('screen-auth');
 });
 
@@ -769,9 +743,8 @@ function authSuccess(pseudo){
   var btnS = document.getElementById('auth-btn-submit');
   btnS.disabled=true; btnS.textContent='Chargement...';
   loadPauseFromFirebase(pseudo, function(err, saved){
-    btnS.disabled=false; btnS.textContent = currentAuthTab==='login'?'Se connecter →':"S'inscrire →";
+    btnS.disabled=false; btnS.textContent='Se connecter →';
     if(!err && saved && saved.sortState && !saved.sortState.done){
-      try{ localStorage.setItem(SAVE_KEY, JSON.stringify(saved)); }catch(e){}
       showResumeScreen(saved);
     } else {
       hideAll(); show('screen-game-select');
@@ -792,9 +765,15 @@ function init(){
     document.getElementById('au-name-display').textContent = '👤 '+session.pseudo;
     document.getElementById('auth-user-bar').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
-    var saved = loadFromLocalStorage();
-    if(saved && saved.sortState && !saved.sortState.done){ showResumeScreen(saved); }
-    else { hideAll(); show('screen-game-select'); document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+session.pseudo+' ?'; }
+    // Charge la pause depuis Firebase
+    loadPauseFromFirebase(session.pseudo, function(err, saved){
+      if(!err && saved && saved.sortState && !saved.sortState.done){
+        showResumeScreen(saved);
+      } else {
+        hideAll(); show('screen-game-select');
+        document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+session.pseudo+' ?';
+      }
+    });
   } else {
     hideAll(); show('screen-auth');
   }
@@ -805,20 +784,24 @@ init();
 //  RESUME
 // =====================
 document.getElementById("btn-resume").addEventListener("click",function(){
-  var saved=loadFromLocalStorage();if(!saved){showToast("Erreur : pause introuvable","error");return;}
-  currentPseudo=saved.pseudo;names=saved.names;estimated=saved.estimated;sortState=saved.sortState;
-  previousSortState=null; isPartial=false;
-  document.getElementById("btn-undo").disabled=true;
-  hideAll();show("screen-compare");renderQ();
+  loadPauseFromFirebase(currentPseudo, function(err, saved){
+    if(err || !saved){showToast("Erreur : pause introuvable","error");return;}
+    names=saved.names;estimated=saved.estimated;sortState=saved.sortState;
+    previousSortState=null; isPartial=false;
+    document.getElementById("btn-undo").disabled=true;
+    hideAll();show("screen-compare");renderQ();
+  });
 });
 document.getElementById("btn-resume-stop").addEventListener("click",function(){
-  var saved=loadFromLocalStorage();if(!saved)return;
-  currentPseudo=saved.pseudo;names=saved.names;estimated=saved.estimated;sortState=saved.sortState;
-  isPartial=true;clearLocalStorage();clearPauseFromFirebase();hideAll();showResult(true);
+  loadPauseFromFirebase(currentPseudo, function(err, saved){
+    if(err || !saved)return;
+    names=saved.names;estimated=saved.estimated;sortState=saved.sortState;
+    isPartial=true;clearPauseFromFirebase();hideAll();showResult(true);
+  });
 });
 document.getElementById("btn-resume-delete").addEventListener("click",function(){
-  clearLocalStorage();clearPauseFromFirebase();sortState=null;previousSortState=null;currentPseudo="";names=[];
-  hideAll();show("screen-auth");
+  clearPauseFromFirebase();sortState=null;previousSortState=null;names=[];
+  hideAll();show("screen-game-select");
 });
 
 // =====================
@@ -835,8 +818,10 @@ function switchTab(tab){
     else if(!sortState){hideAll();show("screen-game-select");}
     else if(sortState.done||isPartial){hideAll();show("screen-result");}
     else{hideAll();show("screen-compare");}
-  }else{hideAll();show("screen-saved");loadSaved();}
-}
+  }else{
+    if(!currentPseudo){ hideAll(); show('screen-auth'); showToast('Connecte-toi pour voir les réponses','info'); return; }
+    hideAll();show("screen-saved");loadSaved();
+  }}
 
 // Authentification gérée par authSuccess()
 
@@ -862,7 +847,7 @@ document.getElementById("btn-back-to-game-select").addEventListener("click",func
 document.getElementById("btn-start").addEventListener("click",function(){
   names=getNames();if(names.length<2)return;
   estimated=estimateTotal(names.length);isPartial=false;
-  sortState=createSortState(names);previousSortState=null;clearLocalStorage();
+  sortState=createSortState(names);previousSortState=null;
   document.getElementById("btn-undo").disabled=true;
   hideAll();
   if(sortState.done){showResult(false);}else{show("screen-compare");renderQ();}
@@ -893,22 +878,20 @@ document.getElementById("btn-undo").addEventListener("click",function(){
 });
 
 document.getElementById("btn-pause").addEventListener("click",function(){
-  saveToLocalStorage();
   var btnP=document.getElementById("btn-pause");
   btnP.disabled=true;btnP.textContent="⏸ Sauvegarde...";
   savePauseToFirebase(function(err){
     btnP.disabled=false;btnP.textContent="⏸ Pause — reprendre plus tard";
-    if(err){showToast("⚠️ Sauvegardé localement seulement","info");}
-    else{showToast("⏸ Pause sauvegardée ! Reprends avec ton prénom.","info");}
-    setTimeout(function(){var saved=loadFromLocalStorage();if(saved)showResumeScreen(saved);},1300);
+    if(err){showToast("❌ Erreur lors de la sauvegarde","error");}
+    else{showToast("⏸ Pause sauvegardée !","info"); loadPauseFromFirebase(currentPseudo,function(e,saved){if(!e&&saved)showResumeScreen(saved);});}
   });
 });
 
 document.getElementById("btn-stop").addEventListener("click",function(){
-  isPartial=true;clearLocalStorage();clearPauseFromFirebase();hideAll();showResult(true);
+  isPartial=true;clearPauseFromFirebase();hideAll();showResult(true);
 });
 document.getElementById("btn-restart").addEventListener("click",function(){
-  clearLocalStorage();clearPauseFromFirebase();sortState=null;previousSortState=null;isPartial=false;currentGame=null;
+  clearPauseFromFirebase();sortState=null;previousSortState=null;isPartial=false;currentGame=null;
   hideAll();show("screen-game-select");
 });
 
@@ -923,7 +906,7 @@ function choose(pL){
     sortState=processChoice(sortState,pL);
     busy=false;
     document.getElementById("btn-undo").disabled=false;
-    if(sortState.done){clearLocalStorage();clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);}
+    if(sortState.done){clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);}
     else renderQ();
   },200);
 }
