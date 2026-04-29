@@ -819,74 +819,28 @@ function genCode(){
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
 var currentPseudo="", currentTab="new", isPartial=false;
 var currentGame=null;
-var SAVE_KEY="classement_pause";
-
 // =====================
-//  FIREBASE PAUSE
+//  FIREBASE PAUSE (Firestore uniquement — pas de localStorage)
 // =====================
-function saveToLocalStorage(){var data={pseudo:currentPseudo,names:names,estimated:estimated,sortState:sortState,savedAt:new Date().toISOString()};try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}}
-function loadFromLocalStorage(){try{var raw=localStorage.getItem(SAVE_KEY);if(!raw)return null;return JSON.parse(raw);}catch(e){return null;}}
-function clearLocalStorage(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
-
 function savePauseToFirebase(callback){
   var est=estimated||estimateTotal(names.length)||1;
   var data={pseudo:currentPseudo,names:names,estimated:est,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
-  try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}
-  var done=false;
-  var timer=setTimeout(function(){
-    if(done)return; done=true;
-    callback(null,data);
-  },6000);
   db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data)
-    .then(function(){
-      if(done)return; done=true;
-      clearTimeout(timer);
-      callback(null,data);
-    })
-    .catch(function(err){
-      if(done)return; done=true;
-      clearTimeout(timer);
-      callback(null,data);
-    });
+    .then(function(){ callback(null,data); })
+    .catch(function(err){ callback(err,null); });
 }
 
 function loadPauseFromFirebase(pseudo,callback){
-  var done=false;
-  var timer=setTimeout(function(){
-    if(done)return; done=true;
-    try{
-      var raw=localStorage.getItem(SAVE_KEY);
-      if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
-    }catch(e){}
-    callback(null,null);
-  },5000);
   db.collection("pauses").doc(pseudo.toLowerCase()).get()
     .then(function(doc){
-      if(done)return; done=true;
-      clearTimeout(timer);
-      if(doc.exists){callback(null,doc.data());}
-      else{
-        try{
-          var raw=localStorage.getItem(SAVE_KEY);
-          if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
-        }catch(e){}
-        callback(null,null);
-      }
+      if(doc.exists){ callback(null,doc.data()); }
+      else{ callback(null,null); }
     })
-    .catch(function(err){
-      if(done)return; done=true;
-      clearTimeout(timer);
-      try{
-        var raw=localStorage.getItem(SAVE_KEY);
-        if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
-      }catch(e){}
-      callback(err,null);
-    });
+    .catch(function(err){ callback(err,null); });
 }
 
 function clearPauseFromFirebase(){
   if(!currentPseudo)return;
-  clearLocalStorage();
   db.collection("pauses").doc(currentPseudo.toLowerCase()).delete().catch(function(){});
 }
 
@@ -984,7 +938,7 @@ document.getElementById('btn-logout').addEventListener('click', function(){
 });
 
 function authClearLocalStorage(){
-  clearLocalStorage(); clearPauseFromFirebase();
+  clearPauseFromFirebase();
 }
 
 function authSuccess(pseudo){
