@@ -857,12 +857,15 @@ function showResumeScreen(saved){
 }
 
 // Navigue vers l'écran de sélection en rechargeant toujours la pause depuis Firebase
-function goToGameSelect(){
+function goToGameSelect(savedData){
   hideAll(); show('screen-game-select');
   document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+currentPseudo+' ?';
-  if(currentPseudo){
+  if(typeof savedData !== 'undefined'){
+    // Données déjà chargées (depuis init ou authSuccess), on les utilise directement
+    updatePauseCardOnGameSelect(savedData);
+  } else if(currentPseudo){
     loadPauseFromFirebase(currentPseudo, function(err, saved){
-      updatePauseCardOnGameSelect(saved);
+      updatePauseCardOnGameSelect(err ? null : saved);
     });
   } else {
     updatePauseCardOnGameSelect(null);
@@ -952,7 +955,7 @@ function authSuccess(pseudo){
   btnS.disabled=true; btnS.textContent='Chargement...';
   loadPauseFromFirebase(pseudo, function(err, saved){
     btnS.disabled=false; btnS.textContent='Se connecter →';
-    goToGameSelect();
+    goToGameSelect(err ? null : saved);
   });
 }
 
@@ -965,7 +968,7 @@ function init(){
     document.getElementById('tab-saved').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
     loadPauseFromFirebase(session.pseudo, function(err, saved){
-      goToGameSelect();
+      goToGameSelect(err ? null : saved);
     });
   } else {
     hideAll(); show('screen-auth');
