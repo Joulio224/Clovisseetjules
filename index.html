@@ -419,12 +419,8 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
     Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
   </p>
-
-  <!-- Créer une partie -->
   <div id="kmk-multi-create-section">
-    <div style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Pseudo de ton ami</div>
-    <input class="input-field" id="kmk-multi-friend-input" type="text" placeholder="Pseudo de l'adversaire..." maxlength="30" />
-    <div style="margin-top:16px;margin-bottom:6px">
+    <div style="margin-bottom:6px">
       <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
       <div class="kmk-rounds-input">
         <button id="kmk-multi-rounds-minus">−</button>
@@ -432,10 +428,9 @@ padding: 18px; text-align: center; margin-bottom: 16px;
         <button id="kmk-multi-rounds-plus">+</button>
       </div>
     </div>
-    <button class="btn-primary" id="kmk-multi-btn-create">Créer la partie →</button>
-    <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou —</div>
-    <div style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Rejoindre une partie existante</div>
-    <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px" />
+    <button class="btn-primary" id="kmk-multi-btn-create">🎮 Créer une partie →</button>
+    <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou rejoindre une partie existante —</div>
+    <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px;text-align:center" />
     <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
   </div>
 </div>
@@ -819,22 +814,21 @@ function genCode(){
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
 var currentPseudo="", currentTab="new", isPartial=false;
 var currentGame=null;
+var SAVE_KEY="classement_pause";
 
 // =====================
-//  FIREBASE PAUSE — 100% Firestore, pas de localStorage
+//  FIREBASE PAUSE
 // =====================
+function saveToLocalStorage(){var data={pseudo:currentPseudo,names:names,estimated:estimated,sortState:sortState,savedAt:new Date().toISOString()};try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}}
+function loadFromLocalStorage(){try{var raw=localStorage.getItem(SAVE_KEY);if(!raw)return null;return JSON.parse(raw);}catch(e){return null;}}
+function clearLocalStorage(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+
 function savePauseToFirebase(callback){
   var est=estimated||estimateTotal(names.length)||1;
-  var data={
-    pseudo:currentPseudo,
-    names:names,
-    estimated:est,
-    sortState:JSON.parse(JSON.stringify(sortState)),
-    savedAt:new Date().toISOString()
-  };
+  var data={pseudo:currentPseudo,names:names,estimated:est,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
   db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data)
-    .then(function(){ callback(null,data); })
-    .catch(function(err){ callback(err,null); });
+    .then(function(){ if(callback) callback(null,data); })
+    .catch(function(err){ if(callback) callback(err,null); });
 }
 
 function loadPauseFromFirebase(pseudo,callback){
@@ -848,6 +842,7 @@ function loadPauseFromFirebase(pseudo,callback){
 
 function clearPauseFromFirebase(){
   if(!currentPseudo)return;
+  clearLocalStorage();
   db.collection("pauses").doc(currentPseudo.toLowerCase()).delete().catch(function(){});
 }
 
@@ -933,6 +928,7 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
 
 document.getElementById('btn-logout').addEventListener('click', function(){
   authClearSession();
+  authClearLocalStorage();
   currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
   document.getElementById('auth-user-bar').classList.add('hidden');
   document.getElementById('tab-saved').classList.add('hidden');
@@ -943,6 +939,10 @@ document.getElementById('btn-logout').addEventListener('click', function(){
   hideAll(); show('screen-auth');
 });
 
+function authClearLocalStorage(){
+  clearLocalStorage(); clearPauseFromFirebase();
+}
+
 function authSuccess(pseudo){
   authSetSession(pseudo);
   currentPseudo = pseudo;
@@ -950,7 +950,12 @@ function authSuccess(pseudo){
   document.getElementById('au-name-display').textContent = '👤 '+pseudo;
   document.getElementById('auth-user-bar').classList.remove('hidden');
   document.getElementById('tab-saved').classList.remove('hidden');
-  goToGameSelect();
+  var btnS = document.getElementById('auth-btn-submit');
+  btnS.disabled=true; btnS.textContent='Chargement...';
+  loadPauseFromFirebase(pseudo, function(err, saved){
+    btnS.disabled=false; btnS.textContent='Se connecter →';
+    goToGameSelect();
+  });
 }
 
 function init(){
@@ -961,7 +966,9 @@ function init(){
     document.getElementById('auth-user-bar').classList.remove('hidden');
     document.getElementById('tab-saved').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
-    goToGameSelect();
+    loadPauseFromFirebase(session.pseudo, function(err, saved){
+      goToGameSelect();
+    });
   } else {
     hideAll(); show('screen-auth');
   }
@@ -1015,8 +1022,8 @@ function switchTab(tab){
   if(tab==="new"){
     hide("screen-saved");
     if(!currentPseudo){hideAll();show("screen-auth");}
-    else if(currentGame==='kmk'){hideAll();show("screen-game-select");}
-    else if(!sortState){hideAll();show("screen-game-select");}
+    else if(currentGame==='kmk'){goToGameSelect();}
+    else if(!sortState){goToGameSelect();}
     else if(sortState.done||isPartial){hideAll();show("screen-result");}
     else{hideAll();show("screen-compare");}
   }else{
@@ -1109,8 +1116,13 @@ function choose(pL){
     sortState=processChoice(sortState,pL);
     busy=false;
     document.getElementById("btn-undo").disabled=false;
-    if(sortState.done){clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);}
-    else renderQ();
+    if(sortState.done){
+      clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);
+    } else {
+      renderQ();
+      // Auto-sauvegarde silencieuse à chaque réponse
+      savePauseToFirebase(null);
+    }
   },200);
 }
 
@@ -1416,47 +1428,39 @@ var kmkMultiRoundsPlusEl=document.getElementById('kmk-multi-rounds-plus');
 kmkMultiRoundsMinusEl.addEventListener('click',function(){if(kmkMultiRoundsTotal>1){kmkMultiRoundsTotal--;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;}});
 kmkMultiRoundsPlusEl.addEventListener('click',function(){kmkMultiRoundsTotal++;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;});
 
-// Créer une partie multijoueur
+// Créer une partie multijoueur (pas besoin de connaître le pseudo de l'ami à l'avance)
 document.getElementById('kmk-multi-btn-create').addEventListener('click',function(){
-  var friendPseudo=document.getElementById('kmk-multi-friend-input').value.trim().toLowerCase();
-  if(!friendPseudo){showToast('Entre le pseudo de ton ami','error');return;}
-  if(friendPseudo===currentPseudo){showToast('Tu ne peux pas jouer contre toi-même !','error');return;}
   var btn=this; btn.disabled=true; btn.textContent='Création...';
-  // Vérifie que le pseudo ami existe
-  db.collection('users').doc(friendPseudo).get().then(function(doc){
-    if(!doc.exists){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Pseudo introuvable','error');return;}
-    var code=genCode();
-    var gameData={
-      code:code,
-      creator:currentPseudo,
-      opponent:friendPseudo,
-      roundsTotal:kmkMultiRoundsTotal,
-      status:'waiting', // waiting → playing → done
-      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-      // Pour chaque manche : {round, pickedBy, trio, playedBy, result}
-      picks:[],      // noms choisis par chaque joueur pour l'autre
-      results:[]     // résultats de chaque manche jouée
-    };
-    db.collection('kmk_parties').add(gameData).then(function(ref){
-      btn.disabled=false; btn.textContent='Créer la partie →';
-      kmkMultiGameId=ref.id;
-      kmkMultiOpponent=friendPseudo;
-      kmkMultiIsCreator=true;
-      kmkMultiRoundsTotal=gameData.roundsTotal;
-      kmkMultiMyResults=[];
-      kmkMultiTheirResults=[];
-      kmkMultiCurrentPickRound=0;
-      kmkMultiMyPlayRound=0;
-      // Affiche le lobby
-      document.getElementById('kmk-lobby-code').textContent=code;
-      document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
-      document.getElementById('kmk-lobby-p2-name').textContent=friendPseudo;
-      document.getElementById('kmk-lobby-p2-status').textContent='En attente...';
-      document.getElementById('kmk-lobby-p2-row').className='multi-player-row waiting';
-      document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente de '+friendPseudo+'...';
-      hideAll();show('screen-kmk-multi-lobby');
-      kmkMultiListenLobby(ref.id);
-    }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
+  var code=genCode();
+  var gameData={
+    code:code,
+    creator:currentPseudo,
+    opponent:'',           // sera rempli quand l'ami rejoint
+    roundsTotal:kmkMultiRoundsTotal,
+    status:'waiting',
+    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+    picks:[],
+    results:[]
+  };
+  db.collection('kmk_parties').add(gameData).then(function(ref){
+    btn.disabled=false; btn.textContent='Créer la partie →';
+    kmkMultiGameId=ref.id;
+    kmkMultiOpponent='';
+    kmkMultiIsCreator=true;
+    kmkMultiRoundsTotal=gameData.roundsTotal;
+    kmkMultiMyResults=[];
+    kmkMultiTheirResults=[];
+    kmkMultiCurrentPickRound=0;
+    kmkMultiMyPlayRound=0;
+    // Affiche le lobby avec le code à partager
+    document.getElementById('kmk-lobby-code').textContent=code;
+    document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
+    document.getElementById('kmk-lobby-p2-name').textContent='—';
+    document.getElementById('kmk-lobby-p2-status').textContent='En attente...';
+    document.getElementById('kmk-lobby-p2-row').className='multi-player-row waiting';
+    document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente d\'un joueur...';
+    hideAll();show('screen-kmk-multi-lobby');
+    kmkMultiListenLobby(ref.id);
   }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
 });
 
@@ -1471,11 +1475,9 @@ document.getElementById('kmk-multi-btn-join').addEventListener('click',function(
       if(snap.empty){showToast('Partie introuvable ou déjà commencée','error');return;}
       var docRef=snap.docs[0];
       var data=docRef.data();
-      if(data.opponent!==currentPseudo && data.creator!==currentPseudo){
-        showToast('Cette partie ne t\'est pas destinée','error');return;
-      }
-      // Met à jour le statut
-      docRef.ref.update({status:'playing'}).then(function(){
+      if(data.creator===currentPseudo){showToast('Tu ne peux pas rejoindre ta propre partie !','error');return;}
+      // Écrit son pseudo comme adversaire et passe le statut à playing
+      docRef.ref.update({status:'playing', opponent:currentPseudo}).then(function(){
         kmkMultiGameId=docRef.id;
         kmkMultiOpponent=data.creator;
         kmkMultiIsCreator=false;
@@ -1484,10 +1486,10 @@ document.getElementById('kmk-multi-btn-join').addEventListener('click',function(
         kmkMultiTheirResults=[];
         kmkMultiCurrentPickRound=0;
         kmkMultiMyPlayRound=0;
-        // L'adversaire a rejoint → on commence directement à choisir les noms pour lui
+        showToast('✅ Partie rejointe !','info');
         hideAll();
         kmkMultiStartPickPhase();
-      });
+      }).catch(function(err){showToast('Erreur : '+err.message,'error');});
     }).catch(function(err){btn.disabled=false;btn.textContent='Rejoindre →';showToast('Erreur : '+err.message,'error');});
 });
 
@@ -1498,10 +1500,12 @@ function kmkMultiListenLobby(gameId){
     if(!doc.exists)return;
     var data=doc.data();
     if(data.status==='playing'){
-      // L'adversaire a rejoint
+      // Récupère le pseudo de l'adversaire depuis le doc
+      kmkMultiOpponent=data.opponent||'Adversaire';
+      document.getElementById('kmk-lobby-p2-name').textContent=kmkMultiOpponent;
       document.getElementById('kmk-lobby-p2-row').className='multi-player-row connected';
       document.getElementById('kmk-lobby-p2-status').textContent='✓ Connecté';
-      document.getElementById('kmk-lobby-status-badge').textContent='✅ Adversaire connecté !';
+      document.getElementById('kmk-lobby-status-badge').textContent='✅ '+kmkMultiOpponent+' a rejoint !';
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
       setTimeout(function(){
         hideAll();
