@@ -237,6 +237,11 @@ font-family: inherit; -webkit-appearance: none; transition: all 0.18s;
 .game-card .gc-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
 .game-card .gc-title { font-size: 22px; font-weight: 900; color: #FFD700; letter-spacing: 2px; margin-bottom: 6px; }
 .game-card .gc-desc { font-size: 13px; color: #666; line-height: 1.5; }
+/* Carte de reprise de pause sur l’écran de sélection */
+.game-card.pause-card { border-color: #4488ff; }
+.game-card.pause-card:hover { border-color: #88bbff; }
+.game-card.pause-card .gc-title { color: #4488ff; }
+.game-card.pause-card .gc-meta { font-size: 12px; color: #4466aa; margin-top: 6px; }
 
 /* KMK */
 .kmk-title { font-size: 36px; font-weight: 900; letter-spacing: 4px; text-align: center; margin-bottom: 4px; }
@@ -286,6 +291,58 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 }
 .kmk-rounds-input button:hover { border-color: #FFD700; }
 .kmk-rounds-input span { font-size: 32px; font-weight: 900; color: #fff; min-width: 40px; text-align: center; }
+
+/* KMK MULTIJOUEUR */
+.multi-badge {
+display: inline-block; padding: 4px 12px; border-radius: 20px;
+background: #1a0d1a; border: 1.5px solid #cc44ff; color: #cc44ff;
+font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+margin-bottom: 16px;
+}
+.multi-lobby {
+background: #0e0e20; border: 2px solid #2a2a55; border-radius: 16px;
+padding: 20px; margin-bottom: 16px;
+}
+.multi-lobby .ml-label { font-size: 11px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.multi-player-row {
+display: flex; align-items: center; gap: 10px;
+padding: 10px 14px; background: #131328; border: 2px solid #1e1e40;
+border-radius: 12px; margin-bottom: 8px;
+}
+.multi-player-row.you { border-color: #FFD700; }
+.multi-player-row.connected { border-color: #22bb55; }
+.multi-player-row.waiting { border-color: #2a2a55; }
+.multi-player-row .mp-name { font-size: 15px; font-weight: 700; flex: 1; }
+.multi-player-row .mp-status { font-size: 11px; color: #555; }
+.multi-player-row.you .mp-status { color: #FFD700; }
+.multi-player-row.connected .mp-status { color: #22bb55; }
+.multi-turn-banner {
+background: #1a1a0a; border: 2px solid #FFD700; border-radius: 14px;
+padding: 14px 18px; text-align: center; margin-bottom: 16px;
+}
+.multi-turn-banner.their-turn {
+background: #0a0a1a; border-color: #4488ff;
+}
+.multi-turn-banner .mt-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+.multi-turn-banner.their-turn .mt-label { color: #4488ff; }
+.multi-turn-banner .mt-name { font-size: 18px; font-weight: 900; color: #FFD700; }
+.multi-turn-banner.their-turn .mt-name { color: #4488ff; }
+.multi-waiting-overlay {
+background: #0a0a1a; border: 2px solid #2a2a55; border-radius: 20px;
+padding: 40px 20px; text-align: center; margin-bottom: 16px;
+}
+.multi-waiting-overlay .mw-emoji { font-size: 40px; margin-bottom: 12px; }
+.multi-waiting-overlay .mw-text { color: #555; font-size: 15px; }
+.pulse { animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* Code de partie */
+.game-code-box {
+background: #0e1a0e; border: 2px solid #22bb55; border-radius: 14px;
+padding: 18px; text-align: center; margin-bottom: 16px;
+}
+.game-code-box .gc-label { font-size: 11px; color: #22bb55; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+.game-code-box .gc-code { font-size: 36px; font-weight: 900; color: #fff; letter-spacing: 6px; }
 </style>
 
 </head>
@@ -317,6 +374,13 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
       <div class="gc-title">KISS MARRY KILL</div>
       <div class="gc-desc">3 personnes par manche — tu dois les classer en Kiss, Marry ou Kill !</div>
     </button>
+    <!-- Carte de reprise de classement en pause — masquée par défaut -->
+    <button class="game-card pause-card hidden" id="btn-game-resume">
+      <span class="gc-emoji">⏸</span>
+      <div class="gc-title">REPRENDRE LA PAUSE</div>
+      <div class="gc-desc" id="btn-game-resume-desc">Classement en cours — reprends là où tu t'es arrêté.</div>
+      <div class="gc-meta" id="btn-game-resume-meta"></div>
+    </button>
   </div>
 
   <!-- KMK SETUP -->
@@ -324,27 +388,113 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   <div id="screen-kmk-setup" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="subtitle" style="margin-bottom:28px" id="kmk-setup-sub">Configuration</div>
-    <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
-    <div class="suggest-groups" id="kmk-suggest-groups"></div>
-    <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
-    <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
-    <div style="margin-top:20px; margin-bottom:6px">
-      <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
+
+```
+<!-- Mode de jeu : solo ou multijoueur -->
+<div style="display:flex;gap:8px;margin-bottom:20px;">
+  <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
+  <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
+</div>
+
+<!-- Configuration solo -->
+<div id="kmk-solo-config">
+  <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
+  <div class="suggest-groups" id="kmk-suggest-groups"></div>
+  <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
+  <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
+  <div style="margin-top:20px; margin-bottom:6px">
+    <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
+    <div class="kmk-rounds-input">
+      <button id="kmk-rounds-minus">−</button>
+      <span id="kmk-rounds-val">3</span>
+      <button id="kmk-rounds-plus">+</button>
+    </div>
+  </div>
+  <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
+</div>
+
+<!-- Configuration multijoueur -->
+<div id="kmk-multi-config" class="hidden">
+  <div class="multi-badge">👥 Mode multijoueur</div>
+  <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
+    Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
+  </p>
+
+  <!-- Créer une partie -->
+  <div id="kmk-multi-create-section">
+    <div style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Pseudo de ton ami</div>
+    <input class="input-field" id="kmk-multi-friend-input" type="text" placeholder="Pseudo de l'adversaire..." maxlength="30" />
+    <div style="margin-top:16px;margin-bottom:6px">
+      <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
       <div class="kmk-rounds-input">
-        <button id="kmk-rounds-minus">−</button>
-        <span id="kmk-rounds-val">3</span>
-        <button id="kmk-rounds-plus">+</button>
+        <button id="kmk-multi-rounds-minus">−</button>
+        <span id="kmk-multi-rounds-val">3</span>
+        <button id="kmk-multi-rounds-plus">+</button>
       </div>
     </div>
-    <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
-    <button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
+    <button class="btn-primary" id="kmk-multi-btn-create">Créer la partie →</button>
+    <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou —</div>
+    <div style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Rejoindre une partie existante</div>
+    <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px" />
+    <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
+  </div>
+</div>
+
+<button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
+```
+
   </div>
 
-  <!-- KMK PLAY -->
+  <!-- KMK MULTI LOBBY (attente de l'adversaire) -->
+
+  <div id="screen-kmk-multi-lobby" class="hidden">
+    <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
+    <div class="multi-badge pulse" id="kmk-lobby-status-badge">⏳ En attente...</div>
+    <div class="game-code-box">
+      <div class="gc-label">Code de la partie — partage-le à ton ami</div>
+      <div class="gc-code" id="kmk-lobby-code">---</div>
+    </div>
+    <div class="multi-lobby">
+      <div class="ml-label">Joueurs</div>
+      <div class="multi-player-row you">
+        <span class="mp-name" id="kmk-lobby-p1-name">Toi</span>
+        <span class="mp-status">✓ Connecté</span>
+      </div>
+      <div class="multi-player-row waiting" id="kmk-lobby-p2-row">
+        <span class="mp-name" id="kmk-lobby-p2-name">—</span>
+        <span class="mp-status" id="kmk-lobby-p2-status">En attente...</span>
+      </div>
+    </div>
+    <button class="btn-ghost" id="kmk-lobby-btn-cancel">✕ Annuler</button>
+  </div>
+
+  <!-- KMK MULTI PLAY : CHOISIR 3 NOMS POUR L'ADVERSAIRE -->
+
+  <div id="screen-kmk-multi-pick" class="hidden">
+    <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
+    <div id="kmk-multi-pick-banner" class="multi-turn-banner" style="margin-bottom:16px;">
+      <div class="mt-label">À toi de choisir pour</div>
+      <div class="mt-name" id="kmk-multi-pick-for">—</div>
+    </div>
+    <div style="color:#888;font-size:13px;text-align:center;margin-bottom:16px;">
+      Manche <span id="kmk-multi-pick-round">1</span> / <span id="kmk-multi-pick-total">3</span> — choisis 3 personnes
+    </div>
+    <div class="suggest-groups" id="kmk-multi-suggest-groups"></div>
+    <textarea id="kmk-multi-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
+    <div class="hint" id="kmk-multi-hint">Sélectionne ou écris exactement 3 noms</div>
+    <button class="btn-primary" id="kmk-multi-pick-btn-confirm" disabled>Envoyer ces 3 noms →</button>
+  </div>
+
+  <!-- KMK MULTI PLAY : JOUER SA MANCHE (noms choisis par l'adversaire) -->
 
   <div id="screen-kmk-play" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="kmk-round-info" id="kmk-round-info">Manche 1 / 3</div>
+    <!-- Bandeau de tour (multijoueur uniquement) -->
+    <div id="kmk-multi-play-banner" class="multi-turn-banner hidden" style="margin-bottom:16px;">
+      <div class="mt-label">🎲 Noms choisis par</div>
+      <div class="mt-name" id="kmk-multi-play-chooser">—</div>
+    </div>
     <div id="kmk-trio-names" style="display:flex;gap:8px;margin-bottom:16px;justify-content:center;"></div>
     <div class="kmk-name-display">
       <div class="kmk-name-label" id="kmk-choosing-label">Qui est-ce que tu veux…</div>
@@ -363,11 +513,30 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <button class="btn-ghost" id="kmk-btn-stop-play">⏹ Arrêter</button>
   </div>
 
+  <!-- KMK MULTI : ATTENTE DU TOUR DE L'ADVERSAIRE -->
+
+  <div id="screen-kmk-multi-wait" class="hidden">
+    <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
+    <div class="multi-waiting-overlay">
+      <div class="mw-emoji pulse">⏳</div>
+      <div class="mw-text" id="kmk-multi-wait-text">En attente de l'adversaire...</div>
+    </div>
+    <div style="color:#444;font-size:12px;text-align:center;margin-bottom:20px;" id="kmk-multi-wait-sub"></div>
+    <!-- Affiche les résultats de l'adversaire si déjà joués -->
+    <div id="kmk-multi-wait-results"></div>
+    <button class="btn-ghost" id="kmk-multi-wait-btn-quit">✕ Quitter la partie</button>
+  </div>
+
   <!-- KMK RESULT -->
 
   <div id="screen-kmk-result" class="hidden">
     <div class="kmk-title" style="margin-bottom:4px"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="result-sub" id="kmk-result-sub" style="margin-bottom:18px"></div>
+    <!-- Sélecteur de joueur (multijoueur) -->
+    <div id="kmk-result-tabs" class="hidden" style="display:flex;gap:8px;margin-bottom:18px;">
+      <button class="tab active" id="kmk-res-tab-me" onclick="kmkResultShowTab('me')">Mes réponses</button>
+      <button class="tab" id="kmk-res-tab-them" onclick="kmkResultShowTab('them')">Réponses de <span id="kmk-res-tab-them-name">l'adversaire</span></button>
+    </div>
     <div id="kmk-result-list"></div>
     <button class="btn-primary" id="kmk-btn-save" style="margin-top:18px">💾 Sauvegarder</button>
     <button class="btn-outline" id="kmk-btn-new-game">Rejouer</button>
@@ -478,24 +647,20 @@ var SUGGESTION_GROUPS = [
     label: 'Garçons de 3e',
     names: [
       "Gabriel"
-      // Ajoute d'autres garçons ici
     ]
   }
 ];
-// Groupe "Tous" = fusion des deux autres
 SUGGESTION_GROUPS.push({
   id: 'tous',
   label: 'Tous les 3e',
   names: SUGGESTION_GROUPS[0].names.concat(SUGGESTION_GROUPS[1].names)
 });
 
-// Pour la compatibilité avec KMK (liste plate)
 var SUGGESTIONS = SUGGESTION_GROUPS[2].names;
 
-// Sélections par groupe (Classement)
 var selectedByGroup = { filles: [], garcons: [], tous: [] };
-// Sélections par groupe (KMK) — isolées
 var selectedByGroupKMK = { filles: [], garcons: [], tous: [] };
+var selectedByGroupMulti = { filles: [], garcons: [], tous: [] };
 
 function getAllSelected() { return getAllSelectedFrom(selectedByGroup); }
 function getAllSelectedFrom(selObj) {
@@ -526,7 +691,6 @@ function renderGroups(containerId, textareaId, hintFn, minNames, selObj) {
     header.addEventListener('click', function() {
       var body = groupEl.querySelector('.suggest-group-body');
       var isOpen = body.classList.contains('open');
-      // Ferme tous les autres groupes
       container.querySelectorAll('.suggest-group-body').forEach(function(b){ b.classList.remove('open'); });
       container.querySelectorAll('.suggest-group-header').forEach(function(h){ h.classList.remove('open'); });
       if (!isOpen) { body.classList.add('open'); header.classList.add('open'); }
@@ -563,7 +727,6 @@ function renderGroups(containerId, textareaId, hintFn, minNames, selObj) {
         }
         syncTextareaFromGroups(textareaId, hintFn, selObj);
         renderGroups(containerId, textareaId, hintFn, minNames, selObj);
-        // Ré-ouvre le groupe actif
         setTimeout(function() {
           var bodies = container.querySelectorAll('.suggest-group-body');
           var headers = container.querySelectorAll('.suggest-group-header');
@@ -640,8 +803,14 @@ function showToast(msg,type){
 }
 function hideAll(){
   ["screen-resume","screen-auth","screen-input","screen-compare","screen-result","screen-saved",
-   "screen-game-select","screen-kmk-setup","screen-kmk-play","screen-kmk-result"]
+   "screen-game-select","screen-kmk-setup","screen-kmk-play","screen-kmk-result",
+   "screen-kmk-multi-lobby","screen-kmk-multi-pick","screen-kmk-multi-wait"]
     .forEach(function(id){hide(id);});
+}
+function genCode(){
+  var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var c='';for(var i=0;i<5;i++)c+=chars[Math.floor(Math.random()*chars.length)];
+  return c;
 }
 
 // =====================
@@ -649,7 +818,7 @@ function hideAll(){
 // =====================
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
 var currentPseudo="", currentTab="new", isPartial=false;
-var currentGame=null; // 'classement' ou 'kmk'
+var currentGame=null;
 var SAVE_KEY="classement_pause";
 
 // =====================
@@ -662,12 +831,10 @@ function clearLocalStorage(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
 function savePauseToFirebase(callback){
   var est=estimated||estimateTotal(names.length)||1;
   var data={pseudo:currentPseudo,names:names,estimated:est,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
-  // Sauvegarde aussi en localStorage comme filet de sécurité
   try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}
   var done=false;
   var timer=setTimeout(function(){
     if(done)return; done=true;
-    // Timeout : on considère comme sauvegardé via localStorage
     callback(null,data);
   },6000);
   db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data)
@@ -679,7 +846,6 @@ function savePauseToFirebase(callback){
     .catch(function(err){
       if(done)return; done=true;
       clearTimeout(timer);
-      // Échec Firebase mais localStorage ok, on continue quand même
       callback(null,data);
     });
 }
@@ -688,7 +854,6 @@ function loadPauseFromFirebase(pseudo,callback){
   var done=false;
   var timer=setTimeout(function(){
     if(done)return; done=true;
-    // Timeout : essaie localStorage
     try{
       var raw=localStorage.getItem(SAVE_KEY);
       if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
@@ -701,7 +866,6 @@ function loadPauseFromFirebase(pseudo,callback){
       clearTimeout(timer);
       if(doc.exists){callback(null,doc.data());}
       else{
-        // Pas dans Firebase, essaie localStorage
         try{
           var raw=localStorage.getItem(SAVE_KEY);
           if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
@@ -712,7 +876,6 @@ function loadPauseFromFirebase(pseudo,callback){
     .catch(function(err){
       if(done)return; done=true;
       clearTimeout(timer);
-      // Erreur Firebase : essaie localStorage
       try{
         var raw=localStorage.getItem(SAVE_KEY);
         if(raw){var d=JSON.parse(raw);if(d&&d.pseudo===pseudo){callback(null,d);return;}}
@@ -737,6 +900,22 @@ function showResumeScreen(saved){
     "Avancement : "+pct+"% ("+saved.sortState.comparisons+" questions)<br>"+
     "<span style='color:#444;font-size:11px'>Mis en pause le "+dateStr+"</span>";
   hideAll(); show("screen-resume");
+}
+
+// Met à jour (ou masque) la carte de reprise de pause sur l'écran de sélection
+function updatePauseCardOnGameSelect(saved){
+  var btn=document.getElementById('btn-game-resume');
+  if(!saved || !saved.sortState || saved.sortState.done===true){
+    btn.classList.add('hidden');
+    return;
+  }
+  var d=new Date(saved.savedAt);
+  var dateStr=d.toLocaleDateString("fr-FR")+" à "+d.getHours()+"h"+String(d.getMinutes()).padStart(2,"0");
+  var est=saved.estimated||estimateTotal((saved.names||[]).length)||1;
+  var pct=Math.min(Math.round((saved.sortState.comparisons/est)*100),98);
+  document.getElementById('btn-game-resume-desc').textContent=(saved.names||[]).length+' personnes · '+pct+'% complété';
+  document.getElementById('btn-game-resume-meta').textContent='Mis en pause le '+dateStr;
+  btn.classList.remove('hidden');
 }
 
 // =====================
@@ -772,7 +951,6 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
   }).catch(function(err){ btn.disabled=false; btn.textContent='Se connecter →'; authShowError('Erreur : '+err.message); });
 });
 
-// Connexion avec Entrée
 ['auth-pseudo','auth-mdp'].forEach(function(id){
   document.getElementById(id).addEventListener('keydown', function(e){
     if(e.key==='Enter') document.getElementById('auth-btn-submit').click();
@@ -803,22 +981,18 @@ function authSuccess(pseudo){
   document.getElementById('au-name-display').textContent = '👤 '+pseudo;
   document.getElementById('auth-user-bar').classList.remove('hidden');
   document.getElementById('tab-saved').classList.remove('hidden');
-  // Vérifie pause Firebase
   var btnS = document.getElementById('auth-btn-submit');
   btnS.disabled=true; btnS.textContent='Chargement...';
   loadPauseFromFirebase(pseudo, function(err, saved){
     btnS.disabled=false; btnS.textContent='Se connecter →';
-    if(!err && saved && saved.sortState && saved.sortState.done !== true){
-      showResumeScreen(saved);
-    } else {
-      hideAll(); show('screen-game-select');
-      document.getElementById('game-select-sub').textContent = 'Que veux-tu jouer, '+pseudo+' ?';
-    }
+    // Toujours aller sur game select — la pause est accessible en option
+    hideAll(); show('screen-game-select');
+    document.getElementById('game-select-sub').textContent = 'Que veux-tu jouer, '+pseudo+' ?';
+    updatePauseCardOnGameSelect(saved);
   });
 }
 
 function init(){
-  // Vérifie session locale
   var session = authGetSession();
   if(session && session.pseudo){
     currentPseudo = session.pseudo;
@@ -826,14 +1000,10 @@ function init(){
     document.getElementById('auth-user-bar').classList.remove('hidden');
     document.getElementById('tab-saved').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
-    // Charge la pause depuis Firebase
     loadPauseFromFirebase(session.pseudo, function(err, saved){
-      if(!err && saved && saved.sortState && saved.sortState.done !== true){
-        showResumeScreen(saved);
-      } else {
-        hideAll(); show('screen-game-select');
-        document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+session.pseudo+' ?';
-      }
+      hideAll(); show('screen-game-select');
+      document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+session.pseudo+' ?';
+      updatePauseCardOnGameSelect(saved);
     });
   } else {
     hideAll(); show('screen-auth');
@@ -842,7 +1012,7 @@ function init(){
 init();
 
 // =====================
-//  RESUME
+//  RESUME (écran dédié)
 // =====================
 document.getElementById("btn-resume").addEventListener("click",function(){
   loadPauseFromFirebase(currentPseudo, function(err, saved){
@@ -863,6 +1033,20 @@ document.getElementById("btn-resume-stop").addEventListener("click",function(){
 document.getElementById("btn-resume-delete").addEventListener("click",function(){
   clearPauseFromFirebase();sortState=null;previousSortState=null;names=[];
   hideAll();show("screen-game-select");
+  updatePauseCardOnGameSelect(null);
+});
+
+// Carte de reprise depuis l'écran de sélection
+document.getElementById('btn-game-resume').addEventListener('click',function(){
+  loadPauseFromFirebase(currentPseudo, function(err, saved){
+    if(err || !saved || !saved.sortState){
+      showToast('Pause introuvable','error');
+      updatePauseCardOnGameSelect(null);
+      return;
+    }
+    currentGame='classement';
+    showResumeScreen(saved);
+  });
 });
 
 // =====================
@@ -882,12 +1066,11 @@ function switchTab(tab){
   }else{
     if(!currentPseudo){ hideAll(); show('screen-auth'); showToast('Connecte-toi pour voir les réponses','info'); return; }
     hideAll();show("screen-saved");loadSaved();
-  }}
-
-// Authentification gérée par authSuccess()
+  }
+}
 
 // =====================
-//  SAISIE NOMS
+//  SAISIE NOMS (CLASSEMENT)
 // =====================
 function getNames(){return Array.from(new Set(document.getElementById("textarea").value.split("\n").map(function(s){return s.trim();}).filter(Boolean)));}
 function updateHint(){
@@ -947,17 +1130,22 @@ document.getElementById("btn-pause").addEventListener("click",function(){
       showToast("❌ Erreur lors de la sauvegarde","error");
     }else{
       showToast("⏸ Pause sauvegardée !","info");
-      showResumeScreen(savedData);
+      // On revient à la sélection de jeu avec la carte de reprise
+      hideAll(); show('screen-game-select');
+      document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+currentPseudo+' ?';
+      updatePauseCardOnGameSelect(savedData);
     }
   });
 });
 
 document.getElementById("btn-stop").addEventListener("click",function(){
   isPartial=true;clearPauseFromFirebase();hideAll();showResult(true);
+  updatePauseCardOnGameSelect(null);
 });
 document.getElementById("btn-restart").addEventListener("click",function(){
   clearPauseFromFirebase();sortState=null;previousSortState=null;isPartial=false;currentGame=null;
   hideAll();show("screen-game-select");
+  updatePauseCardOnGameSelect(null);
 });
 
 function choose(pL){
@@ -966,12 +1154,11 @@ function choose(pL){
   document.getElementById(id).classList.add("active");
   setTimeout(function(){
     document.getElementById(id).classList.remove("active");
-    // Sauvegarde l'état AVANT le choix pour pouvoir annuler
     previousSortState=JSON.parse(JSON.stringify(sortState));
     sortState=processChoice(sortState,pL);
     busy=false;
     document.getElementById("btn-undo").disabled=false;
-    if(sortState.done){clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);}
+    if(sortState.done){clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);updatePauseCardOnGameSelect(null);}
     else renderQ();
   },200);
 }
@@ -1022,7 +1209,7 @@ document.getElementById("btn-save").addEventListener("click",function(){
 });
 
 // =====================
-//  FIREBASE : LOAD
+//  FIREBASE : LOAD SAVED
 // =====================
 var currentSavedTab = 'classement';
 function switchSavedTab(tab){
@@ -1057,8 +1244,9 @@ function loadSaved(){
         var d=doc.data();
         var date=d.createdAt?new Date(d.createdAt.toDate()).toLocaleDateString("fr-FR"):"";
         html+="<div class='saved-card'><div class='sc-name'>"+escHtml(d.pseudo||"Anonyme")+"</div>";
-        html+="<div class='sc-meta'>"+date+" · "+d.manches.length+" manche(s)</div>";
-        d.manches.forEach(function(m){
+        if(d.multi)html+="<div style='display:inline-block;padding:2px 8px;border-radius:10px;border:1px solid #cc44ff;color:#cc44ff;font-size:10px;font-weight:700;margin-top:4px'>👥 Multi · vs "+escHtml(d.adversaire||'')+"</div>";
+        html+="<div class='sc-meta'>"+date+" · "+((d.manches||[]).length)+" manche(s)</div>";
+        (d.manches||[]).forEach(function(m){
           html+="<div style='margin-top:8px;font-size:12px;color:#555;text-transform:uppercase;letter-spacing:1px'>Manche "+m.round+"</div>";
           html+="<div style='display:flex;gap:6px;margin-top:4px;flex-wrap:wrap'>";
           html+="<span style='padding:3px 10px;border-radius:20px;border:1px solid #ff6b9d;color:#ff6b9d;font-size:12px;font-weight:700'>💋 "+escHtml(m.kiss)+"</span>";
@@ -1085,14 +1273,24 @@ document.getElementById('btn-game-classement').addEventListener('click',function
 document.getElementById('btn-game-kmk').addEventListener('click',function(){
   currentGame='kmk';
   hideAll();show('screen-kmk-setup');
+  kmkSetMode('solo');
   renderGroups('kmk-suggest-groups','kmk-textarea',kmkUpdateHint,3,selectedByGroupKMK);
   document.getElementById('kmk-setup-sub').textContent='Configuration — '+currentPseudo;
 });
 
 // =====================
-//  KMK
+//  KMK — SOLO
 // =====================
 var kmkRoundsTotal=3,kmkCurrentRound=0,kmkTrio=[],kmkAssigned={},kmkPoolLeft=[],kmkAllResults=[],kmkBusy=false;
+var kmkIsMulti=false; // true si mode multijoueur
+
+function kmkSetMode(mode){
+  kmkIsMulti=(mode==='multi');
+  document.getElementById('kmk-mode-solo').className='tab'+(mode==='solo'?' active':'');
+  document.getElementById('kmk-mode-multi').className='tab'+(mode==='multi'?' active':'');
+  if(mode==='solo'){show('kmk-solo-config');hide('kmk-multi-config');}
+  else{hide('kmk-solo-config');show('kmk-multi-config');}
+}
 
 function kmkGetNames(){return Array.from(new Set(document.getElementById('kmk-textarea').value.split('\n').map(function(s){return s.trim();}).filter(Boolean)));}
 function kmkUpdateHint(){
@@ -1107,14 +1305,12 @@ function kmkUpdateHint(){
   }
 }
 function kmkUpdateRoundsOnly(){
-  // Met à jour uniquement le texte du hint sans changer le disabled du bouton
   var n=kmkGetNames();
   if(n.length>=3){
     document.getElementById('kmk-hint').innerHTML='<b>'+n.length+' personnes</b> · '+kmkRoundsTotal+' manche(s)';
   }
 }
 
-// kmk-btn-all et kmk-btn-clear supprimés : les boutons sont intégrés dans chaque groupe via renderGroups
 document.getElementById('kmk-textarea').addEventListener('input',function(){
   var lines=this.value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
   SUGGESTION_GROUPS.forEach(function(g){selectedByGroupKMK[g.id]=g.names.filter(function(n){return lines.indexOf(n)!==-1;});});
@@ -1125,7 +1321,9 @@ document.getElementById('kmk-rounds-plus').addEventListener('click',function(){k
 document.getElementById('kmk-btn-back-setup').addEventListener('click',function(){hideAll();show('screen-game-select');});
 document.getElementById('kmk-btn-start').addEventListener('click',function(){
   var n=kmkGetNames();if(n.length<3)return;
-  kmkAllResults=[];kmkCurrentRound=0;kmkPoolLeft=shuffle(n);kmkStartRound();
+  kmkAllResults=[];kmkCurrentRound=0;kmkPoolLeft=shuffle(n);
+  hide('kmk-multi-play-banner');
+  kmkStartRound();
 });
 
 function kmkStartRound(){
@@ -1135,7 +1333,6 @@ function kmkStartRound(){
   kmkTrio=[kmkPoolLeft.shift(),kmkPoolLeft.shift(),kmkPoolLeft.shift()];
   kmkAssigned={};hideAll();show('screen-kmk-play');
   document.getElementById('kmk-round-info').textContent='Manche '+kmkCurrentRound+' / '+kmkRoundsTotal;
-  // Affiche les 3 noms de la manche
   var trioNamesEl=document.getElementById('kmk-trio-names');
   trioNamesEl.innerHTML='';
   kmkTrio.forEach(function(name){
@@ -1150,7 +1347,6 @@ function kmkStartRound(){
 function kmkRenderPlay(){
   ['kiss','marry','kill'].forEach(function(cat,i){document.getElementById('kmk-slot-'+i).className='kmk-mini';document.getElementById('kmk-slot-name-'+i).textContent='?';});
   Object.keys(kmkAssigned).forEach(function(name){var cat=kmkAssigned[name];var idx=cat==='kiss'?0:cat==='marry'?1:2;document.getElementById('kmk-slot-'+idx).className='kmk-mini assigned-'+cat;document.getElementById('kmk-slot-name-'+idx).textContent=name;});
-  // Mettre à jour les couleurs des chips du trio
   var chips=document.getElementById('kmk-trio-names').children;
   kmkTrio.forEach(function(name,i){
     var cat=kmkAssigned[name];
@@ -1177,8 +1373,15 @@ function kmkAssign(cat){
     if(remaining.length===0){
       var kissName='',marryName='',killName='';
       Object.keys(kmkAssigned).forEach(function(n){if(kmkAssigned[n]==='kiss')kissName=n;else if(kmkAssigned[n]==='marry')marryName=n;else killName=n;});
-      kmkAllResults.push({round:kmkCurrentRound,kiss:kissName,marry:marryName,kill:killName});
-      kmkRenderPlay();setTimeout(function(){kmkStartRound();},800);
+      var roundResult={round:kmkCurrentRound,kiss:kissName,marry:marryName,kill:killName};
+      kmkAllResults.push(roundResult);
+      kmkRenderPlay();
+      if(kmkIsMulti){
+        // Sauvegarde le résultat de cette manche dans Firebase, puis passe au tour suivant
+        setTimeout(function(){kmkMultiAfterPlayRound(roundResult);},600);
+      } else {
+        setTimeout(function(){kmkStartRound();},800);
+      }
     }else{kmkRenderPlay();}
   },220);
 }
@@ -1186,13 +1389,20 @@ function kmkAssign(cat){
 document.getElementById('kmk-btn-kiss').addEventListener('click',function(){kmkAssign('kiss');});
 document.getElementById('kmk-btn-marry').addEventListener('click',function(){kmkAssign('marry');});
 document.getElementById('kmk-btn-kill').addEventListener('click',function(){kmkAssign('kill');});
-document.getElementById('kmk-btn-stop-play').addEventListener('click',function(){kmkShowResult();});
+document.getElementById('kmk-btn-stop-play').addEventListener('click',function(){
+  if(kmkIsMulti){kmkMultiQuit();}else{kmkShowResult();}
+});
 
 function kmkShowResult(){
   hideAll();show('screen-kmk-result');
+  hide('kmk-result-tabs');
   document.getElementById('kmk-result-sub').textContent=currentPseudo+' · '+kmkAllResults.length+' manche(s)';
+  document.getElementById('kmk-result-list').innerHTML=kmkBuildResultHtml(kmkAllResults);
+}
+
+function kmkBuildResultHtml(results){
   var html='';
-  kmkAllResults.forEach(function(r){
+  results.forEach(function(r){
     html+='<div style="margin-bottom:22px">';
     html+='<div style="color:#444;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">Manche '+r.round+'</div>';
     html+='<div class="kmk-result-row kiss-row"><span style="font-size:20px;margin-right:4px">&#x1F48B;</span><span style="color:#ff6b9d;font-weight:900;min-width:52px;font-size:12px;letter-spacing:1px">KISS</span><span style="color:#fff;font-weight:700">'+escHtml(r.kiss)+'</span></div>';
@@ -1200,7 +1410,7 @@ function kmkShowResult(){
     html+='<div class="kmk-result-row kill-row"><span style="font-size:20px;margin-right:4px">&#x1F480;</span><span style="color:#ff4444;font-weight:900;min-width:52px;font-size:12px;letter-spacing:1px">KILL</span><span style="color:#fff;font-weight:700">'+escHtml(r.kill)+'</span></div>';
     html+='</div>';
   });
-  document.getElementById('kmk-result-list').innerHTML=html;
+  return html;
 }
 
 document.getElementById('kmk-btn-new-game').addEventListener('click',function(){
@@ -1208,17 +1418,24 @@ document.getElementById('kmk-btn-new-game').addEventListener('click',function(){
   kmkRoundsTotal=3;document.getElementById('kmk-rounds-val').textContent='3';
   document.getElementById('kmk-textarea').value='';
   hideAll();show('screen-kmk-setup');
+  kmkSetMode('solo');
   renderGroups('kmk-suggest-groups','kmk-textarea',kmkUpdateHint,3,selectedByGroupKMK);
   kmkUpdateHint();
   document.getElementById('kmk-setup-sub').textContent='Configuration — '+currentPseudo;
+  kmkMultiCleanup();
 });
 document.getElementById('kmk-btn-save').addEventListener('click',function(){
   var btn=this;btn.disabled=true;btn.textContent='Sauvegarde...';
-  db.collection('kmk_resultats').add({
+  var saveData={
     pseudo:currentPseudo,
     manches:kmkAllResults,
     createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  }).then(function(){
+  };
+  if(kmkIsMulti && kmkMultiGameId){
+    saveData.multi=true;
+    saveData.adversaire=kmkMultiOpponent;
+  }
+  db.collection('kmk_resultats').add(saveData).then(function(){
     showToast('✅ Résultats KMK sauvegardés !');
     btn.textContent='✅ Sauvegardé !';
   }).catch(function(err){
@@ -1226,7 +1443,367 @@ document.getElementById('kmk-btn-save').addEventListener('click',function(){
     btn.disabled=false;btn.textContent='💾 Sauvegarder';
   });
 });
-document.getElementById('kmk-btn-change-game').addEventListener('click',function(){hideAll();show('screen-game-select');});
+document.getElementById('kmk-btn-change-game').addEventListener('click',function(){kmkMultiCleanup();hideAll();show('screen-game-select');});
+
+// =====================
+//  KMK — MULTIJOUEUR
+// =====================
+var kmkMultiGameId=null;       // ID du doc Firestore de la partie
+var kmkMultiOpponent='';       // pseudo de l'adversaire
+var kmkMultiIsCreator=false;   // true si on a créé la partie
+var kmkMultiRoundsTotal=3;     // manches chacun
+var kmkMultiListener=null;     // unsubscribe Firestore listener
+var kmkMultiMyResults=[];      // résultats de mes manches à moi
+var kmkMultiTheirResults=[];   // résultats des manches de l'adversaire
+var kmkMultiCurrentPickRound=0; // quelle manche je suis en train de choisir
+var kmkMultiMyPlayRound=0;      // quelle manche je suis en train de jouer
+var kmkMultiSelectedForPick={}; // selectedByGroup pour l'écran de sélection des noms
+
+// Compteur de manches pour le multi
+var kmkMultiRoundsMinusEl=document.getElementById('kmk-multi-rounds-minus');
+var kmkMultiRoundsPlusEl=document.getElementById('kmk-multi-rounds-plus');
+kmkMultiRoundsMinusEl.addEventListener('click',function(){if(kmkMultiRoundsTotal>1){kmkMultiRoundsTotal--;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;}});
+kmkMultiRoundsPlusEl.addEventListener('click',function(){kmkMultiRoundsTotal++;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;});
+
+// Créer une partie multijoueur
+document.getElementById('kmk-multi-btn-create').addEventListener('click',function(){
+  var friendPseudo=document.getElementById('kmk-multi-friend-input').value.trim().toLowerCase();
+  if(!friendPseudo){showToast('Entre le pseudo de ton ami','error');return;}
+  if(friendPseudo===currentPseudo){showToast('Tu ne peux pas jouer contre toi-même !','error');return;}
+  var btn=this; btn.disabled=true; btn.textContent='Création...';
+  // Vérifie que le pseudo ami existe
+  db.collection('users').doc(friendPseudo).get().then(function(doc){
+    if(!doc.exists){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Pseudo introuvable','error');return;}
+    var code=genCode();
+    var gameData={
+      code:code,
+      creator:currentPseudo,
+      opponent:friendPseudo,
+      roundsTotal:kmkMultiRoundsTotal,
+      status:'waiting', // waiting → playing → done
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      // Pour chaque manche : {round, pickedBy, trio, playedBy, result}
+      picks:[],      // noms choisis par chaque joueur pour l'autre
+      results:[]     // résultats de chaque manche jouée
+    };
+    db.collection('kmk_parties').add(gameData).then(function(ref){
+      btn.disabled=false; btn.textContent='Créer la partie →';
+      kmkMultiGameId=ref.id;
+      kmkMultiOpponent=friendPseudo;
+      kmkMultiIsCreator=true;
+      kmkMultiRoundsTotal=gameData.roundsTotal;
+      kmkMultiMyResults=[];
+      kmkMultiTheirResults=[];
+      kmkMultiCurrentPickRound=0;
+      kmkMultiMyPlayRound=0;
+      // Affiche le lobby
+      document.getElementById('kmk-lobby-code').textContent=code;
+      document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
+      document.getElementById('kmk-lobby-p2-name').textContent=friendPseudo;
+      document.getElementById('kmk-lobby-p2-status').textContent='En attente...';
+      document.getElementById('kmk-lobby-p2-row').className='multi-player-row waiting';
+      document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente de '+friendPseudo+'...';
+      hideAll();show('screen-kmk-multi-lobby');
+      kmkMultiListenLobby(ref.id);
+    }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
+  }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
+});
+
+// Rejoindre une partie
+document.getElementById('kmk-multi-btn-join').addEventListener('click',function(){
+  var code=document.getElementById('kmk-multi-join-code').value.trim().toUpperCase();
+  if(code.length<4){showToast('Entre le code de la partie','error');return;}
+  var btn=this; btn.disabled=true; btn.textContent='Recherche...';
+  db.collection('kmk_parties').where('code','==',code).where('status','==','waiting').limit(1).get()
+    .then(function(snap){
+      btn.disabled=false; btn.textContent='Rejoindre →';
+      if(snap.empty){showToast('Partie introuvable ou déjà commencée','error');return;}
+      var docRef=snap.docs[0];
+      var data=docRef.data();
+      if(data.opponent!==currentPseudo && data.creator!==currentPseudo){
+        showToast('Cette partie ne t\'est pas destinée','error');return;
+      }
+      // Met à jour le statut
+      docRef.ref.update({status:'playing'}).then(function(){
+        kmkMultiGameId=docRef.id;
+        kmkMultiOpponent=data.creator;
+        kmkMultiIsCreator=false;
+        kmkMultiRoundsTotal=data.roundsTotal||3;
+        kmkMultiMyResults=[];
+        kmkMultiTheirResults=[];
+        kmkMultiCurrentPickRound=0;
+        kmkMultiMyPlayRound=0;
+        // L'adversaire a rejoint → on commence directement à choisir les noms pour lui
+        hideAll();
+        kmkMultiStartPickPhase();
+      });
+    }).catch(function(err){btn.disabled=false;btn.textContent='Rejoindre →';showToast('Erreur : '+err.message,'error');});
+});
+
+// Listener du lobby (créateur attend que l'adversaire rejoigne)
+function kmkMultiListenLobby(gameId){
+  if(kmkMultiListener)kmkMultiListener();
+  kmkMultiListener=db.collection('kmk_parties').doc(gameId).onSnapshot(function(doc){
+    if(!doc.exists)return;
+    var data=doc.data();
+    if(data.status==='playing'){
+      // L'adversaire a rejoint
+      document.getElementById('kmk-lobby-p2-row').className='multi-player-row connected';
+      document.getElementById('kmk-lobby-p2-status').textContent='✓ Connecté';
+      document.getElementById('kmk-lobby-status-badge').textContent='✅ Adversaire connecté !';
+      if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
+      setTimeout(function(){
+        hideAll();
+        kmkMultiStartPickPhase();
+      },800);
+    }
+  });
+}
+
+// Phase de sélection : on choisit les 3 noms pour l'adversaire
+function kmkMultiStartPickPhase(){
+  kmkMultiCurrentPickRound++;
+  if(kmkMultiCurrentPickRound>kmkMultiRoundsTotal){
+    // J'ai fini de choisir pour l'adversaire — j'attends qu'il choisisse pour moi
+    kmkMultiWaitForPick();
+    return;
+  }
+  // Reset sélection
+  SUGGESTION_GROUPS.forEach(function(g){selectedByGroupMulti[g.id]=[];});
+  document.getElementById('kmk-multi-textarea').value='';
+  document.getElementById('kmk-multi-hint').textContent='Sélectionne ou écris exactement 3 noms';
+  document.getElementById('kmk-multi-pick-btn-confirm').disabled=true;
+  document.getElementById('kmk-multi-pick-for').textContent=kmkMultiOpponent;
+  document.getElementById('kmk-multi-pick-round').textContent=kmkMultiCurrentPickRound;
+  document.getElementById('kmk-multi-pick-total').textContent=kmkMultiRoundsTotal;
+  hideAll(); show('screen-kmk-multi-pick');
+  renderGroups('kmk-multi-suggest-groups','kmk-multi-textarea',kmkMultiPickUpdateHint,3,selectedByGroupMulti);
+}
+
+function kmkMultiGetPickNames(){
+  return Array.from(new Set(document.getElementById('kmk-multi-textarea').value.split('\n').map(function(s){return s.trim();}).filter(Boolean)));
+}
+function kmkMultiPickUpdateHint(){
+  var n=kmkMultiGetPickNames();
+  var btn=document.getElementById('kmk-multi-pick-btn-confirm');
+  if(n.length===3){
+    document.getElementById('kmk-multi-hint').innerHTML='<b>3 personnes sélectionnées</b> — prêt !';
+    btn.disabled=false;
+  } else if(n.length>3){
+    document.getElementById('kmk-multi-hint').innerHTML='<b style="color:#cc3333">'+n.length+' sélectionnées</b> — choisis exactement 3 !';
+    btn.disabled=true;
+  } else {
+    document.getElementById('kmk-multi-hint').textContent='Sélectionne ou écris exactement 3 noms ('+n.length+'/3)';
+    btn.disabled=true;
+  }
+}
+document.getElementById('kmk-multi-textarea').addEventListener('input',function(){
+  var lines=this.value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  SUGGESTION_GROUPS.forEach(function(g){selectedByGroupMulti[g.id]=g.names.filter(function(n){return lines.indexOf(n)!==-1;});});
+  kmkMultiPickUpdateHint();
+});
+
+document.getElementById('kmk-multi-pick-btn-confirm').addEventListener('click',function(){
+  var trio=kmkMultiGetPickNames();
+  if(trio.length!==3)return;
+  var btn=this; btn.disabled=true; btn.textContent='Envoi...';
+  // Sauvegarde le trio dans Firebase
+  var pickEntry={
+    round:kmkMultiCurrentPickRound,
+    pickedBy:currentPseudo,
+    forPlayer:kmkMultiOpponent,
+    trio:trio
+  };
+  db.collection('kmk_parties').doc(kmkMultiGameId).update({
+    picks:firebase.firestore.FieldValue.arrayUnion(pickEntry)
+  }).then(function(){
+    btn.disabled=false; btn.textContent='Envoyer ces 3 noms →';
+    showToast('✅ Noms envoyés !','info');
+    kmkMultiStartPickPhase(); // passe à la manche suivante
+  }).catch(function(err){
+    btn.disabled=false; btn.textContent='Envoyer ces 3 noms →';
+    showToast('Erreur : '+err.message,'error');
+  });
+});
+
+// Attente que l'adversaire ait choisi tous mes trios
+function kmkMultiWaitForPick(){
+  document.getElementById('kmk-multi-wait-text').textContent=kmkMultiOpponent+' choisit tes 3 personnes...';
+  document.getElementById('kmk-multi-wait-sub').textContent='Manche '+kmkMultiMyPlayRound+' / '+kmkMultiRoundsTotal;
+  document.getElementById('kmk-multi-wait-results').innerHTML='';
+  hideAll(); show('screen-kmk-multi-wait');
+  kmkMultiListenForMyTrio();
+}
+
+function kmkMultiListenForMyTrio(){
+  if(kmkMultiListener)kmkMultiListener();
+  kmkMultiListener=db.collection('kmk_parties').doc(kmkMultiGameId).onSnapshot(function(doc){
+    if(!doc.exists)return;
+    var data=doc.data();
+    var nextRound=kmkMultiMyPlayRound+1;
+    // Cherche le trio pour ma prochaine manche
+    var myTrio=null;
+    (data.picks||[]).forEach(function(p){
+      if(p.forPlayer===currentPseudo && p.round===nextRound) myTrio=p;
+    });
+    if(myTrio){
+      if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
+      kmkMultiPlayMyRound(myTrio.trio, nextRound, data.roundsTotal||kmkMultiRoundsTotal);
+    }
+    // Affiche les résultats de l'adversaire si déjà jouées
+    var theirRes=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+    if(theirRes.length>0){
+      var html='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Réponses de '+escHtml(kmkMultiOpponent)+' (en direct)</div>';
+      html+=kmkBuildResultHtml(theirRes.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
+      document.getElementById('kmk-multi-wait-results').innerHTML=html;
+    }
+    // Vérifie si partie terminée
+    if(data.status==='done'){
+      if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
+      kmkMultiShowFinalResult(data);
+    }
+  });
+}
+
+// Jouer une manche (trios choisis par l'adversaire pour moi)
+function kmkMultiPlayMyRound(trio, round, total){
+  kmkMultiMyPlayRound=round;
+  kmkTrio=trio;
+  kmkAssigned={};
+  show('screen-kmk-play');
+  hide('screen-kmk-multi-wait');
+  document.getElementById('kmk-round-info').textContent='Manche '+round+' / '+total;
+  document.getElementById('kmk-multi-play-banner').classList.remove('hidden');
+  document.getElementById('kmk-multi-play-chooser').textContent=kmkMultiOpponent;
+  var trioNamesEl=document.getElementById('kmk-trio-names');
+  trioNamesEl.innerHTML='';
+  kmkTrio.forEach(function(name){
+    var chip=document.createElement('div');
+    chip.style.cssText='flex:1;padding:10px 6px;background:#131328;border:2px solid #2a2a55;border-radius:12px;text-align:center;font-size:13px;font-weight:700;color:#888;';
+    chip.textContent=name;
+    trioNamesEl.appendChild(chip);
+  });
+  kmkRenderPlay();
+}
+
+// Appelé après avoir joué une manche multi
+function kmkMultiAfterPlayRound(roundResult){
+  var resultEntry={
+    round:roundResult.round,
+    playedBy:currentPseudo,
+    forChosenBy:kmkMultiOpponent,
+    kiss:roundResult.kiss,
+    marry:roundResult.marry,
+    kill:roundResult.kill
+  };
+  kmkMultiMyResults.push(roundResult);
+  db.collection('kmk_parties').doc(kmkMultiGameId).update({
+    results:firebase.firestore.FieldValue.arrayUnion(resultEntry)
+  }).then(function(){
+    // Vérifie si j'ai joué toutes mes manches
+    if(kmkMultiMyPlayRound>=kmkMultiRoundsTotal){
+      // J'ai tout joué — regarde si l'adversaire aussi
+      db.collection('kmk_parties').doc(kmkMultiGameId).get().then(function(doc){
+        var data=doc.data();
+        var theirResults=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+        var allDone=(theirResults.length>=kmkMultiRoundsTotal);
+        if(allDone){
+          db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'done'});
+          kmkMultiTheirResults=theirResults;
+          kmkMultiShowFinalResult(data);
+        } else {
+          // J'attends que l'adversaire finisse
+          document.getElementById('kmk-multi-wait-text').textContent=kmkMultiOpponent+' joue encore...';
+          document.getElementById('kmk-multi-wait-sub').textContent='Tu as terminé toutes tes manches !';
+          hideAll(); show('screen-kmk-multi-wait');
+          kmkMultiListenForEndGame();
+        }
+      });
+    } else {
+      // Prochain tour : je dois attendre que l'adversaire choisisse le prochain trio pour moi
+      kmkMultiWaitForPick();
+    }
+  }).catch(function(err){showToast('Erreur sync : '+err.message,'error');});
+}
+
+function kmkMultiListenForEndGame(){
+  if(kmkMultiListener)kmkMultiListener();
+  kmkMultiListener=db.collection('kmk_parties').doc(kmkMultiGameId).onSnapshot(function(doc){
+    if(!doc.exists)return;
+    var data=doc.data();
+    var theirRes=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+    // Affiche en direct
+    if(theirRes.length>0){
+      var html='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Réponses de '+escHtml(kmkMultiOpponent)+' (en direct)</div>';
+      html+=kmkBuildResultHtml(theirRes.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
+      document.getElementById('kmk-multi-wait-results').innerHTML=html;
+    }
+    if(data.status==='done' || theirRes.length>=kmkMultiRoundsTotal){
+      if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
+      if(data.status!=='done') db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'done'});
+      kmkMultiTheirResults=theirRes;
+      kmkMultiShowFinalResult(data);
+    }
+  });
+}
+
+function kmkMultiShowFinalResult(data){
+  if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
+  kmkAllResults=kmkMultiMyResults;
+  kmkMultiTheirResults=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+  hideAll(); show('screen-kmk-result');
+  show('kmk-result-tabs');
+  document.getElementById('kmk-result-sub').textContent='Partie terminée · '+kmkMultiRoundsTotal+' manche(s) chacun';
+  document.getElementById('kmk-res-tab-them-name').textContent=kmkMultiOpponent;
+  kmkResultShowTab('me');
+}
+
+var kmkResultCurrentTab='me';
+function kmkResultShowTab(tab){
+  kmkResultCurrentTab=tab;
+  document.getElementById('kmk-res-tab-me').className='tab'+(tab==='me'?' active':'');
+  document.getElementById('kmk-res-tab-them').className='tab'+(tab==='them'?' active':'');
+  if(tab==='me'){
+    document.getElementById('kmk-result-list').innerHTML=kmkBuildResultHtml(kmkAllResults);
+  } else {
+    var theirFormatted=kmkMultiTheirResults.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};});
+    document.getElementById('kmk-result-list').innerHTML=theirFormatted.length>0
+      ? kmkBuildResultHtml(theirFormatted)
+      : '<div style="color:#444;text-align:center;padding:30px">Pas encore de résultats...</div>';
+  }
+}
+
+function kmkMultiQuit(){
+  if(kmkMultiGameId){
+    db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'abandoned'}).catch(function(){});
+  }
+  kmkMultiCleanup();
+  hideAll(); show('screen-game-select');
+}
+
+function kmkMultiCleanup(){
+  if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
+  kmkMultiGameId=null;
+  kmkMultiOpponent='';
+  kmkMultiIsCreator=false;
+  kmkMultiMyResults=[];
+  kmkMultiTheirResults=[];
+  kmkMultiCurrentPickRound=0;
+  kmkMultiMyPlayRound=0;
+  kmkIsMulti=false;
+}
+
+document.getElementById('kmk-lobby-btn-cancel').addEventListener('click',function(){
+  if(kmkMultiGameId){
+    db.collection('kmk_parties').doc(kmkMultiGameId).delete().catch(function(){});
+  }
+  kmkMultiCleanup();
+  hideAll(); show('screen-kmk-setup');
+});
+
+document.getElementById('kmk-multi-wait-btn-quit').addEventListener('click',function(){
+  kmkMultiQuit();
+});
 </script>
 
 </body>
