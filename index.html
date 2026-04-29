@@ -902,6 +902,19 @@ function showResumeScreen(saved){
   hideAll(); show("screen-resume");
 }
 
+// Navigue vers l'écran de sélection en rechargeant toujours la pause depuis Firebase
+function goToGameSelect(){
+  hideAll(); show('screen-game-select');
+  document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+currentPseudo+' ?';
+  if(currentPseudo){
+    loadPauseFromFirebase(currentPseudo, function(err, saved){
+      updatePauseCardOnGameSelect(saved);
+    });
+  } else {
+    updatePauseCardOnGameSelect(null);
+  }
+}
+
 // Met à jour (ou masque) la carte de reprise de pause sur l'écran de sélection
 function updatePauseCardOnGameSelect(saved){
   var btn=document.getElementById('btn-game-resume');
@@ -985,10 +998,7 @@ function authSuccess(pseudo){
   btnS.disabled=true; btnS.textContent='Chargement...';
   loadPauseFromFirebase(pseudo, function(err, saved){
     btnS.disabled=false; btnS.textContent='Se connecter →';
-    // Toujours aller sur game select — la pause est accessible en option
-    hideAll(); show('screen-game-select');
-    document.getElementById('game-select-sub').textContent = 'Que veux-tu jouer, '+pseudo+' ?';
-    updatePauseCardOnGameSelect(saved);
+    goToGameSelect();
   });
 }
 
@@ -1001,9 +1011,7 @@ function init(){
     document.getElementById('tab-saved').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
     loadPauseFromFirebase(session.pseudo, function(err, saved){
-      hideAll(); show('screen-game-select');
-      document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+session.pseudo+' ?';
-      updatePauseCardOnGameSelect(saved);
+      goToGameSelect();
     });
   } else {
     hideAll(); show('screen-auth');
@@ -1032,8 +1040,7 @@ document.getElementById("btn-resume-stop").addEventListener("click",function(){
 });
 document.getElementById("btn-resume-delete").addEventListener("click",function(){
   clearPauseFromFirebase();sortState=null;previousSortState=null;names=[];
-  hideAll();show("screen-game-select");
-  updatePauseCardOnGameSelect(null);
+  goToGameSelect();
 });
 
 // Carte de reprise depuis l'écran de sélection
@@ -1041,7 +1048,7 @@ document.getElementById('btn-game-resume').addEventListener('click',function(){
   loadPauseFromFirebase(currentPseudo, function(err, saved){
     if(err || !saved || !saved.sortState){
       showToast('Pause introuvable','error');
-      updatePauseCardOnGameSelect(null);
+      goToGameSelect();
       return;
     }
     currentGame='classement';
@@ -1086,7 +1093,7 @@ document.getElementById("textarea").addEventListener("input",function(){
   updateHint();
 });
 document.getElementById("btn-back-to-game-select").addEventListener("click",function(){
-  hideAll();show("screen-game-select");
+  goToGameSelect();
 });
 document.getElementById("btn-start").addEventListener("click",function(){
   names=getNames();if(names.length<2)return;
@@ -1130,22 +1137,17 @@ document.getElementById("btn-pause").addEventListener("click",function(){
       showToast("❌ Erreur lors de la sauvegarde","error");
     }else{
       showToast("⏸ Pause sauvegardée !","info");
-      // On revient à la sélection de jeu avec la carte de reprise
-      hideAll(); show('screen-game-select');
-      document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+currentPseudo+' ?';
-      updatePauseCardOnGameSelect(savedData);
+      goToGameSelect();
     }
   });
 });
 
 document.getElementById("btn-stop").addEventListener("click",function(){
   isPartial=true;clearPauseFromFirebase();hideAll();showResult(true);
-  updatePauseCardOnGameSelect(null);
 });
 document.getElementById("btn-restart").addEventListener("click",function(){
   clearPauseFromFirebase();sortState=null;previousSortState=null;isPartial=false;currentGame=null;
-  hideAll();show("screen-game-select");
-  updatePauseCardOnGameSelect(null);
+  goToGameSelect();
 });
 
 function choose(pL){
@@ -1158,7 +1160,7 @@ function choose(pL){
     sortState=processChoice(sortState,pL);
     busy=false;
     document.getElementById("btn-undo").disabled=false;
-    if(sortState.done){clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);updatePauseCardOnGameSelect(null);}
+    if(sortState.done){clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);}
     else renderQ();
   },200);
 }
@@ -1194,7 +1196,7 @@ function showResult(partial){
   show("screen-result");
 }
 
-document.getElementById("btn-new").addEventListener("click",function(){sortState=null;previousSortState=null;isPartial=false;currentGame=null;hideAll();show("screen-game-select");});
+document.getElementById("btn-new").addEventListener("click",function(){sortState=null;previousSortState=null;isPartial=false;currentGame=null;goToGameSelect();});
 
 // =====================
 //  FIREBASE : SAVE
@@ -1318,7 +1320,7 @@ document.getElementById('kmk-textarea').addEventListener('input',function(){
 });
 document.getElementById('kmk-rounds-minus').addEventListener('click',function(){if(kmkRoundsTotal>1){kmkRoundsTotal--;document.getElementById('kmk-rounds-val').textContent=kmkRoundsTotal;kmkUpdateRoundsOnly();}});
 document.getElementById('kmk-rounds-plus').addEventListener('click',function(){kmkRoundsTotal++;document.getElementById('kmk-rounds-val').textContent=kmkRoundsTotal;kmkUpdateRoundsOnly();});
-document.getElementById('kmk-btn-back-setup').addEventListener('click',function(){hideAll();show('screen-game-select');});
+document.getElementById('kmk-btn-back-setup').addEventListener('click',function(){goToGameSelect();});
 document.getElementById('kmk-btn-start').addEventListener('click',function(){
   var n=kmkGetNames();if(n.length<3)return;
   kmkAllResults=[];kmkCurrentRound=0;kmkPoolLeft=shuffle(n);
@@ -1443,7 +1445,7 @@ document.getElementById('kmk-btn-save').addEventListener('click',function(){
     btn.disabled=false;btn.textContent='💾 Sauvegarder';
   });
 });
-document.getElementById('kmk-btn-change-game').addEventListener('click',function(){kmkMultiCleanup();hideAll();show('screen-game-select');});
+document.getElementById('kmk-btn-change-game').addEventListener('click',function(){kmkMultiCleanup();goToGameSelect();});
 
 // =====================
 //  KMK — MULTIJOUEUR
@@ -1778,7 +1780,7 @@ function kmkMultiQuit(){
     db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'abandoned'}).catch(function(){});
   }
   kmkMultiCleanup();
-  hideAll(); show('screen-game-select');
+  goToGameSelect();
 }
 
 function kmkMultiCleanup(){
@@ -1798,7 +1800,7 @@ document.getElementById('kmk-lobby-btn-cancel').addEventListener('click',functio
     db.collection('kmk_parties').doc(kmkMultiGameId).delete().catch(function(){});
   }
   kmkMultiCleanup();
-  hideAll(); show('screen-kmk-setup');
+  goToGameSelect();
 });
 
 document.getElementById('kmk-multi-wait-btn-quit').addEventListener('click',function(){
