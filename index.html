@@ -819,12 +819,19 @@ function genCode(){
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
 var currentPseudo="", currentTab="new", isPartial=false;
 var currentGame=null;
+
 // =====================
-//  FIREBASE PAUSE (Firestore uniquement — pas de localStorage)
+//  FIREBASE PAUSE — 100% Firestore, pas de localStorage
 // =====================
 function savePauseToFirebase(callback){
   var est=estimated||estimateTotal(names.length)||1;
-  var data={pseudo:currentPseudo,names:names,estimated:est,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
+  var data={
+    pseudo:currentPseudo,
+    names:names,
+    estimated:est,
+    sortState:JSON.parse(JSON.stringify(sortState)),
+    savedAt:new Date().toISOString()
+  };
   db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data)
     .then(function(){ callback(null,data); })
     .catch(function(err){ callback(err,null); });
@@ -857,15 +864,12 @@ function showResumeScreen(saved){
 }
 
 // Navigue vers l'écran de sélection en rechargeant toujours la pause depuis Firebase
-function goToGameSelect(savedData){
+function goToGameSelect(){
   hideAll(); show('screen-game-select');
   document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+currentPseudo+' ?';
-  if(typeof savedData !== 'undefined'){
-    // Données déjà chargées (depuis init ou authSuccess), on les utilise directement
-    updatePauseCardOnGameSelect(savedData);
-  } else if(currentPseudo){
+  if(currentPseudo){
     loadPauseFromFirebase(currentPseudo, function(err, saved){
-      updatePauseCardOnGameSelect(err ? null : saved);
+      updatePauseCardOnGameSelect(saved);
     });
   } else {
     updatePauseCardOnGameSelect(null);
@@ -929,7 +933,6 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
 
 document.getElementById('btn-logout').addEventListener('click', function(){
   authClearSession();
-  authClearLocalStorage();
   currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
   document.getElementById('auth-user-bar').classList.add('hidden');
   document.getElementById('tab-saved').classList.add('hidden');
@@ -940,10 +943,6 @@ document.getElementById('btn-logout').addEventListener('click', function(){
   hideAll(); show('screen-auth');
 });
 
-function authClearLocalStorage(){
-  clearPauseFromFirebase();
-}
-
 function authSuccess(pseudo){
   authSetSession(pseudo);
   currentPseudo = pseudo;
@@ -951,12 +950,7 @@ function authSuccess(pseudo){
   document.getElementById('au-name-display').textContent = '👤 '+pseudo;
   document.getElementById('auth-user-bar').classList.remove('hidden');
   document.getElementById('tab-saved').classList.remove('hidden');
-  var btnS = document.getElementById('auth-btn-submit');
-  btnS.disabled=true; btnS.textContent='Chargement...';
-  loadPauseFromFirebase(pseudo, function(err, saved){
-    btnS.disabled=false; btnS.textContent='Se connecter →';
-    goToGameSelect(err ? null : saved);
-  });
+  goToGameSelect();
 }
 
 function init(){
@@ -967,9 +961,7 @@ function init(){
     document.getElementById('auth-user-bar').classList.remove('hidden');
     document.getElementById('tab-saved').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
-    loadPauseFromFirebase(session.pseudo, function(err, saved){
-      goToGameSelect(err ? null : saved);
-    });
+    goToGameSelect();
   } else {
     hideAll(); show('screen-auth');
   }
