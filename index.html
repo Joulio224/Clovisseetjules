@@ -5,6 +5,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>Jeux de collégiens</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
@@ -22,10 +23,12 @@
 </script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --accent: #FFD700; --accent-rgb: 255,215,0; }
 body {
   background-color: #0a0a1a; min-height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
   color: #fff; padding: 32px 20px; display: flex; flex-direction: column; align-items: center;
+  transition: background 0.4s;
 }
 .wrap { max-width: 500px; width: 100%; }
 .title { font-size: 56px; font-weight: 900; letter-spacing: 8px; color: #FFD700; text-align: center; margin-bottom: 6px; }
@@ -237,7 +240,7 @@ font-family: inherit; -webkit-appearance: none; transition: all 0.18s;
 .game-card .gc-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
 .game-card .gc-title { font-size: 22px; font-weight: 900; color: #FFD700; letter-spacing: 2px; margin-bottom: 6px; }
 .game-card .gc-desc { font-size: 13px; color: #666; line-height: 1.5; }
-/* Carte de reprise de pause sur l’écran de sélection */
+/* Carte de reprise de pause sur l'écran de sélection */
 .game-card.pause-card { border-color: #4488ff; }
 .game-card.pause-card:hover { border-color: #88bbff; }
 .game-card.pause-card .gc-title { color: #4488ff; }
@@ -336,6 +339,103 @@ padding: 40px 20px; text-align: center; margin-bottom: 16px;
 .pulse { animation: pulse 1.5s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+/* EXPORT */
+.export-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-export {
+  flex: 1; padding: 14px 8px; background: none; border-radius: 14px;
+  font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
+  -webkit-appearance: none; text-align: center; letter-spacing: 1px;
+  text-transform: uppercase; transition: all 0.15s;
+}
+.btn-export-pdf { border: 2px solid #cc44ff; color: #cc44ff; }
+.btn-export-pdf:hover { background: #cc44ff; color: #000; }
+.btn-export-mail { border: 2px solid #22bb55; color: #22bb55; }
+.btn-export-mail:hover { background: #22bb55; color: #000; }
+/* PARAMÈTRES */
+.settings-section {
+  background: #131328; border: 2px solid #1e1e40; border-radius: 18px;
+  margin-bottom: 14px; overflow: hidden;
+}
+.settings-section-header {
+  padding: 16px 18px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 2px solid #1e1e40;
+}
+.settings-section-header .sh-icon { font-size: 22px; }
+.settings-section-header .sh-title { font-size: 15px; font-weight: 800; color: #fff; flex: 1; }
+.settings-section-header .sh-desc { font-size: 12px; color: #444; margin-top: 2px; }
+.settings-row {
+  padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid #0e0e20;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row .sr-label { flex: 1; }
+.settings-row .sr-name { font-size: 14px; font-weight: 700; color: #ddd; }
+.settings-row .sr-desc { font-size: 12px; color: #555; margin-top: 2px; line-height: 1.4; }
+/* Toggle switch */
+.toggle { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider {
+  position: absolute; inset: 0; background: #2a2a55; border-radius: 26px;
+  cursor: pointer; transition: background 0.2s;
+}
+.toggle-slider:before {
+  content: ''; position: absolute; height: 18px; width: 18px;
+  left: 4px; bottom: 4px; background: #555; border-radius: 50%;
+  transition: all 0.2s;
+}
+.toggle input:checked + .toggle-slider { background: #FFD700; }
+.toggle input:checked + .toggle-slider:before { transform: translateX(22px); background: #000; }
+/* Select */
+.settings-select {
+  background: #0e0e20; border: 2px solid #2a2a55; border-radius: 10px;
+  color: #fff; padding: 8px 12px; font-size: 13px; font-weight: 700;
+  font-family: inherit; outline: none; cursor: pointer; -webkit-appearance: none;
+}
+.settings-select:focus { border-color: #FFD700; }
+/* Danger zone */
+.settings-section.danger { border-color: #441111; }
+.settings-section.danger .settings-section-header { border-bottom-color: #441111; }
+.btn-danger {
+  padding: 11px 18px; background: none; border: 2px solid #cc3333;
+  border-radius: 12px; color: #cc3333; font-size: 13px; font-weight: 800;
+  cursor: pointer; font-family: inherit; -webkit-appearance: none; white-space: nowrap;
+  transition: all 0.15s;
+}
+.btn-danger:hover { background: #cc3333; color: #fff; }
+/* Modal confirmation */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; padding: 20px;
+}
+.modal-overlay.hidden { display: none; }
+.modal-box {
+  background: #131328; border: 2px solid #cc3333; border-radius: 20px;
+  padding: 28px 24px; max-width: 380px; width: 100%; text-align: center;
+}
+.modal-box .modal-icon { font-size: 40px; margin-bottom: 12px; }
+.modal-box .modal-title { font-size: 20px; font-weight: 900; color: #cc3333; margin-bottom: 10px; }
+.modal-box .modal-body { font-size: 14px; color: #888; line-height: 1.6; margin-bottom: 22px; }
+.modal-box .modal-body b { color: #fff; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions .btn-cancel-modal {
+  flex: 1; padding: 14px; background: none; border: 2px solid #333;
+  border-radius: 12px; color: #666; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: inherit; -webkit-appearance: none;
+}
+.modal-actions .btn-confirm-modal {
+  flex: 1; padding: 14px; background: #cc3333; border: none;
+  border-radius: 12px; color: #fff; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: inherit; -webkit-appearance: none;
+}
+/* Stats badge */
+.stat-pill {
+  display: inline-block; padding: 5px 12px; border-radius: 20px;
+  background: #0e0e20; border: 1.5px solid #2a2a55;
+  font-size: 12px; font-weight: 700; color: #888; margin: 3px;
+}
+.stat-pill b { color: #FFD700; }
+
 /* Code de partie */
 .game-code-box {
 background: #0e1a0e; border: 2px solid #22bb55; border-radius: 14px;
@@ -343,65 +443,68 @@ padding: 18px; text-align: center; margin-bottom: 16px;
 }
 .game-code-box .gc-label { font-size: 11px; color: #22bb55; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
 .game-code-box .gc-code { font-size: 36px; font-weight: 900; color: #fff; letter-spacing: 6px; }
-/* PARAMÈTRES */
-.settings-section { background:#131328; border:2px solid #1e1e40; border-radius:18px; margin-bottom:14px; overflow:hidden; }
-.settings-section-header { padding:16px 18px; display:flex; align-items:center; gap:12px; border-bottom:2px solid #1e1e40; }
-.settings-section-header .sh-icon { font-size:22px; }
-.settings-section-header .sh-title { font-size:15px; font-weight:800; color:#fff; flex:1; }
-.settings-section-header .sh-desc { font-size:12px; color:#444; margin-top:2px; }
-.settings-row { padding:14px 18px; display:flex; align-items:center; gap:14px; border-bottom:1px solid #0e0e20; }
-.settings-row:last-child { border-bottom:none; }
-.settings-row .sr-label { flex:1; }
-.settings-row .sr-name { font-size:14px; font-weight:700; color:#ddd; }
-.settings-row .sr-desc { font-size:12px; color:#555; margin-top:2px; line-height:1.4; }
-.toggle { position:relative; width:48px; height:26px; flex-shrink:0; }
-.toggle input { opacity:0; width:0; height:0; position:absolute; }
-.toggle-slider { position:absolute; inset:0; background:#2a2a55; border-radius:26px; cursor:pointer; transition:background 0.2s; }
-.toggle-slider:before { content:''; position:absolute; height:18px; width:18px; left:4px; bottom:4px; background:#555; border-radius:50%; transition:all 0.2s; }
-.toggle input:checked + .toggle-slider { background:#FFD700; }
-.toggle input:checked + .toggle-slider:before { transform:translateX(22px); background:#000; }
-.settings-select { background:#0e0e20; border:2px solid #2a2a55; border-radius:10px; color:#fff; padding:8px 12px; font-size:13px; font-weight:700; font-family:inherit; outline:none; cursor:pointer; -webkit-appearance:none; }
-.settings-select:focus { border-color:#FFD700; }
-.settings-section.danger { border-color:#441111; }
-.settings-section.danger .settings-section-header { border-bottom-color:#441111; }
-.btn-danger { padding:11px 18px; background:none; border:2px solid #cc3333; border-radius:12px; color:#cc3333; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; -webkit-appearance:none; white-space:nowrap; transition:all 0.15s; }
-.btn-danger:hover { background:#cc3333; color:#fff; }
-/* Modals */
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:999; padding:20px; }
-.modal-overlay.hidden { display:none; }
-.modal-box { background:#131328; border:2px solid #cc3333; border-radius:20px; padding:28px 24px; max-width:380px; width:100%; text-align:center; }
-.modal-box .modal-icon { font-size:40px; margin-bottom:12px; }
-.modal-box .modal-title { font-size:20px; font-weight:900; color:#cc3333; margin-bottom:10px; }
-.modal-box .modal-body { font-size:14px; color:#888; line-height:1.6; margin-bottom:22px; }
-.modal-box .modal-body b { color:#fff; }
-.modal-actions { display:flex; gap:10px; }
-.modal-actions .btn-cancel-modal { flex:1; padding:14px; background:none; border:2px solid #333; border-radius:12px; color:#666; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; -webkit-appearance:none; }
-.modal-actions .btn-confirm-modal { flex:1; padding:14px; background:#cc3333; border:none; border-radius:12px; color:#fff; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; -webkit-appearance:none; }
-/* Stats & badges */
-.stat-pill { display:inline-block; padding:5px 12px; border-radius:20px; background:#0e0e20; border:1.5px solid #2a2a55; font-size:12px; font-weight:700; color:#888; margin:3px; }
-.stat-pill b { color:#FFD700; }
-.level-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:800; letter-spacing:1px; }
+
+/* THÈMES */
+.theme-chip {
+  width: 72px; height: 52px; border-radius: 12px; cursor: pointer;
+  border: 3px solid transparent; transition: all 0.15s; flex-shrink: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 4px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.8);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+.theme-chip.active { border-color: #fff; transform: scale(1.08); }
+
+/* COULEURS D'ACCENT */
+.accent-chip {
+  width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  border: 3px solid transparent; transition: all 0.15s;
+}
+.accent-chip.active { border-color: #fff; transform: scale(1.15); }
+
+/* AVATARS */
+.avatar-chip {
+  width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+  background: #0e0e20; border: 2px solid #2a2a55;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; transition: all 0.15s;
+}
+.avatar-chip.active { border-color: var(--accent); background: #1a1a35; transform: scale(1.12); }
+
+/* BADGE DE NIVEAU */
+.level-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 800; letter-spacing: 1px;
+}
 .level-rookie  { background:#1a1a35; border:1.5px solid #555; color:#888; }
 .level-joueur  { background:#0e1a0e; border:1.5px solid #22bb55; color:#22bb55; }
 .level-pro     { background:#1a1200; border:1.5px solid #FFD700; color:#FFD700; }
 .level-legende { background:#1a0d1a; border:1.5px solid #cc44ff; color:#cc44ff; }
-/* Profil public */
-.profile-header { background:#131328; border:2px solid #2a2a55; border-radius:20px; padding:24px; margin-bottom:16px; text-align:center; }
-.profile-header .ph-avatar { font-size:56px; margin-bottom:8px; }
-.profile-header .ph-pseudo { font-size:22px; font-weight:900; color:#fff; margin-bottom:4px; }
-.profile-header .ph-bio { font-size:13px; color:#666; margin-bottom:10px; }
-.profile-result-card { background:#131328; border:2px solid #1e1e40; border-radius:14px; padding:14px 18px; margin-bottom:10px; }
-.profile-result-card .prc-title { font-size:11px; color:#444; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
-.profile-result-card .prc-podium { display:flex; gap:8px; flex-wrap:wrap; }
-/* Réactions */
-.reaction-bar { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-.reaction-btn { padding:5px 12px; background:#0e0e20; border:1.5px solid #2a2a55; border-radius:20px; color:#888; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; -webkit-appearance:none; transition:all 0.15s; }
-.reaction-btn:hover { border-color:#FFD700; color:#FFD700; }
-.reaction-btn.reacted { background:#1a1a0a; border-color:#FFD700; color:#FFD700; }
-.reaction-count { font-size:11px; color:#555; margin-left:3px; }
-/* Avatars */
-.avatar-chip { width:44px; height:44px; border-radius:50%; cursor:pointer; background:#0e0e20; border:2px solid #2a2a55; display:flex; align-items:center; justify-content:center; font-size:22px; transition:all 0.15s; }
-.avatar-chip.active { border-color:#FFD700; background:#1a1a35; transform:scale(1.12); }
+
+/* PROFIL PUBLIC */
+.profile-header {
+  background: #131328; border: 2px solid #2a2a55; border-radius: 20px;
+  padding: 24px; margin-bottom: 16px; text-align: center;
+}
+.profile-header .ph-avatar { font-size: 56px; margin-bottom: 8px; }
+.profile-header .ph-pseudo { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.profile-header .ph-bio { font-size: 13px; color: #666; margin-bottom: 10px; }
+.profile-result-card {
+  background: #131328; border: 2px solid #1e1e40; border-radius: 14px;
+  padding: 14px 18px; margin-bottom: 10px;
+}
+.profile-result-card .prc-title { font-size: 11px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.profile-result-card .prc-podium { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* RÉACTIONS */
+.reaction-bar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.reaction-btn {
+  padding: 5px 12px; background: #0e0e20; border: 1.5px solid #2a2a55;
+  border-radius: 20px; color: #888; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all 0.15s;
+}
+.reaction-btn:hover { border-color: var(--accent); color: var(--accent); }
+.reaction-btn.reacted { background: #1a1a0a; border-color: var(--accent); color: var(--accent); }
+.reaction-count { font-size: 11px; color: #555; margin-left: 3px; }
 </style>
 
 </head>
@@ -410,6 +513,7 @@ padding: 18px; text-align: center; margin-bottom: 16px;
 
   <div id="auth-user-bar" class="auth-user-bar hidden">
     <span class="au-name" id="au-name-display"></span>
+    <button class="au-logout" id="btn-open-settings" style="border-color:#FFD700;color:#FFD700;">⚙️ Paramètres</button>
     <button class="au-logout" id="btn-logout">Déconnexion</button>
   </div>
 
@@ -448,64 +552,55 @@ padding: 18px; text-align: center; margin-bottom: 16px;
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="subtitle" style="margin-bottom:28px" id="kmk-setup-sub">Configuration</div>
 
-```
-<!-- Mode de jeu : solo ou multijoueur -->
-<div style="display:flex;gap:8px;margin-bottom:20px;">
-  <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
-  <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
-</div>
-
-<!-- Configuration solo -->
-<div id="kmk-solo-config">
-  <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
-  <div class="suggest-groups" id="kmk-suggest-groups"></div>
-  <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
-  <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
-  <div style="margin-top:20px; margin-bottom:6px">
-    <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
-    <div class="kmk-rounds-input">
-      <button id="kmk-rounds-minus">−</button>
-      <span id="kmk-rounds-val">3</span>
-      <button id="kmk-rounds-plus">+</button>
+    <!-- Mode de jeu : solo ou multijoueur -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
+      <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
     </div>
-  </div>
-  <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
-</div>
 
-<!-- Configuration multijoueur -->
-<div id="kmk-multi-config" class="hidden">
-  <div class="multi-badge">👥 Mode multijoueur</div>
-  <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
-    Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
-  </p>
+    <!-- Configuration solo -->
+    <div id="kmk-solo-config">
+      <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
+      <div class="suggest-groups" id="kmk-suggest-groups"></div>
+      <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
+      <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
+      <div style="margin-top:20px; margin-bottom:6px">
+        <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
+        <div class="kmk-rounds-input">
+          <button id="kmk-rounds-minus">−</button>
+          <span id="kmk-rounds-val">3</span>
+          <button id="kmk-rounds-plus">+</button>
+        </div>
+      </div>
+      <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
+    </div>
 
-  <!-- Créer une partie -->
-  <div id="kmk-multi-create-section">
-    <div style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Pseudo de ton ami</div>
-    <input class="input-field" id="kmk-multi-friend-input" type="text" placeholder="Pseudo de l'adversaire..." maxlength="30" />
-    <div style="margin-top:16px;margin-bottom:6px">
-      <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
-      <div class="kmk-rounds-input">
-        <button id="kmk-multi-rounds-minus">−</button>
-        <span id="kmk-multi-rounds-val">3</span>
-        <button id="kmk-multi-rounds-plus">+</button>
+    <!-- Configuration multijoueur -->
+    <div id="kmk-multi-config" class="hidden">
+      <div class="multi-badge">👥 Mode multijoueur</div>
+      <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
+        Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
+      </p>
+      <div id="kmk-multi-create-section">
+        <div style="margin-bottom:6px">
+          <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
+          <div class="kmk-rounds-input">
+            <button id="kmk-multi-rounds-minus">−</button>
+            <span id="kmk-multi-rounds-val">3</span>
+            <button id="kmk-multi-rounds-plus">+</button>
+          </div>
+        </div>
+        <button class="btn-primary" id="kmk-multi-btn-create">🎮 Créer une partie →</button>
+        <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou rejoindre une partie existante —</div>
+        <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px;text-align:center" />
+        <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
       </div>
     </div>
-    <button class="btn-primary" id="kmk-multi-btn-create">Créer la partie →</button>
-    <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou —</div>
-    <div style="color:#555;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Rejoindre une partie existante</div>
-    <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px" />
-    <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
-  </div>
-</div>
 
-<button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
-```
-
+    <button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
   </div>
 
   <!-- KMK MULTI LOBBY (attente de l'adversaire) -->
-
   <div id="screen-kmk-multi-lobby" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="multi-badge pulse" id="kmk-lobby-status-badge">⏳ En attente...</div>
@@ -528,7 +623,6 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI PLAY : CHOISIR 3 NOMS POUR L'ADVERSAIRE -->
-
   <div id="screen-kmk-multi-pick" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div id="kmk-multi-pick-banner" class="multi-turn-banner" style="margin-bottom:16px;">
@@ -545,7 +639,6 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI PLAY : JOUER SA MANCHE (noms choisis par l'adversaire) -->
-
   <div id="screen-kmk-play" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="kmk-round-info" id="kmk-round-info">Manche 1 / 3</div>
@@ -573,7 +666,6 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI : ATTENTE DU TOUR DE L'ADVERSAIRE -->
-
   <div id="screen-kmk-multi-wait" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="multi-waiting-overlay">
@@ -598,6 +690,10 @@ padding: 18px; text-align: center; margin-bottom: 16px;
     </div>
     <div id="kmk-result-list"></div>
     <button class="btn-primary" id="kmk-btn-save" style="margin-top:18px">💾 Sauvegarder</button>
+    <div class="export-row">
+      <button class="btn-export btn-export-pdf" id="btn-export-pdf-kmk">📄 PDF</button>
+      <button class="btn-export btn-export-mail" id="btn-export-mail-kmk">✉️ Mail</button>
+    </div>
     <button class="btn-outline" id="kmk-btn-new-game">Rejouer</button>
     <button class="btn-ghost" id="kmk-btn-change-game">Changer de jeu</button>
   </div>
@@ -666,6 +762,10 @@ padding: 18px; text-align: center; margin-bottom: 16px;
     <div id="result-badge-wrap"></div>
     <div id="result-list"></div>
     <button class="btn-primary" id="btn-save" style="margin-top:18px">💾 Sauvegarder dans Firebase</button>
+    <div class="export-row">
+      <button class="btn-export btn-export-pdf" id="btn-export-pdf-classement">📄 PDF</button>
+      <button class="btn-export btn-export-mail" id="btn-export-mail-classement">✉️ Mail</button>
+    </div>
     <button class="btn-outline" id="btn-new">Nouveau classement</button>
   </div>
 
@@ -686,63 +786,250 @@ padding: 18px; text-align: center; margin-bottom: 16px;
       <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
       <div style="font-size:28px;font-weight:900;color:#FFD700;letter-spacing:3px;">PARAMÈTRES</div>
     </div>
+
+    <!-- Profil -->
     <div class="settings-section">
-      <div class="settings-section-header"><span class="sh-icon">👤</span><div><div class="sh-title">Profil</div><div class="sh-desc">Ton compte Jeux de Collégiens</div></div></div>
+      <div class="settings-section-header">
+        <span class="sh-icon">👤</span>
+        <div><div class="sh-title">Profil</div><div class="sh-desc">Ton compte Jeux de Collégiens</div></div>
+      </div>
+      <!-- Avatar + pseudo + badge -->
       <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
         <div style="display:flex;align-items:center;gap:16px;width:100%;">
           <div id="settings-avatar-preview" style="font-size:48px;width:64px;height:64px;background:#0e0e20;border:2px solid #2a2a55;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🐱</div>
-          <div style="flex:1;"><div class="sr-name" id="settings-pseudo-display" style="font-size:18px;">—</div><div id="settings-badge-display" style="margin-top:4px;"></div><div id="settings-stats" style="margin-top:6px;"></div></div>
+          <div style="flex:1;">
+            <div class="sr-name" id="settings-pseudo-display" style="font-size:18px;">—</div>
+            <div id="settings-badge-display" style="margin-top:4px;"></div>
+            <div id="settings-stats" style="margin-top:6px;"></div>
+          </div>
         </div>
-        <div style="width:100%;"><div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Choisis ton avatar</div><div id="avatar-grid" style="display:flex;flex-wrap:wrap;gap:8px;"></div></div>
-        <div style="width:100%;"><div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Petite bio</div><input class="input-field" id="settings-bio" type="text" placeholder="Une phrase sur toi..." maxlength="60" style="margin-bottom:0;font-size:14px;padding:12px;" /><div style="color:#444;font-size:11px;margin-top:4px;text-align:right;"><span id="settings-bio-count">0</span>/60</div></div>
+        <!-- Grille d'avatars -->
+        <div style="width:100%;">
+          <div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Choisis ton avatar</div>
+          <div id="avatar-grid" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+        </div>
+        <!-- Bio -->
+        <div style="width:100%;">
+          <div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Petite bio</div>
+          <input class="input-field" id="settings-bio" type="text" placeholder="Une phrase sur toi..." maxlength="60" style="margin-bottom:0;font-size:14px;padding:12px;" />
+          <div style="color:#444;font-size:11px;margin-top:4px;text-align:right;"><span id="settings-bio-count">0</span>/60</div>
+        </div>
       </div>
     </div>
+
+    <!-- Apparence -->
     <div class="settings-section">
-      <div class="settings-section-header"><span class="sh-icon">🎨</span><div><div class="sh-title">Apparence</div><div class="sh-desc">Personnalise l'interface</div></div></div>
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;"><div class="sr-label" style="width:100%;"><div class="sr-name">Fond d'écran</div><div class="sr-desc">Change l'ambiance de l'application</div></div><div id="theme-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div></div>
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;"><div class="sr-label" style="width:100%;"><div class="sr-name">Couleur d'accent</div><div class="sr-desc">Couleur des boutons, titres et highlights</div></div><div id="accent-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div></div>
+      <div class="settings-section-header">
+        <span class="sh-icon">🎨</span>
+        <div><div class="sh-title">Apparence</div><div class="sh-desc">Personnalise l'interface</div></div>
+      </div>
+      <!-- Thème -->
+      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;">
+        <div class="sr-label" style="width:100%;">
+          <div class="sr-name">Fond d'écran</div>
+          <div class="sr-desc">Change l'ambiance de l'application</div>
+        </div>
+        <div id="theme-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div>
+      </div>
+      <!-- Couleur d'accent -->
+      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;">
+        <div class="sr-label" style="width:100%;">
+          <div class="sr-name">Couleur d'accent</div>
+          <div class="sr-desc">Couleur des boutons, titres et highlights</div>
+        </div>
+        <div id="accent-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div>
+      </div>
     </div>
+
+    <!-- Vie privée -->
     <div class="settings-section">
-      <div class="settings-section-header"><span class="sh-icon">🔒</span><div><div class="sh-title">Vie privée</div><div class="sh-desc">Qui peut voir tes résultats</div></div></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Visibilité des classements</div><div class="sr-desc">Qui peut voir tes classements dans l'onglet Réponses</div></div><select class="settings-select" id="settings-visibility-classement"><option value="all">Tout le monde</option><option value="friends">Amis seulement</option><option value="me">Moi uniquement</option></select></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Visibilité des KMK</div><div class="sr-desc">Qui peut voir tes résultats Kiss Marry Kill</div></div><select class="settings-select" id="settings-visibility-kmk"><option value="all">Tout le monde</option><option value="friends">Amis seulement</option><option value="me">Moi uniquement</option></select></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Profil public</div><div class="sr-desc">Les autres peuvent voir ta page profil en cherchant ton pseudo</div></div><label class="toggle"><input type="checkbox" id="settings-public-profile" checked /><span class="toggle-slider"></span></label></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Afficher dans les leaderboards</div><div class="sr-desc">Ton pseudo apparaît dans les futurs classements publics</div></div><label class="toggle"><input type="checkbox" id="settings-leaderboard" checked /><span class="toggle-slider"></span></label></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Mode discret</div><div class="sr-desc">Masque ton pseudo aux autres joueurs en multijoueur</div></div><label class="toggle"><input type="checkbox" id="settings-stealth" /><span class="toggle-slider"></span></label></div>
+      <div class="settings-section-header">
+        <span class="sh-icon">🔒</span>
+        <div><div class="sh-title">Vie privée</div><div class="sh-desc">Qui peut voir tes résultats</div></div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Visibilité des classements</div>
+          <div class="sr-desc">Qui peut voir tes classements dans l'onglet Réponses</div>
+        </div>
+        <select class="settings-select" id="settings-visibility-classement">
+          <option value="all">Tout le monde</option>
+          <option value="friends">Amis seulement</option>
+          <option value="me">Moi uniquement</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Visibilité des KMK</div>
+          <div class="sr-desc">Qui peut voir tes résultats Kiss Marry Kill</div>
+        </div>
+        <select class="settings-select" id="settings-visibility-kmk">
+          <option value="all">Tout le monde</option>
+          <option value="friends">Amis seulement</option>
+          <option value="me">Moi uniquement</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Profil public</div>
+          <div class="sr-desc">Les autres peuvent voir ta page profil en cherchant ton pseudo</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-public-profile" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Afficher dans les leaderboards</div>
+          <div class="sr-desc">Ton pseudo apparaît dans les futurs classements publics</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-leaderboard" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Mode discret</div>
+          <div class="sr-desc">Masque ton pseudo aux autres joueurs en multijoueur</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-stealth" /><span class="toggle-slider"></span></label>
+      </div>
     </div>
+
+    <!-- Expérience de jeu -->
     <div class="settings-section">
-      <div class="settings-section-header"><span class="sh-icon">🎮</span><div><div class="sh-title">Expérience de jeu</div><div class="sh-desc">Personnalise le comportement du jeu</div></div></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Sauvegarde automatique</div><div class="sr-desc">Sauvegarde le classement à chaque question (recommandé)</div></div><label class="toggle"><input type="checkbox" id="settings-autosave" checked /><span class="toggle-slider"></span></label></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Confirmation avant de quitter</div><div class="sr-desc">Demande une confirmation si tu quittes un classement en cours</div></div><label class="toggle"><input type="checkbox" id="settings-confirm-quit" checked /><span class="toggle-slider"></span></label></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Animations</div><div class="sr-desc">Effets visuels lors des choix (désactiver si lent)</div></div><label class="toggle"><input type="checkbox" id="settings-animations" checked /><span class="toggle-slider"></span></label></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Manches KMK par défaut</div><div class="sr-desc">Nombre de manches pré-sélectionné au lancement</div></div><select class="settings-select" id="settings-kmk-default-rounds"><option value="1">1</option><option value="3" selected>3</option><option value="5">5</option><option value="10">10</option></select></div>
+      <div class="settings-section-header">
+        <span class="sh-icon">🎮</span>
+        <div><div class="sh-title">Expérience de jeu</div><div class="sh-desc">Personnalise le comportement du jeu</div></div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Sauvegarde automatique</div>
+          <div class="sr-desc">Sauvegarde le classement à chaque question (recommandé)</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-autosave" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Confirmation avant de quitter</div>
+          <div class="sr-desc">Demande une confirmation si tu quittes un classement en cours</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-confirm-quit" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Animations</div>
+          <div class="sr-desc">Effets visuels lors des choix (désactiver si lent)</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-animations" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Manches KMK par défaut</div>
+          <div class="sr-desc">Nombre de manches pré-sélectionné au lancement</div>
+        </div>
+        <select class="settings-select" id="settings-kmk-default-rounds">
+          <option value="1">1</option>
+          <option value="3" selected>3</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+        </select>
+      </div>
     </div>
+
+    <!-- Social -->
     <div class="settings-section">
-      <div class="settings-section-header"><span class="sh-icon">🔍</span><div><div class="sh-title">Voir un profil</div><div class="sh-desc">Consulte la page publique d'un joueur</div></div></div>
+      <div class="settings-section-header">
+        <span class="sh-icon">🔍</span>
+        <div><div class="sh-title">Voir un profil</div><div class="sh-desc">Consulte la page publique d'un joueur</div></div>
+      </div>
       <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
-        <div style="display:flex;gap:8px;width:100%;"><input class="input-field" id="settings-search-pseudo" type="text" placeholder="Pseudo du joueur..." maxlength="30" style="margin-bottom:0;flex:1;font-size:14px;padding:12px;" /><button class="btn-primary" id="btn-search-profile" style="width:auto;padding:12px 18px;font-size:13px;letter-spacing:1px;">Voir</button></div>
+        <div style="display:flex;gap:8px;width:100%;">
+          <input class="input-field" id="settings-search-pseudo" type="text" placeholder="Pseudo du joueur..." maxlength="30" style="margin-bottom:0;flex:1;font-size:14px;padding:12px;" />
+          <button class="btn-primary" id="btn-search-profile" style="width:auto;padding:12px 18px;font-size:13px;letter-spacing:1px;">Voir</button>
+        </div>
         <div id="settings-search-result"></div>
       </div>
     </div>
+
+    <!-- Danger zone -->
     <div class="settings-section danger">
-      <div class="settings-section-header"><span class="sh-icon">⚠️</span><div><div class="sh-title" style="color:#cc3333;">Zone de danger</div><div class="sh-desc">Actions irréversibles</div></div></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Supprimer mes classements</div><div class="sr-desc">Efface tous tes classements sauvegardés</div></div><button class="btn-danger" id="btn-delete-classements">Supprimer</button></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name">Supprimer mes KMK</div><div class="sr-desc">Efface tous tes résultats Kiss Marry Kill</div></div><button class="btn-danger" id="btn-delete-kmk">Supprimer</button></div>
-      <div class="settings-row"><div class="sr-label"><div class="sr-name" style="color:#cc3333;">Supprimer mon compte</div><div class="sr-desc">Supprime définitivement ton compte et toutes tes données. <b style="color:#ff6666;">Impossible de le recréer seul.</b></div></div><button class="btn-danger" id="btn-delete-account">Supprimer</button></div>
+      <div class="settings-section-header">
+        <span class="sh-icon">⚠️</span>
+        <div><div class="sh-title" style="color:#cc3333;">Zone de danger</div><div class="sh-desc">Actions irréversibles</div></div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Supprimer mes classements</div>
+          <div class="sr-desc">Efface tous tes classements sauvegardés</div>
+        </div>
+        <button class="btn-danger" id="btn-delete-classements">Supprimer</button>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Supprimer mes KMK</div>
+          <div class="sr-desc">Efface tous tes résultats Kiss Marry Kill</div>
+        </div>
+        <button class="btn-danger" id="btn-delete-kmk">Supprimer</button>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name" style="color:#cc3333;">Supprimer mon compte</div>
+          <div class="sr-desc">Supprime définitivement ton compte et toutes tes données. <b style="color:#ff6666;">Impossible de le recréer seul.</b></div>
+        </div>
+        <button class="btn-danger" id="btn-delete-account">Supprimer</button>
+      </div>
     </div>
-    <div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">clovisseetjulles.netlify.app · v3.0</div>
+
+    <div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
+      clovisseetjulles.netlify.app · v3.0
+    </div>
   </div>
 
   <!-- PROFIL PUBLIC -->
   <div id="screen-public-profile" class="hidden">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;"><button id="btn-back-from-profile" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button><div style="font-size:22px;font-weight:900;color:#FFD700;letter-spacing:2px;">PROFIL</div></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+      <button id="btn-back-from-profile" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
+      <div style="font-size:22px;font-weight:900;color:#FFD700;letter-spacing:2px;">PROFIL</div>
+    </div>
     <div id="public-profile-content"></div>
   </div>
 
-  <!-- MODALS -->
-  <div class="modal-overlay hidden" id="modal-delete-classements"><div class="modal-box"><div class="modal-icon">🗑️</div><div class="modal-title">Supprimer les classements ?</div><div class="modal-body">Tous tes classements sauvegardés seront <b>définitivement effacés</b>. Cette action est irréversible.</div><div class="modal-actions"><button class="btn-cancel-modal" onclick="closeModal('modal-delete-classements')">Annuler</button><button class="btn-confirm-modal" id="confirm-delete-classements">Supprimer</button></div></div></div>
-  <div class="modal-overlay hidden" id="modal-delete-kmk"><div class="modal-box"><div class="modal-icon">🗑️</div><div class="modal-title">Supprimer les KMK ?</div><div class="modal-body">Tous tes résultats Kiss Marry Kill seront <b>définitivement effacés</b>. Cette action est irréversible.</div><div class="modal-actions"><button class="btn-cancel-modal" onclick="closeModal('modal-delete-kmk')">Annuler</button><button class="btn-confirm-modal" id="confirm-delete-kmk">Supprimer</button></div></div></div>
-  <div class="modal-overlay hidden" id="modal-delete-account"><div class="modal-box" style="border-color:#ff2222;"><div class="modal-icon">💀</div><div class="modal-title">Supprimer ton compte ?</div><div class="modal-body">Ton compte, tous tes classements et résultats KMK seront <b>définitivement supprimés</b>.<br><br>⚠️ <b style="color:#ff6666;">Tu ne pourras pas recréer un compte toi-même.</b> Il faudra contacter un admin pour en avoir un nouveau.</div><div class="modal-actions"><button class="btn-cancel-modal" onclick="closeModal('modal-delete-account')">Annuler</button><button class="btn-confirm-modal" id="confirm-delete-account" style="background:#ff2222;">SUPPRIMER MON COMPTE</button></div></div></div>
+  <!-- MODALS DE CONFIRMATION -->
+  <div class="modal-overlay hidden" id="modal-delete-classements">
+    <div class="modal-box">
+      <div class="modal-icon">🗑️</div>
+      <div class="modal-title">Supprimer les classements ?</div>
+      <div class="modal-body">Tous tes classements sauvegardés seront <b>définitivement effacés</b>. Cette action est irréversible.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" onclick="closeModal('modal-delete-classements')">Annuler</button>
+        <button class="btn-confirm-modal" id="confirm-delete-classements">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modal-delete-kmk">
+    <div class="modal-box">
+      <div class="modal-icon">🗑️</div>
+      <div class="modal-title">Supprimer les KMK ?</div>
+      <div class="modal-body">Tous tes résultats Kiss Marry Kill seront <b>définitivement effacés</b>. Cette action est irréversible.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" onclick="closeModal('modal-delete-kmk')">Annuler</button>
+        <button class="btn-confirm-modal" id="confirm-delete-kmk">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modal-delete-account">
+    <div class="modal-box" style="border-color:#ff2222;">
+      <div class="modal-icon">💀</div>
+      <div class="modal-title">Supprimer ton compte ?</div>
+      <div class="modal-body">
+        Ton compte, tous tes classements et résultats KMK seront <b>définitivement supprimés</b>.<br><br>
+        ⚠️ <b style="color:#ff6666;">Tu ne pourras pas recréer un compte toi-même.</b> Il faudra contacter un admin pour en avoir un nouveau.
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" onclick="closeModal('modal-delete-account')">Annuler</button>
+        <button class="btn-confirm-modal" id="confirm-delete-account" style="background:#ff2222;">SUPPRIMER MON COMPTE</button>
+      </div>
+    </div>
+  </div>
 
 </div>
 <div class="toast" id="toast"></div>
@@ -927,7 +1214,8 @@ function showToast(msg,type){
 function hideAll(){
   ["screen-resume","screen-auth","screen-input","screen-compare","screen-result","screen-saved",
    "screen-game-select","screen-kmk-setup","screen-kmk-play","screen-kmk-result",
-   "screen-kmk-multi-lobby","screen-kmk-multi-pick","screen-kmk-multi-wait"]
+   "screen-kmk-multi-lobby","screen-kmk-multi-pick","screen-kmk-multi-wait",
+   "screen-settings","screen-public-profile"]
     .forEach(function(id){hide(id);});
 }
 function genCode(){
@@ -942,10 +1230,15 @@ function genCode(){
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
 var currentPseudo="", currentTab="new", isPartial=false;
 var currentGame=null;
+var SAVE_KEY="classement_pause";
 
 // =====================
-//  FIREBASE PAUSE — 100% Firestore, pas de localStorage
+//  FIREBASE PAUSE
 // =====================
+function saveToLocalStorage(){var data={pseudo:currentPseudo,names:names,estimated:estimated,sortState:sortState,savedAt:new Date().toISOString()};try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}}
+function loadFromLocalStorage(){try{var raw=localStorage.getItem(SAVE_KEY);if(!raw)return null;return JSON.parse(raw);}catch(e){return null;}}
+function clearLocalStorage(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+
 function savePauseToFirebase(callback){
   var est=estimated||estimateTotal(names.length)||1;
   var data={pseudo:currentPseudo,names:names,estimated:est,sortState:JSON.parse(JSON.stringify(sortState)),savedAt:new Date().toISOString()};
@@ -965,6 +1258,7 @@ function loadPauseFromFirebase(pseudo,callback){
 
 function clearPauseFromFirebase(){
   if(!currentPseudo)return;
+  clearLocalStorage();
   db.collection("pauses").doc(currentPseudo.toLowerCase()).delete().catch(function(){});
 }
 
@@ -1014,15 +1308,6 @@ function updatePauseCardOnGameSelect(saved){
 // =====================
 var SESSION_KEY = 'jdc_session';
 
-// Paramètres — déclarés ici pour être disponibles dès le login
-var SETTINGS_KEY='jdc_settings';
-var userSettings={visibilityClassement:'all',visibilityKmk:'all',leaderboard:true,stealth:false,autosave:true,confirmQuit:true,animations:true,kmkDefaultRounds:3,publicProfile:true,avatar:'🐱',theme:'dark',accent:'gold',bio:''};
-function loadSettings(){
-  try{ var raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(userSettings,JSON.parse(raw)); }catch(e){}
-  applyTheme(userSettings.theme);
-  applyAccent(userSettings.accent);
-}
-
 function authGetSession(){
   try{ var s=localStorage.getItem(SESSION_KEY); return s?JSON.parse(s):null; }catch(e){return null;}
 }
@@ -1059,7 +1344,7 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
 
 document.getElementById('btn-logout').addEventListener('click', function(){
   authClearSession();
-  clearPauseFromFirebase();
+  authClearLocalStorage();
   currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
   document.getElementById('auth-user-bar').classList.add('hidden');
   document.getElementById('tab-saved').classList.add('hidden');
@@ -1070,6 +1355,10 @@ document.getElementById('btn-logout').addEventListener('click', function(){
   hideAll(); show('screen-auth');
 });
 
+function authClearLocalStorage(){
+  clearLocalStorage(); clearPauseFromFirebase();
+}
+
 function authSuccess(pseudo){
   authSetSession(pseudo);
   currentPseudo = pseudo;
@@ -1077,10 +1366,12 @@ function authSuccess(pseudo){
   document.getElementById('au-name-display').textContent = '👤 '+pseudo;
   document.getElementById('auth-user-bar').classList.remove('hidden');
   document.getElementById('tab-saved').classList.remove('hidden');
-  document.getElementById('auth-btn-submit').disabled=false;
-  document.getElementById('auth-btn-submit').textContent='Se connecter →';
-  loadSettings();
-  goToGameSelect();
+  var btnS = document.getElementById('auth-btn-submit');
+  btnS.disabled=true; btnS.textContent='Chargement...';
+  loadPauseFromFirebase(pseudo, function(err, saved){
+    btnS.disabled=false; btnS.textContent='Se connecter →';
+    goToGameSelect();
+  });
 }
 
 function init(){
@@ -1091,8 +1382,9 @@ function init(){
     document.getElementById('auth-user-bar').classList.remove('hidden');
     document.getElementById('tab-saved').classList.remove('hidden');
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
-    loadSettings();
-    goToGameSelect();
+    loadPauseFromFirebase(session.pseudo, function(err, saved){
+      goToGameSelect();
+    });
   } else {
     hideAll(); show('screen-auth');
   }
@@ -1146,8 +1438,8 @@ function switchTab(tab){
   if(tab==="new"){
     hide("screen-saved");
     if(!currentPseudo){hideAll();show("screen-auth");}
-    else if(currentGame==='kmk'){hideAll();show("screen-game-select");}
-    else if(!sortState){hideAll();show("screen-game-select");}
+    else if(currentGame==='kmk'){goToGameSelect();}
+    else if(!sortState){goToGameSelect();}
     else if(sortState.done||isPartial){hideAll();show("screen-result");}
     else{hideAll();show("screen-compare");}
   }else{
@@ -1240,8 +1532,13 @@ function choose(pL){
     sortState=processChoice(sortState,pL);
     busy=false;
     document.getElementById("btn-undo").disabled=false;
-    if(sortState.done){clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);}
-    else renderQ();
+    if(sortState.done){
+      clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);
+    } else {
+      renderQ();
+      // Auto-sauvegarde silencieuse à chaque réponse
+      savePauseToFirebase(null);
+    }
   },200);
 }
 
@@ -1547,47 +1844,39 @@ var kmkMultiRoundsPlusEl=document.getElementById('kmk-multi-rounds-plus');
 kmkMultiRoundsMinusEl.addEventListener('click',function(){if(kmkMultiRoundsTotal>1){kmkMultiRoundsTotal--;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;}});
 kmkMultiRoundsPlusEl.addEventListener('click',function(){kmkMultiRoundsTotal++;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;});
 
-// Créer une partie multijoueur
+// Créer une partie multijoueur (pas besoin de connaître le pseudo de l'ami à l'avance)
 document.getElementById('kmk-multi-btn-create').addEventListener('click',function(){
-  var friendPseudo=document.getElementById('kmk-multi-friend-input').value.trim().toLowerCase();
-  if(!friendPseudo){showToast('Entre le pseudo de ton ami','error');return;}
-  if(friendPseudo===currentPseudo){showToast('Tu ne peux pas jouer contre toi-même !','error');return;}
   var btn=this; btn.disabled=true; btn.textContent='Création...';
-  // Vérifie que le pseudo ami existe
-  db.collection('users').doc(friendPseudo).get().then(function(doc){
-    if(!doc.exists){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Pseudo introuvable','error');return;}
-    var code=genCode();
-    var gameData={
-      code:code,
-      creator:currentPseudo,
-      opponent:friendPseudo,
-      roundsTotal:kmkMultiRoundsTotal,
-      status:'waiting', // waiting → playing → done
-      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-      // Pour chaque manche : {round, pickedBy, trio, playedBy, result}
-      picks:[],      // noms choisis par chaque joueur pour l'autre
-      results:[]     // résultats de chaque manche jouée
-    };
-    db.collection('kmk_parties').add(gameData).then(function(ref){
-      btn.disabled=false; btn.textContent='Créer la partie →';
-      kmkMultiGameId=ref.id;
-      kmkMultiOpponent=friendPseudo;
-      kmkMultiIsCreator=true;
-      kmkMultiRoundsTotal=gameData.roundsTotal;
-      kmkMultiMyResults=[];
-      kmkMultiTheirResults=[];
-      kmkMultiCurrentPickRound=0;
-      kmkMultiMyPlayRound=0;
-      // Affiche le lobby
-      document.getElementById('kmk-lobby-code').textContent=code;
-      document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
-      document.getElementById('kmk-lobby-p2-name').textContent=friendPseudo;
-      document.getElementById('kmk-lobby-p2-status').textContent='En attente...';
-      document.getElementById('kmk-lobby-p2-row').className='multi-player-row waiting';
-      document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente de '+friendPseudo+'...';
-      hideAll();show('screen-kmk-multi-lobby');
-      kmkMultiListenLobby(ref.id);
-    }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
+  var code=genCode();
+  var gameData={
+    code:code,
+    creator:currentPseudo,
+    opponent:'',           // sera rempli quand l'ami rejoint
+    roundsTotal:kmkMultiRoundsTotal,
+    status:'waiting',
+    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+    picks:[],
+    results:[]
+  };
+  db.collection('kmk_parties').add(gameData).then(function(ref){
+    btn.disabled=false; btn.textContent='Créer la partie →';
+    kmkMultiGameId=ref.id;
+    kmkMultiOpponent='';
+    kmkMultiIsCreator=true;
+    kmkMultiRoundsTotal=gameData.roundsTotal;
+    kmkMultiMyResults=[];
+    kmkMultiTheirResults=[];
+    kmkMultiCurrentPickRound=0;
+    kmkMultiMyPlayRound=0;
+    // Affiche le lobby avec le code à partager
+    document.getElementById('kmk-lobby-code').textContent=code;
+    document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
+    document.getElementById('kmk-lobby-p2-name').textContent='—';
+    document.getElementById('kmk-lobby-p2-status').textContent='En attente...';
+    document.getElementById('kmk-lobby-p2-row').className='multi-player-row waiting';
+    document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente d\'un joueur...';
+    hideAll();show('screen-kmk-multi-lobby');
+    kmkMultiListenLobby(ref.id);
   }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
 });
 
@@ -1602,11 +1891,9 @@ document.getElementById('kmk-multi-btn-join').addEventListener('click',function(
       if(snap.empty){showToast('Partie introuvable ou déjà commencée','error');return;}
       var docRef=snap.docs[0];
       var data=docRef.data();
-      if(data.opponent!==currentPseudo && data.creator!==currentPseudo){
-        showToast('Cette partie ne t\'est pas destinée','error');return;
-      }
-      // Met à jour le statut
-      docRef.ref.update({status:'playing'}).then(function(){
+      if(data.creator===currentPseudo){showToast('Tu ne peux pas rejoindre ta propre partie !','error');return;}
+      // Écrit son pseudo comme adversaire et passe le statut à playing
+      docRef.ref.update({status:'playing', opponent:currentPseudo}).then(function(){
         kmkMultiGameId=docRef.id;
         kmkMultiOpponent=data.creator;
         kmkMultiIsCreator=false;
@@ -1615,10 +1902,10 @@ document.getElementById('kmk-multi-btn-join').addEventListener('click',function(
         kmkMultiTheirResults=[];
         kmkMultiCurrentPickRound=0;
         kmkMultiMyPlayRound=0;
-        // L'adversaire a rejoint → on commence directement à choisir les noms pour lui
+        showToast('✅ Partie rejointe !','info');
         hideAll();
         kmkMultiStartPickPhase();
-      });
+      }).catch(function(err){showToast('Erreur : '+err.message,'error');});
     }).catch(function(err){btn.disabled=false;btn.textContent='Rejoindre →';showToast('Erreur : '+err.message,'error');});
 });
 
@@ -1629,10 +1916,12 @@ function kmkMultiListenLobby(gameId){
     if(!doc.exists)return;
     var data=doc.data();
     if(data.status==='playing'){
-      // L'adversaire a rejoint
+      // Récupère le pseudo de l'adversaire depuis le doc
+      kmkMultiOpponent=data.opponent||'Adversaire';
+      document.getElementById('kmk-lobby-p2-name').textContent=kmkMultiOpponent;
       document.getElementById('kmk-lobby-p2-row').className='multi-player-row connected';
       document.getElementById('kmk-lobby-p2-status').textContent='✓ Connecté';
-      document.getElementById('kmk-lobby-status-badge').textContent='✅ Adversaire connecté !';
+      document.getElementById('kmk-lobby-status-badge').textContent='✅ '+kmkMultiOpponent+' a rejoint !';
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
       setTimeout(function(){
         hideAll();
@@ -1890,92 +2179,194 @@ document.getElementById('kmk-multi-wait-btn-quit').addEventListener('click',func
 // =====================
 //  EXPORT PDF & MAIL
 // =====================
+
+// --- Classement ---
 function getClassementLines(){
-  var lines=[]; var medals=['🥇','🥈','🥉'];
+  var lines=[];
+  var medals=['🥇','🥈','🥉'];
   if(!sortState) return lines;
   var resultArr=isPartial?(function(){var pr=getPartialResult(sortState);return pr.ranked.concat(pr.unranked);})():sortState.result;
-  resultArr.forEach(function(name,i){ lines.push((i<3?medals[i]:'  #'+(i+1)+'  ')+' '+name); });
+  resultArr.forEach(function(name,i){
+    lines.push((i<3?medals[i]:'  #'+(i+1)+'  ')+' '+name);
+  });
   return lines;
 }
-function exportClassementPDF(){
-  var {jsPDF}=window.jspdf; var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'}); var date=new Date().toLocaleDateString('fr-FR');
-  doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F');
-  doc.setTextColor(255,215,0); doc.setFont('helvetica','bold'); doc.setFontSize(28); doc.text('CLASSEMENT',105,22,{align:'center'});
-  doc.setTextColor(150,150,180); doc.setFontSize(11); doc.text(currentPseudo+' · '+date+(isPartial?' · Partiel':''),105,31,{align:'center'});
-  doc.setDrawColor(255,215,0); doc.setLineWidth(0.5); doc.line(20,36,190,36);
-  var y=46; var lines=getClassementLines();
-  lines.forEach(function(line,i){ var isTop3=i<3; if(isTop3){doc.setTextColor(255,215,0);doc.setFontSize(13);}else{doc.setTextColor(200,200,220);doc.setFontSize(12);} doc.setFont('helvetica',isTop3?'bold':'normal'); if(i%2===0){doc.setFillColor(20,20,40);doc.rect(18,y-5,174,8,'F');} doc.text(line,22,y); y+=9; if(y>280){doc.addPage();doc.setFillColor(10,10,26);doc.rect(0,0,210,297,'F');y=20;} });
-  doc.setTextColor(60,60,80); doc.setFontSize(9); doc.text('clovisseetjulles.netlify.app',105,292,{align:'center'});
-  doc.save('classement-'+currentPseudo+'-'+date+'.pdf'); showToast('📄 PDF téléchargé !','info');
-}
-function exportClassementMail(){
-  var lines=getClassementLines(); var body='Mon classement — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n\n'+lines.join('\n')+'\n\nclovisseetjulles.netlify.app';
-  window.location.href='mailto:?subject='+encodeURIComponent('Mon classement — '+currentPseudo)+'&body='+encodeURIComponent(body);
-}
-document.getElementById('btn-export-pdf-classement').addEventListener('click',exportClassementPDF);
-document.getElementById('btn-export-mail-classement').addEventListener('click',exportClassementMail);
 
+function exportClassementPDF(){
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  var date = new Date().toLocaleDateString('fr-FR');
+  // Fond sombre
+  doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F');
+  // Titre
+  doc.setTextColor(255,215,0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(28);
+  doc.text('CLASSEMENT', 105, 22, {align:'center'});
+  // Sous-titre
+  doc.setTextColor(150,150,180); doc.setFontSize(11);
+  doc.text(currentPseudo+' · '+date+(isPartial?' · Partiel':''), 105, 31, {align:'center'});
+  // Séparateur
+  doc.setDrawColor(255,215,0); doc.setLineWidth(0.5); doc.line(20,36,190,36);
+  // Liste
+  var y=46;
+  var lines=getClassementLines();
+  lines.forEach(function(line,i){
+    var isTop3=i<3;
+    if(isTop3){ doc.setTextColor(255,215,0); doc.setFontSize(13); }
+    else { doc.setTextColor(200,200,220); doc.setFontSize(12); }
+    doc.setFont('helvetica', isTop3?'bold':'normal');
+    // Fond alterné léger
+    if(i%2===0){ doc.setFillColor(20,20,40); doc.rect(18,y-5,174,8,'F'); }
+    doc.text(line, 22, y);
+    y+=9;
+    if(y>280){ doc.addPage(); doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F'); y=20; }
+  });
+  // Footer
+  doc.setTextColor(60,60,80); doc.setFontSize(9);
+  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
+  doc.save('classement-'+currentPseudo+'-'+date+'.pdf');
+  showToast('📄 PDF téléchargé !','info');
+}
+
+function exportClassementMail(){
+  var lines=getClassementLines();
+  var body='Mon classement — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n\n';
+  body+=lines.join('\n');
+  body+='\n\nclovisseetjulles.netlify.app';
+  var subject=encodeURIComponent('Mon classement — '+currentPseudo);
+  window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
+}
+
+document.getElementById('btn-export-pdf-classement').addEventListener('click', exportClassementPDF);
+document.getElementById('btn-export-mail-classement').addEventListener('click', exportClassementMail);
+
+// --- KMK ---
 function getKMKLines(results){
   var lines=[];
-  results.forEach(function(r){ lines.push('— Manche '+r.round+' —'); lines.push('💋 Kiss  : '+r.kiss); lines.push('💍 Marry : '+r.marry); lines.push('💀 Kill  : '+r.kill); lines.push(''); });
+  results.forEach(function(r){
+    lines.push('— Manche '+r.round+' —');
+    lines.push('💋 Kiss  : '+r.kiss);
+    lines.push('💍 Marry : '+r.marry);
+    lines.push('💀 Kill  : '+r.kill);
+    lines.push('');
+  });
   return lines;
 }
+
 function exportKMKPDF(){
-  var {jsPDF}=window.jspdf; var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'}); var date=new Date().toLocaleDateString('fr-FR');
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  var date = new Date().toLocaleDateString('fr-FR');
   doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F');
+  // Titre
   doc.setFont('helvetica','bold'); doc.setFontSize(24);
-  doc.setTextColor(255,107,157); doc.text('KISS ',58,22,{align:'right'});
-  doc.setTextColor(255,215,0); doc.text('MARRY ',105,22,{align:'center'});
-  doc.setTextColor(255,68,68); doc.text(' KILL',152,22,{align:'left'});
+  doc.setTextColor(255,107,157); doc.text('KISS ', 58, 22, {align:'right'});
+  doc.setTextColor(255,215,0);   doc.text('MARRY ', 105, 22, {align:'center'});
+  doc.setTextColor(255,68,68);   doc.text(' KILL', 152, 22, {align:'left'});
   doc.setTextColor(150,150,180); doc.setFontSize(11); doc.setFont('helvetica','normal');
-  var sub=currentPseudo+' · '+date; if(kmkIsMulti&&kmkMultiOpponent) sub+=' · vs '+kmkMultiOpponent;
-  doc.text(sub,105,31,{align:'center'}); doc.setDrawColor(255,215,0); doc.setLineWidth(0.5); doc.line(20,36,190,36);
-  var y=46; var catColors={kiss:[255,107,157],marry:[255,215,0],kill:[255,68,68]};
+  var sub=currentPseudo+' · '+date;
+  if(kmkIsMulti && kmkMultiOpponent) sub+=' · vs '+kmkMultiOpponent;
+  doc.text(sub, 105, 31, {align:'center'});
+  doc.setDrawColor(255,215,0); doc.setLineWidth(0.5); doc.line(20,36,190,36);
+
+  // Mes résultats
+  var y=46;
+  var catColors={kiss:[255,107,157], marry:[255,215,0], kill:[255,68,68]};
   function drawRound(r){
-    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(100,100,140); doc.text('MANCHE '+r.round,22,y); y+=8;
-    [['kiss','💋 Kiss'],['marry','💍 Marry'],['kill','💀 Kill']].forEach(function(row){ var col=catColors[row[0]]; doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(col[0],col[1],col[2]); doc.text(row[1]+' :',26,y); doc.setFont('helvetica','normal'); doc.setTextColor(220,220,240); doc.text(r[row[0]]||'',55,y); y+=7; });
-    y+=3; if(y>280){doc.addPage();doc.setFillColor(10,10,26);doc.rect(0,0,210,297,'F');y=20;}
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(100,100,140);
+    doc.text('MANCHE '+r.round, 22, y); y+=8;
+    [['kiss','💋 Kiss','kiss'],['marry','💍 Marry','marry'],['kill','💀 Kill','kill']].forEach(function(row){
+      var col=catColors[row[0]];
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(col[0],col[1],col[2]);
+      doc.text(row[1]+' :', 26, y);
+      doc.setFont('helvetica','normal'); doc.setTextColor(220,220,240);
+      doc.text(r[row[0]]||'', 55, y);
+      y+=7;
+    });
+    y+=3;
+    if(y>280){ doc.addPage(); doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F'); y=20; }
   }
-  if(kmkAllResults.length>0){ doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(255,215,0); doc.text('Mes réponses',22,y); y+=8; kmkAllResults.forEach(drawRound); }
-  if(kmkIsMulti&&kmkMultiTheirResults.length>0){ y+=4; doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(100,150,255); doc.text('Réponses de '+kmkMultiOpponent,22,y); y+=8; kmkMultiTheirResults.forEach(function(r,i){drawRound({round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill});}); }
-  doc.setTextColor(60,60,80); doc.setFontSize(9); doc.text('clovisseetjulles.netlify.app',105,292,{align:'center'});
-  doc.save('kmk-'+currentPseudo+'-'+date+'.pdf'); showToast('📄 PDF téléchargé !','info');
+
+  // Mes réponses
+  if(kmkAllResults.length>0){
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(255,215,0);
+    doc.text('Mes réponses', 22, y); y+=8;
+    kmkAllResults.forEach(drawRound);
+  }
+  // Réponses adversaire (multi)
+  if(kmkIsMulti && kmkMultiTheirResults.length>0){
+    y+=4;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(100,150,255);
+    doc.text('Réponses de '+kmkMultiOpponent, 22, y); y+=8;
+    kmkMultiTheirResults.forEach(function(r,i){drawRound({round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill});});
+  }
+
+  doc.setTextColor(60,60,80); doc.setFontSize(9);
+  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
+  doc.save('kmk-'+currentPseudo+'-'+date+'.pdf');
+  showToast('📄 PDF téléchargé !','info');
 }
+
 function exportKMKMail(){
-  var body='Kiss Marry Kill — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n'; if(kmkIsMulti&&kmkMultiOpponent) body+='vs '+kmkMultiOpponent+'\n';
-  body+='\nMES RÉPONSES\n'+getKMKLines(kmkAllResults).join('\n');
-  if(kmkIsMulti&&kmkMultiTheirResults.length>0){ var f=kmkMultiTheirResults.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}); body+='\nRÉPONSES DE '+kmkMultiOpponent.toUpperCase()+'\n'+getKMKLines(f).join('\n'); }
+  var body='Kiss Marry Kill — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n';
+  if(kmkIsMulti && kmkMultiOpponent) body+='vs '+kmkMultiOpponent+'\n';
+  body+='\nMES RÉPONSES\n';
+  body+=getKMKLines(kmkAllResults).join('\n');
+  if(kmkIsMulti && kmkMultiTheirResults.length>0){
+    var theirFmt=kmkMultiTheirResults.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};});
+    body+='\nRÉPONSES DE '+kmkMultiOpponent.toUpperCase()+'\n';
+    body+=getKMKLines(theirFmt).join('\n');
+  }
   body+='\nclovisseetjulles.netlify.app';
-  window.location.href='mailto:?subject='+encodeURIComponent('Kiss Marry Kill — '+currentPseudo)+'&body='+encodeURIComponent(body);
+  var subject=encodeURIComponent('Kiss Marry Kill — '+currentPseudo);
+  window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
 }
-document.getElementById('btn-export-pdf-kmk').addEventListener('click',exportKMKPDF);
-document.getElementById('btn-export-mail-kmk').addEventListener('click',exportKMKMail);
+
+document.getElementById('btn-export-pdf-kmk').addEventListener('click', exportKMKPDF);
+document.getElementById('btn-export-mail-kmk').addEventListener('click', exportKMKMail);
 
 // =====================
-//  PARAMÈTRES — THÈMES · AVATARS · ACCENT · BIO · SOCIAL
+//  PARAMÈTRES — THÈMES, AVATARS, ACCENT, BIO, SOCIAL
 // =====================
-var AVATARS=['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
+var SETTINGS_KEY = 'jdc_settings';
 
-var THEMES=[
-  {id:'dark',    label:'Sombre',  style:'background:#0a0a1a'},
-  {id:'purple',  label:'Violet',  style:'background:linear-gradient(135deg,#0d0020,#1a0035)'},
-  {id:'stars',   label:'Étoilé',  style:'background:#060618', stars:true},
-  {id:'midnight',label:'Minuit',  style:'background:linear-gradient(180deg,#000510,#001030)'},
-  {id:'forest',  label:'Forêt',   style:'background:linear-gradient(135deg,#010d05,#021a0a)'},
-  {id:'sunset',  label:'Coucher', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)'},
-  {id:'light',   label:'Clair',   style:'background:#f0f0f8', light:true},
+var AVATARS = ['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
+
+var THEMES = [
+  { id:'dark',    label:'Sombre',    bg:'#0a0a1a',   style:'background:#0a0a1a' },
+  { id:'purple',  label:'Violet',    bg:'linear-gradient(135deg,#0d0020,#1a0035)', style:'background:linear-gradient(135deg,#0d0020,#1a0035)' },
+  { id:'stars',   label:'Étoilé',    bg:'#060618',   style:'background:#060618', stars:true },
+  { id:'midnight',label:'Minuit',    bg:'linear-gradient(180deg,#000510,#001030)', style:'background:linear-gradient(180deg,#000510,#001030)' },
+  { id:'forest',  label:'Forêt',     bg:'linear-gradient(135deg,#010d05,#021a0a)', style:'background:linear-gradient(135deg,#010d05,#021a0a)' },
+  { id:'sunset',  label:'Coucher',   bg:'linear-gradient(135deg,#1a0505,#1a0a00)', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)' },
+  { id:'light',   label:'Clair',     bg:'#f0f0f8',   style:'background:#f0f0f8', light:true },
 ];
 
-var ACCENTS=[
-  {id:'gold',   color:'#FFD700',label:'Or'},
-  {id:'pink',   color:'#ff6b9d',label:'Rose'},
-  {id:'blue',   color:'#4488ff',label:'Bleu'},
-  {id:'green',  color:'#22bb55',label:'Vert'},
-  {id:'purple', color:'#cc44ff',label:'Violet'},
-  {id:'orange', color:'#ff8800',label:'Orange'},
-  {id:'red',    color:'#ff4444',label:'Rouge'},
-  {id:'cyan',   color:'#00ccdd',label:'Cyan'},
+var ACCENTS = [
+  { id:'gold',   color:'#FFD700', label:'Or' },
+  { id:'pink',   color:'#ff6b9d', label:'Rose' },
+  { id:'blue',   color:'#4488ff', label:'Bleu' },
+  { id:'green',  color:'#22bb55', label:'Vert' },
+  { id:'purple', color:'#cc44ff', label:'Violet' },
+  { id:'orange', color:'#ff8800', label:'Orange' },
+  { id:'red',    color:'#ff4444', label:'Rouge' },
+  { id:'cyan',   color:'#00ccdd', label:'Cyan' },
 ];
+
+var userSettings = {
+  visibilityClassement:'all', visibilityKmk:'all',
+  leaderboard:true, stealth:false, autosave:true,
+  confirmQuit:true, animations:true, kmkDefaultRounds:3,
+  publicProfile:true,
+  avatar:'🐱', theme:'dark', accent:'gold', bio:''
+};
+
+function loadSettings(){
+  try{ var raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(userSettings,JSON.parse(raw)); }catch(e){}
+  applyTheme(userSettings.theme);
+  applyAccent(userSettings.accent);
+  applySettingsToUI();
+}
 
 function saveSettings(){
   userSettings.visibilityClassement=document.getElementById('settings-visibility-classement').value;
@@ -1991,6 +2382,7 @@ function saveSettings(){
   try{ localStorage.setItem(SETTINGS_KEY,JSON.stringify(userSettings)); }catch(e){}
   kmkRoundsTotal=userSettings.kmkDefaultRounds;
   document.getElementById('kmk-rounds-val').textContent=kmkRoundsTotal;
+  // Sync bio/avatar dans Firestore
   if(currentPseudo){
     db.collection('users').doc(currentPseudo.toLowerCase()).update({
       avatar:userSettings.avatar, bio:userSettings.bio,
@@ -2019,29 +2411,44 @@ function applySettingsToUI(){
 
 function applyTheme(themeId){
   var t=THEMES.find(function(x){return x.id===themeId;})||THEMES[0];
-  document.body.removeAttribute('style');
-  document.body.setAttribute('style',t.style+'; padding:32px 20px; display:flex; flex-direction:column; align-items:center; min-height:100%; transition: background 0.4s;');
+  document.body.style.cssText='';
+  if(t.style) document.body.setAttribute('style',t.style);
   if(t.light){ document.body.style.color='#111'; }
-  var existing=document.getElementById('stars-canvas'); if(existing) existing.remove();
+  // Étoiles animées
+  var existing=document.getElementById('stars-canvas');
+  if(existing) existing.remove();
   if(t.stars){ createStars(); }
   userSettings.theme=themeId;
 }
 
 function createStars(){
-  var canvas=document.createElement('canvas'); canvas.id='stars-canvas';
+  var canvas=document.createElement('canvas');
+  canvas.id='stars-canvas';
   canvas.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:0;';
   document.body.insertBefore(canvas,document.body.firstChild);
   var ctx=canvas.getContext('2d');
   function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
   resize(); window.addEventListener('resize',resize);
   var stars=Array.from({length:120},function(){return{x:Math.random(),y:Math.random(),r:Math.random()*1.5+0.3,speed:Math.random()*0.0003+0.0001,alpha:Math.random()};});
-  function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); stars.forEach(function(s){ s.alpha+=Math.sin(Date.now()*s.speed)*0.01; s.alpha=Math.max(0.1,Math.min(1,s.alpha)); ctx.beginPath(); ctx.arc(s.x*canvas.width,s.y*canvas.height,s.r,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,'+s.alpha+')'; ctx.fill(); }); requestAnimationFrame(draw); }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(function(s){
+      s.alpha+=Math.sin(Date.now()*s.speed)*0.01;
+      s.alpha=Math.max(0.1,Math.min(1,s.alpha));
+      ctx.beginPath();
+      ctx.arc(s.x*canvas.width,s.y*canvas.height,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,'+s.alpha+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
   draw();
 }
 
 function applyAccent(accentId){
   var a=ACCENTS.find(function(x){return x.id===accentId;})||ACCENTS[0];
   document.documentElement.style.setProperty('--accent',a.color);
+  // Applique à tous les éléments qui utilisent la couleur d'accent
   var styleEl=document.getElementById('accent-style');
   if(!styleEl){ styleEl=document.createElement('style'); styleEl.id='accent-style'; document.head.appendChild(styleEl); }
   styleEl.textContent=
@@ -2049,12 +2456,13 @@ function applyAccent(accentId){
     '.btn-primary{background:'+a.color+' !important}'+
     '.tab.active,.auth-tab.active{border-color:'+a.color+' !important;color:'+a.color+' !important}'+
     '.vs,.kmk-rounds-input button{color:'+a.color+' !important}'+
-    '.card:hover,.input-field:focus{border-color:'+a.color+' !important}'+
+    '.card:hover,.input-field:focus,.textarea:focus{border-color:'+a.color+' !important}'+
     '.progress-fill{background:'+a.color+' !important}'+
     '.suggest-chip.selected{border-color:'+a.color+' !important;background:'+a.color+' !important}'+
     '.result-badge{border-color:'+a.color+' !important;color:'+a.color+' !important}'+
     '.toggle input:checked + .toggle-slider{background:'+a.color+' !important}'+
-    '.btn-outline{color:'+a.color+' !important;border-color:'+a.color+' !important}';
+    '.btn-outline{color:'+a.color+' !important;border-color:'+a.color+' !important}'+
+    '.btn-pause{color:#4488ff !important;border-color:#4488ff !important}';
   userSettings.accent=accentId;
 }
 
@@ -2066,9 +2474,12 @@ function getLevelBadge(total){
 }
 
 function renderAvatarGrid(){
-  var grid=document.getElementById('avatar-grid'); grid.innerHTML='';
+  var grid=document.getElementById('avatar-grid');
+  grid.innerHTML='';
   AVATARS.forEach(function(emoji){
-    var chip=document.createElement('button'); chip.className='avatar-chip'+(userSettings.avatar===emoji?' active':''); chip.textContent=emoji;
+    var chip=document.createElement('button');
+    chip.className='avatar-chip'+(userSettings.avatar===emoji?' active':'');
+    chip.textContent=emoji;
     chip.addEventListener('click',function(){
       userSettings.avatar=emoji;
       document.getElementById('settings-avatar-preview').textContent=emoji;
@@ -2081,15 +2492,18 @@ function renderAvatarGrid(){
 }
 
 function renderThemeGrid(){
-  var grid=document.getElementById('theme-grid'); grid.innerHTML='';
+  var grid=document.getElementById('theme-grid');
+  grid.innerHTML='';
   THEMES.forEach(function(t){
-    var chip=document.createElement('button'); chip.className='theme-chip'+(userSettings.theme===t.id?' active':'');
-    chip.setAttribute('style',t.style+';width:72px;height:52px;border-radius:12px;cursor:pointer;border:3px solid '+(userSettings.theme===t.id?'#fff':'transparent')+';display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);text-shadow:0 1px 3px rgba(0,0,0,0.8);transition:all 0.15s;flex-shrink:0;');
+    var chip=document.createElement('button');
+    chip.className='theme-chip'+(userSettings.theme===t.id?' active':'');
+    chip.style.cssText=t.style+';';
     chip.textContent=t.label;
     chip.addEventListener('click',function(){
-      userSettings.theme=t.id; applyTheme(t.id);
-      grid.querySelectorAll('button').forEach(function(c){c.style.borderColor='transparent';c.style.transform='';});
-      chip.style.borderColor='#fff'; chip.style.transform='scale(1.08)';
+      userSettings.theme=t.id;
+      applyTheme(t.id);
+      grid.querySelectorAll('.theme-chip').forEach(function(c){c.classList.remove('active');});
+      chip.classList.add('active');
       saveSettings();
     });
     grid.appendChild(chip);
@@ -2097,15 +2511,18 @@ function renderThemeGrid(){
 }
 
 function renderAccentGrid(){
-  var grid=document.getElementById('accent-grid'); grid.innerHTML='';
+  var grid=document.getElementById('accent-grid');
+  grid.innerHTML='';
   ACCENTS.forEach(function(a){
-    var chip=document.createElement('button'); chip.className='accent-chip'+(userSettings.accent===a.id?' active':'');
-    chip.style.cssText='width:36px;height:36px;border-radius:50%;cursor:pointer;background:'+a.color+';border:3px solid '+(userSettings.accent===a.id?'#fff':'transparent')+';transition:all 0.15s;';
+    var chip=document.createElement('button');
+    chip.className='accent-chip'+(userSettings.accent===a.id?' active':'');
+    chip.style.background=a.color;
     chip.title=a.label;
     chip.addEventListener('click',function(){
-      userSettings.accent=a.id; applyAccent(a.id);
-      grid.querySelectorAll('button').forEach(function(c){c.style.borderColor='transparent';c.style.transform='';});
-      chip.style.borderColor='#fff'; chip.style.transform='scale(1.15)';
+      userSettings.accent=a.id;
+      applyAccent(a.id);
+      grid.querySelectorAll('.accent-chip').forEach(function(c){c.classList.remove('active');});
+      chip.classList.add('active');
       saveSettings();
     });
     grid.appendChild(chip);
@@ -2117,18 +2534,23 @@ function openSettings(){
   hideAll(); show('screen-settings');
   document.getElementById('settings-pseudo-display').textContent=currentPseudo;
   applySettingsToUI();
-  renderAvatarGrid(); renderThemeGrid(); renderAccentGrid();
+  renderAvatarGrid();
+  renderThemeGrid();
+  renderAccentGrid();
   loadSettingsStats();
 }
 
 function loadSettingsStats(){
-  var statsEl=document.getElementById('settings-stats'); var badgeEl=document.getElementById('settings-badge-display');
+  var statsEl=document.getElementById('settings-stats');
+  var badgeEl=document.getElementById('settings-badge-display');
   statsEl.innerHTML='<span style="color:#444;font-size:12px">Chargement...</span>';
   var nbC=0,nbK=0;
   db.collection('classements').where('pseudo','==',currentPseudo).get().then(function(snap){
     nbC=snap.size;
     db.collection('kmk_resultats').where('pseudo','==',currentPseudo).get().then(function(snap2){
-      nbK=snap2.size; var total=nbC+nbK; var badge=getLevelBadge(total);
+      nbK=snap2.size;
+      var total=nbC+nbK;
+      var badge=getLevelBadge(total);
       badgeEl.innerHTML='<span class="level-badge '+badge.cls+'">'+badge.label+'</span>';
       statsEl.innerHTML='<span class="stat-pill"><b>'+nbC+'</b> classement'+(nbC!==1?'s':'')+'</span><span class="stat-pill"><b>'+nbK+'</b> KMK</span>';
     }).catch(function(){statsEl.innerHTML='';});
@@ -2144,7 +2566,7 @@ document.getElementById('settings-bio').addEventListener('blur',function(){saveS
 // Bouton paramètres
 document.getElementById('btn-open-settings').addEventListener('click',openSettings);
 
-// Auto-save sur changement des toggles/selects
+// Auto-save sur changement
 ['settings-visibility-classement','settings-visibility-kmk','settings-leaderboard',
  'settings-stealth','settings-autosave','settings-confirm-quit','settings-animations',
  'settings-kmk-default-rounds','settings-public-profile'].forEach(function(id){
@@ -2165,6 +2587,7 @@ document.getElementById('btn-search-profile').addEventListener('click',function(
 document.getElementById('settings-search-pseudo').addEventListener('keydown',function(e){
   if(e.key==='Enter') document.getElementById('btn-search-profile').click();
 });
+
 document.getElementById('btn-back-from-profile').addEventListener('click',function(){
   hideAll(); show(profileFromSettings?'screen-settings':'screen-saved');
   if(!profileFromSettings) loadSaved();
@@ -2174,11 +2597,19 @@ function loadPublicProfile(pseudo, fromSettings){
   profileFromSettings=!!fromSettings;
   var resultEl=document.getElementById('settings-search-result');
   if(resultEl) resultEl.innerHTML='<span style="color:#555;font-size:13px">Chargement...</span>';
+  // Charge le doc user + ses classements + ses KMK
+  var userData=null, classements=[], kmkResults=[];
   db.collection('users').doc(pseudo).get().then(function(doc){
-    if(!doc.exists){ if(resultEl) resultEl.innerHTML='<span style="color:#cc3333;font-size:13px">Joueur introuvable.</span>'; return; }
-    var userData=doc.data();
-    if(userData.publicProfile===false && pseudo!==currentPseudo){ if(resultEl) resultEl.innerHTML='<span style="color:#555;font-size:13px">Ce profil est privé.</span>'; return; }
-    var classements=[]; var kmkResults=[];
+    if(!doc.exists){
+      if(resultEl) resultEl.innerHTML='<span style="color:#cc3333;font-size:13px">Joueur introuvable.</span>';
+      return;
+    }
+    userData=doc.data();
+    if(userData.publicProfile===false && pseudo!==currentPseudo){
+      if(resultEl) resultEl.innerHTML='<span style="color:#555;font-size:13px">Ce profil est privé.</span>';
+      return;
+    }
+    // Charge classements
     db.collection('classements').where('pseudo','==',pseudo).orderBy('createdAt','desc').limit(5).get().then(function(snap){
       snap.forEach(function(d){classements.push(d.data());});
       db.collection('kmk_resultats').where('pseudo','==',pseudo).orderBy('createdAt','desc').limit(5).get().then(function(snap2){
@@ -2187,70 +2618,132 @@ function loadPublicProfile(pseudo, fromSettings){
         setTimeout(function(){renderPublicProfile(userData,pseudo,classements,kmkResults);},400);
       }).catch(function(){renderPublicProfile(userData,pseudo,classements,kmkResults);});
     }).catch(function(){renderPublicProfile(userData,pseudo,[],kmkResults);});
-  }).catch(function(err){ if(resultEl) resultEl.innerHTML='<span style="color:#cc3333;font-size:13px">Erreur : '+escHtml(err.message)+'</span>'; });
+  }).catch(function(err){
+    if(resultEl) resultEl.innerHTML='<span style="color:#cc3333;font-size:13px">Erreur : '+escHtml(err.message)+'</span>';
+  });
 }
 
 function renderPublicProfile(userData, pseudo, classements, kmkResults){
-  var avatar=userData.avatar||'👤'; var bio=userData.bio||'';
-  var total=classements.length+kmkResults.length; var badge=getLevelBadge(total);
-  var html='<div class="profile-header"><div class="ph-avatar">'+avatar+'</div><div class="ph-pseudo">'+escHtml(pseudo)+'</div>';
+  var avatar=userData.avatar||'👤';
+  var bio=userData.bio||'';
+  var total=(classements.length)+(kmkResults.length);
+  var badge=getLevelBadge(total);
+  var html='<div class="profile-header">';
+  html+='<div class="ph-avatar">'+avatar+'</div>';
+  html+='<div class="ph-pseudo">'+escHtml(pseudo)+'</div>';
   if(bio) html+='<div class="ph-bio">'+escHtml(bio)+'</div>';
   html+='<span class="level-badge '+badge.cls+'">'+badge.label+'</span>';
-  html+='<div style="margin-top:8px;"><span class="stat-pill"><b>'+classements.length+'</b> classement'+(classements.length!==1?'s':'')+'</span><span class="stat-pill"><b>'+kmkResults.length+'</b> KMK</span></div></div>';
+  html+='<div style="margin-top:8px;">';
+  html+='<span class="stat-pill"><b>'+classements.length+'</b> classement'+(classements.length!==1?'s':'')+'</span>';
+  html+='<span class="stat-pill"><b>'+kmkResults.length+'</b> KMK</span>';
+  html+='</div></div>';
 
+  // Classements
   if(classements.length>0){
     html+='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🏆 Derniers classements</div>';
     classements.forEach(function(c,ci){
-      var docId='cl_'+pseudo+'_'+ci; var podium=(c.result||[]).slice(0,3);
-      html+='<div class="profile-result-card" id="prc-'+docId+'"><div class="prc-title">'+(c.createdAt?new Date(c.createdAt.toDate()).toLocaleDateString('fr-FR'):'')+(c.partial?' · Partiel':'')+'</div><div class="prc-podium">';
+      var docId='cl_'+pseudo+'_'+ci;
+      var podium=(c.result||[]).slice(0,3);
+      html+='<div class="profile-result-card" id="prc-'+docId+'">';
+      html+='<div class="prc-title">'+(c.createdAt?new Date(c.createdAt.toDate()).toLocaleDateString('fr-FR'):'')+(c.partial?' · Partiel':'')+'</div>';
+      html+='<div class="prc-podium">';
       podium.forEach(function(n,i){html+='<span class="stat-pill">'+['🥇','🥈','🥉'][i]+' <b>'+escHtml(n)+'</b></span>';});
-      html+='</div>'+renderReactionBar(docId,pseudo)+'</div>';
+      html+='</div>';
+      html+=renderReactionBar(docId,pseudo);
+      html+='</div>';
     });
   }
+
+  // KMK
   if(kmkResults.length>0){
     html+='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px;">💋 Derniers KMK</div>';
     kmkResults.forEach(function(k,ki){
       var docId='kmk_'+pseudo+'_'+ki;
-      html+='<div class="profile-result-card" id="prc-'+docId+'"><div class="prc-title">'+(k.createdAt?new Date(k.createdAt.toDate()).toLocaleDateString('fr-FR'):'')+(k.multi?' · vs '+escHtml(k.adversaire||''):'')+'</div>';
-      (k.manches||[]).slice(0,2).forEach(function(m){ html+='<div style="font-size:12px;margin-bottom:4px;"><span style="color:#ff6b9d">💋 '+escHtml(m.kiss)+'</span>  <span style="color:#FFD700">💍 '+escHtml(m.marry)+'</span>  <span style="color:#ff4444">💀 '+escHtml(m.kill)+'</span></div>'; });
-      html+=renderReactionBar(docId,pseudo)+'</div>';
+      html+='<div class="profile-result-card" id="prc-'+docId+'">';
+      html+='<div class="prc-title">'+(k.createdAt?new Date(k.createdAt.toDate()).toLocaleDateString('fr-FR'):'')+(k.multi?' · vs '+escHtml(k.adversaire||''):'')+'</div>';
+      (k.manches||[]).slice(0,2).forEach(function(m){
+        html+='<div style="font-size:12px;margin-bottom:4px;">';
+        html+='<span style="color:#ff6b9d">💋'+escHtml(m.kiss)+'</span> ';
+        html+='<span style="color:#FFD700">💍'+escHtml(m.marry)+'</span> ';
+        html+='<span style="color:#ff4444">💀'+escHtml(m.kill)+'</span>';
+        html+='</div>';
+      });
+      html+=renderReactionBar(docId,pseudo);
+      html+='</div>';
     });
   }
-  if(classements.length===0&&kmkResults.length===0){ html+='<div style="color:#444;text-align:center;padding:30px;">Aucun résultat public.</div>'; }
+
+  if(classements.length===0 && kmkResults.length===0){
+    html+='<div style="color:#444;text-align:center;padding:30px;">Aucun résultat public.</div>';
+  }
 
   document.getElementById('public-profile-content').innerHTML=html;
   hideAll(); show('screen-public-profile');
-  initReactions(pseudo);
+  // Initialise les réactions
+  initReactions(pseudo, classements.length+kmkResults.length);
 }
 
 function renderReactionBar(docId, pseudo){
   var EMOJIS=['🔥','❤️','😱','😂','👑'];
   var html='<div class="reaction-bar" id="rb-'+docId+'">';
-  EMOJIS.forEach(function(e){ html+='<button class="reaction-btn" data-doc="'+docId+'" data-emoji="'+e+'" data-pseudo="'+pseudo+'">'+e+' <span class="reaction-count" id="rc-'+docId+'-'+e+'"></span></button>'; });
-  return html+'</div>';
+  EMOJIS.forEach(function(e){
+    html+='<button class="reaction-btn" data-doc="'+docId+'" data-emoji="'+e+'" data-pseudo="'+pseudo+'">'+e+' <span class="reaction-count" id="rc-'+docId+'-'+e+'">...</span></button>';
+  });
+  html+='</div>';
+  return html;
 }
 
-function initReactions(pseudo){
+function initReactions(pseudo, count){
+  // Charge les réactions depuis Firestore
   db.collection('reactions').where('targetPseudo','==',pseudo).get().then(function(snap){
-    var totals={}; var myReactions={};
-    snap.forEach(function(doc){ var d=doc.data(); var key=d.docId+'_'+d.emoji; totals[key]=(totals[key]||0)+1; if(d.fromPseudo===currentPseudo) myReactions[key]=doc.id; });
-    document.querySelectorAll('.reaction-btn').forEach(function(btn){
-      var docId=btn.getAttribute('data-doc'); var emoji=btn.getAttribute('data-emoji'); var key=docId+'_'+emoji;
-      var countEl=document.getElementById('rc-'+docId+'-'+emoji);
-      if(countEl) countEl.textContent=totals[key]>0?totals[key]:'';
-      if(myReactions[key]){ btn.classList.add('reacted'); btn.setAttribute('data-reaction-id',myReactions[key]); }
-      btn.addEventListener('click',function(){
-        if(!currentPseudo){showToast('Connecte-toi pour réagir','error');return;}
-        var existingId=btn.getAttribute('data-reaction-id');
-        var current=parseInt(countEl.textContent)||0;
-        if(existingId){
-          db.collection('reactions').doc(existingId).delete().then(function(){ btn.classList.remove('reacted'); btn.removeAttribute('data-reaction-id'); countEl.textContent=Math.max(0,current-1)||''; });
-        } else {
-          db.collection('reactions').add({docId:docId,emoji:emoji,targetPseudo:btn.getAttribute('data-pseudo'),fromPseudo:currentPseudo,createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(ref){ btn.classList.add('reacted'); btn.setAttribute('data-reaction-id',ref.id); countEl.textContent=current+1; });
-        }
-      });
+    var totals={};
+    var myReactions={};
+    snap.forEach(function(doc){
+      var d=doc.data();
+      var key=d.docId+'_'+d.emoji;
+      totals[key]=(totals[key]||0)+1;
+      if(d.fromPseudo===currentPseudo) myReactions[key]=doc.id;
     });
-  }).catch(function(){});
+    // Met à jour l'UI
+    document.querySelectorAll('.reaction-btn').forEach(function(btn){
+      var docId=btn.getAttribute('data-doc');
+      var emoji=btn.getAttribute('data-emoji');
+      var key=docId+'_'+emoji;
+      var countEl=document.getElementById('rc-'+docId+'-'+emoji);
+      if(countEl) countEl.textContent=(totals[key]||0)||'';
+      if(myReactions[key]){ btn.classList.add('reacted'); btn.setAttribute('data-reaction-id',myReactions[key]); }
+      btn.addEventListener('click',function(){handleReaction(btn,docId,emoji,pseudo,myReactions);});
+    });
+  }).catch(function(){
+    document.querySelectorAll('.reaction-count').forEach(function(el){el.textContent='';});
+  });
+}
+
+function handleReaction(btn, docId, emoji, targetPseudo, myReactions){
+  if(!currentPseudo){showToast('Connecte-toi pour réagir','error');return;}
+  var key=docId+'_'+emoji;
+  var existingId=btn.getAttribute('data-reaction-id');
+  var countEl=document.getElementById('rc-'+docId+'-'+emoji);
+  var current=parseInt(countEl.textContent)||0;
+  if(existingId){
+    // Retire la réaction
+    db.collection('reactions').doc(existingId).delete().then(function(){
+      btn.classList.remove('reacted');
+      btn.removeAttribute('data-reaction-id');
+      countEl.textContent=Math.max(0,current-1)||'';
+    });
+  } else {
+    // Ajoute la réaction
+    db.collection('reactions').add({
+      docId:docId, emoji:emoji,
+      targetPseudo:targetPseudo, fromPseudo:currentPseudo,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(ref){
+      btn.classList.add('reacted');
+      btn.setAttribute('data-reaction-id',ref.id);
+      countEl.textContent=current+1;
+    });
+  }
 }
 
 // =====================
@@ -2258,27 +2751,41 @@ function initReactions(pseudo){
 // =====================
 function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
 
-document.getElementById('btn-delete-classements').addEventListener('click',function(){ document.getElementById('modal-delete-classements').classList.remove('hidden'); });
+// Supprimer classements
+document.getElementById('btn-delete-classements').addEventListener('click',function(){
+  document.getElementById('modal-delete-classements').classList.remove('hidden');
+});
 document.getElementById('confirm-delete-classements').addEventListener('click',function(){
   var btn=this; btn.disabled=true; btn.textContent='Suppression...';
   db.collection('classements').where('pseudo','==',currentPseudo).get().then(function(snap){
     var batch=db.batch(); snap.forEach(function(doc){batch.delete(doc.ref);}); return batch.commit();
-  }).then(function(){ closeModal('modal-delete-classements'); btn.disabled=false; btn.textContent='Supprimer'; showToast('🗑️ Classements supprimés','info'); loadSettingsStats(); })
-  .catch(function(err){ btn.disabled=false; btn.textContent='Supprimer'; showToast('Erreur : '+err.message,'error'); closeModal('modal-delete-classements'); });
+  }).then(function(){
+    closeModal('modal-delete-classements'); btn.disabled=false; btn.textContent='Supprimer';
+    showToast('🗑️ Classements supprimés','info'); loadSettingsStats();
+  }).catch(function(err){ btn.disabled=false; btn.textContent='Supprimer'; showToast('Erreur : '+err.message,'error'); closeModal('modal-delete-classements'); });
 });
 
-document.getElementById('btn-delete-kmk').addEventListener('click',function(){ document.getElementById('modal-delete-kmk').classList.remove('hidden'); });
+// Supprimer KMK
+document.getElementById('btn-delete-kmk').addEventListener('click',function(){
+  document.getElementById('modal-delete-kmk').classList.remove('hidden');
+});
 document.getElementById('confirm-delete-kmk').addEventListener('click',function(){
   var btn=this; btn.disabled=true; btn.textContent='Suppression...';
   db.collection('kmk_resultats').where('pseudo','==',currentPseudo).get().then(function(snap){
     var batch=db.batch(); snap.forEach(function(doc){batch.delete(doc.ref);}); return batch.commit();
-  }).then(function(){ closeModal('modal-delete-kmk'); btn.disabled=false; btn.textContent='Supprimer'; showToast('🗑️ Résultats KMK supprimés','info'); loadSettingsStats(); })
-  .catch(function(err){ btn.disabled=false; btn.textContent='Supprimer'; showToast('Erreur : '+err.message,'error'); closeModal('modal-delete-kmk'); });
+  }).then(function(){
+    closeModal('modal-delete-kmk'); btn.disabled=false; btn.textContent='Supprimer';
+    showToast('🗑️ Résultats KMK supprimés','info'); loadSettingsStats();
+  }).catch(function(err){ btn.disabled=false; btn.textContent='Supprimer'; showToast('Erreur : '+err.message,'error'); closeModal('modal-delete-kmk'); });
 });
 
-document.getElementById('btn-delete-account').addEventListener('click',function(){ document.getElementById('modal-delete-account').classList.remove('hidden'); });
+// Supprimer compte
+document.getElementById('btn-delete-account').addEventListener('click',function(){
+  document.getElementById('modal-delete-account').classList.remove('hidden');
+});
 document.getElementById('confirm-delete-account').addEventListener('click',function(){
-  var btn=this; btn.disabled=true; btn.textContent='Suppression...'; var pseudo=currentPseudo;
+  var btn=this; btn.disabled=true; btn.textContent='Suppression...';
+  var pseudo=currentPseudo;
   Promise.all([
     db.collection('classements').where('pseudo','==',pseudo).get().then(function(snap){ var b=db.batch(); snap.forEach(function(d){b.delete(d.ref);}); return b.commit(); }),
     db.collection('kmk_resultats').where('pseudo','==',pseudo).get().then(function(snap){ var b=db.batch(); snap.forEach(function(d){b.delete(d.ref);}); return b.commit(); }),
@@ -2295,11 +2802,12 @@ document.getElementById('confirm-delete-account').addEventListener('click',funct
   }).catch(function(err){ btn.disabled=false; btn.textContent='SUPPRIMER MON COMPTE'; showToast('Erreur : '+err.message,'error'); closeModal('modal-delete-account'); });
 });
 
+// Fermeture modals en cliquant dehors
 ['modal-delete-classements','modal-delete-kmk','modal-delete-account'].forEach(function(id){
   document.getElementById(id).addEventListener('click',function(e){ if(e.target===this) closeModal(id); });
 });
 
-// Init settings au démarrage
+// Charge les settings au démarrage
 loadSettings();
 </script>
 
