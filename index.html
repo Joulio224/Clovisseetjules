@@ -238,7 +238,7 @@ font-family: inherit; -webkit-appearance: none; transition: all 0.18s;
 .game-card .gc-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
 .game-card .gc-title { font-size: 22px; font-weight: 900; color: #FFD700; letter-spacing: 2px; margin-bottom: 6px; }
 .game-card .gc-desc { font-size: 13px; color: #666; line-height: 1.5; }
-/* Carte de reprise de pause sur l’écran de sélection */
+/* Carte de reprise de pause sur l'écran de sélection */
 .game-card.pause-card { border-color: #4488ff; }
 .game-card.pause-card:hover { border-color: #88bbff; }
 .game-card.pause-card .gc-title { color: #4488ff; }
@@ -340,10 +340,10 @@ padding: 40px 20px; text-align: center; margin-bottom: 16px;
 /* EXPORT */
 .export-row { display: flex; gap: 10px; margin-top: 10px; }
 .btn-export {
-flex: 1; padding: 14px 8px; background: none; border-radius: 14px;
-font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
--webkit-appearance: none; text-align: center; letter-spacing: 1px;
-text-transform: uppercase; transition: all 0.15s;
+  flex: 1; padding: 14px 8px; background: none; border-radius: 14px;
+  font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
+  -webkit-appearance: none; text-align: center; letter-spacing: 1px;
+  text-transform: uppercase; transition: all 0.15s;
 }
 .btn-export-pdf { border: 2px solid #cc44ff; color: #cc44ff; }
 .btn-export-pdf:hover { background: #cc44ff; color: #000; }
@@ -351,19 +351,19 @@ text-transform: uppercase; transition: all 0.15s;
 .btn-export-mail:hover { background: #22bb55; color: #000; }
 /* PARAMÈTRES */
 .settings-section {
-background: #131328; border: 2px solid #1e1e40; border-radius: 18px;
-margin-bottom: 14px; overflow: hidden;
+  background: #131328; border: 2px solid #1e1e40; border-radius: 18px;
+  margin-bottom: 14px; overflow: hidden;
 }
 .settings-section-header {
-padding: 16px 18px; display: flex; align-items: center; gap: 12px;
-border-bottom: 2px solid #1e1e40;
+  padding: 16px 18px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 2px solid #1e1e40;
 }
 .settings-section-header .sh-icon { font-size: 22px; }
 .settings-section-header .sh-title { font-size: 15px; font-weight: 800; color: #fff; flex: 1; }
 .settings-section-header .sh-desc { font-size: 12px; color: #444; margin-top: 2px; }
 .settings-row {
-padding: 14px 18px; display: flex; align-items: center; gap: 14px;
-border-bottom: 1px solid #0e0e20;
+  padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid #0e0e20;
 }
 .settings-row:last-child { border-bottom: none; }
 .settings-row .sr-label { flex: 1; }
@@ -373,43 +373,43 @@ border-bottom: 1px solid #0e0e20;
 .toggle { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
 .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
 .toggle-slider {
-position: absolute; inset: 0; background: #2a2a55; border-radius: 26px;
-cursor: pointer; transition: background 0.2s;
+  position: absolute; inset: 0; background: #2a2a55; border-radius: 26px;
+  cursor: pointer; transition: background 0.2s;
 }
 .toggle-slider:before {
-content: ‘’; position: absolute; height: 18px; width: 18px;
-left: 4px; bottom: 4px; background: #555; border-radius: 50%;
-transition: all 0.2s;
+  content: ''; position: absolute; height: 18px; width: 18px;
+  left: 4px; bottom: 4px; background: #555; border-radius: 50%;
+  transition: all 0.2s;
 }
 .toggle input:checked + .toggle-slider { background: #FFD700; }
 .toggle input:checked + .toggle-slider:before { transform: translateX(22px); background: #000; }
 /* Select */
 .settings-select {
-background: #0e0e20; border: 2px solid #2a2a55; border-radius: 10px;
-color: #fff; padding: 8px 12px; font-size: 13px; font-weight: 700;
-font-family: inherit; outline: none; cursor: pointer; -webkit-appearance: none;
+  background: #0e0e20; border: 2px solid #2a2a55; border-radius: 10px;
+  color: #fff; padding: 8px 12px; font-size: 13px; font-weight: 700;
+  font-family: inherit; outline: none; cursor: pointer; -webkit-appearance: none;
 }
 .settings-select:focus { border-color: #FFD700; }
 /* Danger zone */
 .settings-section.danger { border-color: #441111; }
 .settings-section.danger .settings-section-header { border-bottom-color: #441111; }
 .btn-danger {
-padding: 11px 18px; background: none; border: 2px solid #cc3333;
-border-radius: 12px; color: #cc3333; font-size: 13px; font-weight: 800;
-cursor: pointer; font-family: inherit; -webkit-appearance: none; white-space: nowrap;
-transition: all 0.15s;
+  padding: 11px 18px; background: none; border: 2px solid #cc3333;
+  border-radius: 12px; color: #cc3333; font-size: 13px; font-weight: 800;
+  cursor: pointer; font-family: inherit; -webkit-appearance: none; white-space: nowrap;
+  transition: all 0.15s;
 }
 .btn-danger:hover { background: #cc3333; color: #fff; }
 /* Modal confirmation */
 .modal-overlay {
-position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-display: flex; align-items: center; justify-content: center;
-z-index: 999; padding: 20px;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; padding: 20px;
 }
 .modal-overlay.hidden { display: none; }
 .modal-box {
-background: #131328; border: 2px solid #cc3333; border-radius: 20px;
-padding: 28px 24px; max-width: 380px; width: 100%; text-align: center;
+  background: #131328; border: 2px solid #cc3333; border-radius: 20px;
+  padding: 28px 24px; max-width: 380px; width: 100%; text-align: center;
 }
 .modal-box .modal-icon { font-size: 40px; margin-bottom: 12px; }
 .modal-box .modal-title { font-size: 20px; font-weight: 900; color: #cc3333; margin-bottom: 10px; }
@@ -417,20 +417,20 @@ padding: 28px 24px; max-width: 380px; width: 100%; text-align: center;
 .modal-box .modal-body b { color: #fff; }
 .modal-actions { display: flex; gap: 10px; }
 .modal-actions .btn-cancel-modal {
-flex: 1; padding: 14px; background: none; border: 2px solid #333;
-border-radius: 12px; color: #666; font-size: 14px; font-weight: 800;
-cursor: pointer; font-family: inherit; -webkit-appearance: none;
+  flex: 1; padding: 14px; background: none; border: 2px solid #333;
+  border-radius: 12px; color: #666; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: inherit; -webkit-appearance: none;
 }
 .modal-actions .btn-confirm-modal {
-flex: 1; padding: 14px; background: #cc3333; border: none;
-border-radius: 12px; color: #fff; font-size: 14px; font-weight: 800;
-cursor: pointer; font-family: inherit; -webkit-appearance: none;
+  flex: 1; padding: 14px; background: #cc3333; border: none;
+  border-radius: 12px; color: #fff; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: inherit; -webkit-appearance: none;
 }
 /* Stats badge */
 .stat-pill {
-display: inline-block; padding: 5px 12px; border-radius: 20px;
-background: #0e0e20; border: 1.5px solid #2a2a55;
-font-size: 12px; font-weight: 700; color: #888; margin: 3px;
+  display: inline-block; padding: 5px 12px; border-radius: 20px;
+  background: #0e0e20; border: 1.5px solid #2a2a55;
+  font-size: 12px; font-weight: 700; color: #888; margin: 3px;
 }
 .stat-pill b { color: #FFD700; }
 
@@ -488,59 +488,55 @@ padding: 18px; text-align: center; margin-bottom: 16px;
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="subtitle" style="margin-bottom:28px" id="kmk-setup-sub">Configuration</div>
 
-```
-<!-- Mode de jeu : solo ou multijoueur -->
-<div style="display:flex;gap:8px;margin-bottom:20px;">
-  <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
-  <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
-</div>
-
-<!-- Configuration solo -->
-<div id="kmk-solo-config">
-  <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
-  <div class="suggest-groups" id="kmk-suggest-groups"></div>
-  <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
-  <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
-  <div style="margin-top:20px; margin-bottom:6px">
-    <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
-    <div class="kmk-rounds-input">
-      <button id="kmk-rounds-minus">−</button>
-      <span id="kmk-rounds-val">3</span>
-      <button id="kmk-rounds-plus">+</button>
+    <!-- Mode de jeu : solo ou multijoueur -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
+      <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
     </div>
-  </div>
-  <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
-</div>
 
-<!-- Configuration multijoueur -->
-<div id="kmk-multi-config" class="hidden">
-  <div class="multi-badge">👥 Mode multijoueur</div>
-  <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
-    Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
-  </p>
-  <div id="kmk-multi-create-section">
-    <div style="margin-bottom:6px">
-      <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
-      <div class="kmk-rounds-input">
-        <button id="kmk-multi-rounds-minus">−</button>
-        <span id="kmk-multi-rounds-val">3</span>
-        <button id="kmk-multi-rounds-plus">+</button>
+    <!-- Configuration solo -->
+    <div id="kmk-solo-config">
+      <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
+      <div class="suggest-groups" id="kmk-suggest-groups"></div>
+      <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
+      <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
+      <div style="margin-top:20px; margin-bottom:6px">
+        <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
+        <div class="kmk-rounds-input">
+          <button id="kmk-rounds-minus">−</button>
+          <span id="kmk-rounds-val">3</span>
+          <button id="kmk-rounds-plus">+</button>
+        </div>
+      </div>
+      <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
+    </div>
+
+    <!-- Configuration multijoueur -->
+    <div id="kmk-multi-config" class="hidden">
+      <div class="multi-badge">👥 Mode multijoueur</div>
+      <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
+        Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
+      </p>
+      <div id="kmk-multi-create-section">
+        <div style="margin-bottom:6px">
+          <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
+          <div class="kmk-rounds-input">
+            <button id="kmk-multi-rounds-minus">−</button>
+            <span id="kmk-multi-rounds-val">3</span>
+            <button id="kmk-multi-rounds-plus">+</button>
+          </div>
+        </div>
+        <button class="btn-primary" id="kmk-multi-btn-create">🎮 Créer une partie →</button>
+        <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou rejoindre une partie existante —</div>
+        <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px;text-align:center" />
+        <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
       </div>
     </div>
-    <button class="btn-primary" id="kmk-multi-btn-create">🎮 Créer une partie →</button>
-    <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou rejoindre une partie existante —</div>
-    <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px;text-align:center" />
-    <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
-  </div>
-</div>
 
-<button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
-```
-
+    <button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
   </div>
 
   <!-- KMK MULTI LOBBY (attente de l'adversaire) -->
-
   <div id="screen-kmk-multi-lobby" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="multi-badge pulse" id="kmk-lobby-status-badge">⏳ En attente...</div>
@@ -563,7 +559,6 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI PLAY : CHOISIR 3 NOMS POUR L'ADVERSAIRE -->
-
   <div id="screen-kmk-multi-pick" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div id="kmk-multi-pick-banner" class="multi-turn-banner" style="margin-bottom:16px;">
@@ -580,7 +575,6 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI PLAY : JOUER SA MANCHE (noms choisis par l'adversaire) -->
-
   <div id="screen-kmk-play" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="kmk-round-info" id="kmk-round-info">Manche 1 / 3</div>
@@ -608,7 +602,6 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI : ATTENTE DU TOUR DE L'ADVERSAIRE -->
-
   <div id="screen-kmk-multi-wait" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="multi-waiting-overlay">
@@ -724,157 +717,152 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- PARAMÈTRES -->
-
   <div id="screen-settings" class="hidden">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
       <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
       <div style="font-size:28px;font-weight:900;color:#FFD700;letter-spacing:3px;">PARAMÈTRES</div>
     </div>
 
-```
-<!-- Profil -->
-<div class="settings-section">
-  <div class="settings-section-header">
-    <span class="sh-icon">👤</span>
-    <div><div class="sh-title">Profil</div><div class="sh-desc">Ton compte Jeux de Collégiens</div></div>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Pseudo</div>
-      <div class="sr-desc" id="settings-pseudo-display">—</div>
+    <!-- Profil -->
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <span class="sh-icon">👤</span>
+        <div><div class="sh-title">Profil</div><div class="sh-desc">Ton compte Jeux de Collégiens</div></div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Pseudo</div>
+          <div class="sr-desc" id="settings-pseudo-display">—</div>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Statistiques</div>
+          <div id="settings-stats" style="margin-top:6px;"></div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Statistiques</div>
-      <div id="settings-stats" style="margin-top:6px;"></div>
-    </div>
-  </div>
-</div>
 
-<!-- Vie privée -->
-<div class="settings-section">
-  <div class="settings-section-header">
-    <span class="sh-icon">🔒</span>
-    <div><div class="sh-title">Vie privée</div><div class="sh-desc">Qui peut voir tes résultats</div></div>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Visibilité des classements</div>
-      <div class="sr-desc">Qui peut voir tes classements dans l'onglet Réponses</div>
+    <!-- Vie privée -->
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <span class="sh-icon">🔒</span>
+        <div><div class="sh-title">Vie privée</div><div class="sh-desc">Qui peut voir tes résultats</div></div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Visibilité des classements</div>
+          <div class="sr-desc">Qui peut voir tes classements dans l'onglet Réponses</div>
+        </div>
+        <select class="settings-select" id="settings-visibility-classement">
+          <option value="all">Tout le monde</option>
+          <option value="friends">Amis seulement</option>
+          <option value="me">Moi uniquement</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Visibilité des KMK</div>
+          <div class="sr-desc">Qui peut voir tes résultats Kiss Marry Kill</div>
+        </div>
+        <select class="settings-select" id="settings-visibility-kmk">
+          <option value="all">Tout le monde</option>
+          <option value="friends">Amis seulement</option>
+          <option value="me">Moi uniquement</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Afficher dans les leaderboards</div>
+          <div class="sr-desc">Ton pseudo apparaît dans les futurs classements publics</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-leaderboard" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Mode discret</div>
+          <div class="sr-desc">Masque ton pseudo aux autres joueurs en multijoueur (affiche "Joueur mystère")</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-stealth" /><span class="toggle-slider"></span></label>
+      </div>
     </div>
-    <select class="settings-select" id="settings-visibility-classement">
-      <option value="all">Tout le monde</option>
-      <option value="friends">Amis seulement</option>
-      <option value="me">Moi uniquement</option>
-    </select>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Visibilité des KMK</div>
-      <div class="sr-desc">Qui peut voir tes résultats Kiss Marry Kill</div>
-    </div>
-    <select class="settings-select" id="settings-visibility-kmk">
-      <option value="all">Tout le monde</option>
-      <option value="friends">Amis seulement</option>
-      <option value="me">Moi uniquement</option>
-    </select>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Afficher dans les leaderboards</div>
-      <div class="sr-desc">Ton pseudo apparaît dans les futurs classements publics</div>
-    </div>
-    <label class="toggle"><input type="checkbox" id="settings-leaderboard" checked /><span class="toggle-slider"></span></label>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Mode discret</div>
-      <div class="sr-desc">Masque ton pseudo aux autres joueurs en multijoueur (affiche "Joueur mystère")</div>
-    </div>
-    <label class="toggle"><input type="checkbox" id="settings-stealth" /><span class="toggle-slider"></span></label>
-  </div>
-</div>
 
-<!-- Expérience de jeu -->
-<div class="settings-section">
-  <div class="settings-section-header">
-    <span class="sh-icon">🎮</span>
-    <div><div class="sh-title">Expérience de jeu</div><div class="sh-desc">Personnalise le comportement du jeu</div></div>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Sauvegarde automatique</div>
-      <div class="sr-desc">Sauvegarde le classement à chaque question (recommandé)</div>
+    <!-- Expérience de jeu -->
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <span class="sh-icon">🎮</span>
+        <div><div class="sh-title">Expérience de jeu</div><div class="sh-desc">Personnalise le comportement du jeu</div></div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Sauvegarde automatique</div>
+          <div class="sr-desc">Sauvegarde le classement à chaque question (recommandé)</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-autosave" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Confirmation avant de quitter</div>
+          <div class="sr-desc">Demande une confirmation si tu quittes un classement en cours</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-confirm-quit" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Animations</div>
+          <div class="sr-desc">Effets visuels lors des choix (désactiver si lent)</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="settings-animations" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Manches KMK par défaut</div>
+          <div class="sr-desc">Nombre de manches pré-sélectionné au lancement</div>
+        </div>
+        <select class="settings-select" id="settings-kmk-default-rounds">
+          <option value="1">1</option>
+          <option value="3" selected>3</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+        </select>
+      </div>
     </div>
-    <label class="toggle"><input type="checkbox" id="settings-autosave" checked /><span class="toggle-slider"></span></label>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Confirmation avant de quitter</div>
-      <div class="sr-desc">Demande une confirmation si tu quittes un classement en cours</div>
-    </div>
-    <label class="toggle"><input type="checkbox" id="settings-confirm-quit" checked /><span class="toggle-slider"></span></label>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Animations</div>
-      <div class="sr-desc">Effets visuels lors des choix (désactiver si lent)</div>
-    </div>
-    <label class="toggle"><input type="checkbox" id="settings-animations" checked /><span class="toggle-slider"></span></label>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Manches KMK par défaut</div>
-      <div class="sr-desc">Nombre de manches pré-sélectionné au lancement</div>
-    </div>
-    <select class="settings-select" id="settings-kmk-default-rounds">
-      <option value="1">1</option>
-      <option value="3" selected>3</option>
-      <option value="5">5</option>
-      <option value="10">10</option>
-    </select>
-  </div>
-</div>
 
-<!-- Danger zone -->
-<div class="settings-section danger">
-  <div class="settings-section-header">
-    <span class="sh-icon">⚠️</span>
-    <div><div class="sh-title" style="color:#cc3333;">Zone de danger</div><div class="sh-desc">Actions irréversibles</div></div>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Supprimer mes classements</div>
-      <div class="sr-desc">Efface tous tes classements sauvegardés</div>
+    <!-- Danger zone -->
+    <div class="settings-section danger">
+      <div class="settings-section-header">
+        <span class="sh-icon">⚠️</span>
+        <div><div class="sh-title" style="color:#cc3333;">Zone de danger</div><div class="sh-desc">Actions irréversibles</div></div>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Supprimer mes classements</div>
+          <div class="sr-desc">Efface tous tes classements sauvegardés</div>
+        </div>
+        <button class="btn-danger" id="btn-delete-classements">Supprimer</button>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name">Supprimer mes KMK</div>
+          <div class="sr-desc">Efface tous tes résultats Kiss Marry Kill</div>
+        </div>
+        <button class="btn-danger" id="btn-delete-kmk">Supprimer</button>
+      </div>
+      <div class="settings-row">
+        <div class="sr-label">
+          <div class="sr-name" style="color:#cc3333;">Supprimer mon compte</div>
+          <div class="sr-desc">Supprime définitivement ton compte et toutes tes données. <b style="color:#ff6666;">Impossible de le recréer seul.</b></div>
+        </div>
+        <button class="btn-danger" id="btn-delete-account">Supprimer</button>
+      </div>
     </div>
-    <button class="btn-danger" id="btn-delete-classements">Supprimer</button>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name">Supprimer mes KMK</div>
-      <div class="sr-desc">Efface tous tes résultats Kiss Marry Kill</div>
-    </div>
-    <button class="btn-danger" id="btn-delete-kmk">Supprimer</button>
-  </div>
-  <div class="settings-row">
-    <div class="sr-label">
-      <div class="sr-name" style="color:#cc3333;">Supprimer mon compte</div>
-      <div class="sr-desc">Supprime définitivement ton compte et toutes tes données. <b style="color:#ff6666;">Impossible de le recréer seul.</b></div>
-    </div>
-    <button class="btn-danger" id="btn-delete-account">Supprimer</button>
-  </div>
-</div>
 
-<div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
-  clovisseetjulles.netlify.app · v2.0
-</div>
-```
-
+    <div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
+      clovisseetjulles.netlify.app · v2.0
+    </div>
   </div>
 
   <!-- MODALS DE CONFIRMATION -->
-
   <div class="modal-overlay hidden" id="modal-delete-classements">
     <div class="modal-box">
       <div class="modal-icon">🗑️</div>
@@ -1097,7 +1085,7 @@ function showToast(msg,type){
 function hideAll(){
   ["screen-resume","screen-auth","screen-input","screen-compare","screen-result","screen-saved",
    "screen-game-select","screen-kmk-setup","screen-kmk-play","screen-kmk-result",
-   "screen-kmk-multi-lobby","screen-kmk-multi-pick","screen-kmk-multi-wait"]
+   "screen-kmk-multi-lobby","screen-kmk-multi-pick","screen-kmk-multi-wait","screen-settings"]
     .forEach(function(id){hide(id);});
 }
 function genCode(){
@@ -2206,6 +2194,189 @@ function exportKMKMail(){
 
 document.getElementById('btn-export-pdf-kmk').addEventListener('click', exportKMKPDF);
 document.getElementById('btn-export-mail-kmk').addEventListener('click', exportKMKMail);
+
+// =====================
+//  PARAMÈTRES
+// =====================
+var SETTINGS_KEY = 'jdc_settings';
+
+var userSettings = {
+  visibilityClassement: 'all',
+  visibilityKmk: 'all',
+  leaderboard: true,
+  stealth: false,
+  autosave: true,
+  confirmQuit: true,
+  animations: true,
+  kmkDefaultRounds: 3
+};
+
+function loadSettings(){
+  try{
+    var raw = localStorage.getItem(SETTINGS_KEY);
+    if(raw){ var parsed = JSON.parse(raw); Object.assign(userSettings, parsed); }
+  }catch(e){}
+  applySettingsToUI();
+}
+
+function saveSettings(){
+  // Lit les valeurs de l'UI
+  userSettings.visibilityClassement = document.getElementById('settings-visibility-classement').value;
+  userSettings.visibilityKmk = document.getElementById('settings-visibility-kmk').value;
+  userSettings.leaderboard = document.getElementById('settings-leaderboard').checked;
+  userSettings.stealth = document.getElementById('settings-stealth').checked;
+  userSettings.autosave = document.getElementById('settings-autosave').checked;
+  userSettings.confirmQuit = document.getElementById('settings-confirm-quit').checked;
+  userSettings.animations = document.getElementById('settings-animations').checked;
+  userSettings.kmkDefaultRounds = parseInt(document.getElementById('settings-kmk-default-rounds').value) || 3;
+  try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(userSettings)); }catch(e){}
+  // Applique les effets immédiats
+  kmkRoundsTotal = userSettings.kmkDefaultRounds;
+  document.getElementById('kmk-rounds-val').textContent = kmkRoundsTotal;
+  showToast('✅ Paramètres sauvegardés','info');
+}
+
+function applySettingsToUI(){
+  document.getElementById('settings-visibility-classement').value = userSettings.visibilityClassement;
+  document.getElementById('settings-visibility-kmk').value = userSettings.visibilityKmk;
+  document.getElementById('settings-leaderboard').checked = userSettings.leaderboard;
+  document.getElementById('settings-stealth').checked = userSettings.stealth;
+  document.getElementById('settings-autosave').checked = userSettings.autosave;
+  document.getElementById('settings-confirm-quit').checked = userSettings.confirmQuit;
+  document.getElementById('settings-animations').checked = userSettings.animations;
+  document.getElementById('settings-kmk-default-rounds').value = String(userSettings.kmkDefaultRounds);
+}
+
+function openSettings(){
+  if(!currentPseudo){ showToast('Connecte-toi d\'abord','error'); return; }
+  hideAll();
+  show('screen-settings');
+  document.getElementById('settings-pseudo-display').textContent = currentPseudo;
+  applySettingsToUI();
+  loadSettingsStats();
+}
+
+function loadSettingsStats(){
+  var statsEl = document.getElementById('settings-stats');
+  statsEl.innerHTML = '<span style="color:#444;font-size:12px">Chargement...</span>';
+  var nbC=0, nbK=0;
+  db.collection('classements').where('pseudo','==',currentPseudo).get().then(function(snap){
+    nbC = snap.size;
+    db.collection('kmk_resultats').where('pseudo','==',currentPseudo).get().then(function(snap2){
+      nbK = snap2.size;
+      statsEl.innerHTML =
+        '<span class="stat-pill"><b>'+nbC+'</b> classement'+(nbC!==1?'s':'')+'</span>' +
+        '<span class="stat-pill"><b>'+nbK+'</b> KMK</span>';
+    }).catch(function(){ statsEl.innerHTML=''; });
+  }).catch(function(){ statsEl.innerHTML=''; });
+}
+
+// Bouton ouvrir paramètres
+document.getElementById('btn-open-settings').addEventListener('click', openSettings);
+
+// Auto-save chaque paramètre au changement (pas besoin de bouton Sauvegarder)
+['settings-visibility-classement','settings-visibility-kmk','settings-leaderboard',
+ 'settings-stealth','settings-autosave','settings-confirm-quit',
+ 'settings-animations','settings-kmk-default-rounds'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('change', function(){ saveSettings(); });
+});
+
+// =====================
+//  MODALS
+// =====================
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+
+// Supprimer classements
+document.getElementById('btn-delete-classements').addEventListener('click',function(){
+  document.getElementById('modal-delete-classements').classList.remove('hidden');
+});
+document.getElementById('confirm-delete-classements').addEventListener('click',function(){
+  var btn=this; btn.disabled=true; btn.textContent='Suppression...';
+  db.collection('classements').where('pseudo','==',currentPseudo).get().then(function(snap){
+    var batch = db.batch();
+    snap.forEach(function(doc){ batch.delete(doc.ref); });
+    return batch.commit();
+  }).then(function(){
+    closeModal('modal-delete-classements');
+    btn.disabled=false; btn.textContent='Supprimer';
+    showToast('🗑️ Classements supprimés','info');
+    loadSettingsStats();
+  }).catch(function(err){
+    btn.disabled=false; btn.textContent='Supprimer';
+    showToast('Erreur : '+err.message,'error');
+    closeModal('modal-delete-classements');
+  });
+});
+
+// Supprimer KMK
+document.getElementById('btn-delete-kmk').addEventListener('click',function(){
+  document.getElementById('modal-delete-kmk').classList.remove('hidden');
+});
+document.getElementById('confirm-delete-kmk').addEventListener('click',function(){
+  var btn=this; btn.disabled=true; btn.textContent='Suppression...';
+  db.collection('kmk_resultats').where('pseudo','==',currentPseudo).get().then(function(snap){
+    var batch = db.batch();
+    snap.forEach(function(doc){ batch.delete(doc.ref); });
+    return batch.commit();
+  }).then(function(){
+    closeModal('modal-delete-kmk');
+    btn.disabled=false; btn.textContent='Supprimer';
+    showToast('🗑️ Résultats KMK supprimés','info');
+    loadSettingsStats();
+  }).catch(function(err){
+    btn.disabled=false; btn.textContent='Supprimer';
+    showToast('Erreur : '+err.message,'error');
+    closeModal('modal-delete-kmk');
+  });
+});
+
+// Supprimer compte
+document.getElementById('btn-delete-account').addEventListener('click',function(){
+  document.getElementById('modal-delete-account').classList.remove('hidden');
+});
+document.getElementById('confirm-delete-account').addEventListener('click',function(){
+  var btn=this; btn.disabled=true; btn.textContent='Suppression...';
+  var pseudo = currentPseudo;
+  // Supprime tout en parallèle
+  var tasks = [];
+  tasks.push(db.collection('classements').where('pseudo','==',pseudo).get().then(function(snap){
+    var b=db.batch(); snap.forEach(function(d){b.delete(d.ref);}); return b.commit();
+  }));
+  tasks.push(db.collection('kmk_resultats').where('pseudo','==',pseudo).get().then(function(snap){
+    var b=db.batch(); snap.forEach(function(d){b.delete(d.ref);}); return b.commit();
+  }));
+  tasks.push(db.collection('pauses').doc(pseudo.toLowerCase()).delete());
+  tasks.push(db.collection('users').doc(pseudo.toLowerCase()).delete());
+  Promise.all(tasks).then(function(){
+    // Déconnexion propre
+    authClearSession();
+    try{ localStorage.removeItem(SETTINGS_KEY); }catch(e){}
+    currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
+    document.getElementById('auth-user-bar').classList.add('hidden');
+    document.getElementById('tab-saved').classList.add('hidden');
+    document.getElementById('auth-pseudo').value='';
+    document.getElementById('auth-mdp').value='';
+    closeModal('modal-delete-account');
+    hideAll(); show('screen-auth');
+    showToast('💀 Compte supprimé','error');
+  }).catch(function(err){
+    btn.disabled=false; btn.textContent='SUPPRIMER MON COMPTE';
+    showToast('Erreur : '+err.message,'error');
+    closeModal('modal-delete-account');
+  });
+});
+
+// Fermeture des modals en cliquant dehors
+['modal-delete-classements','modal-delete-kmk','modal-delete-account'].forEach(function(id){
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this) closeModal(id);
+  });
+});
+
+// Charge les settings au démarrage
+loadSettings();
 </script>
 
 </body>
