@@ -1014,6 +1014,15 @@ function updatePauseCardOnGameSelect(saved){
 // =====================
 var SESSION_KEY = 'jdc_session';
 
+// Paramètres — déclarés ici pour être disponibles dès le login
+var SETTINGS_KEY='jdc_settings';
+var userSettings={visibilityClassement:'all',visibilityKmk:'all',leaderboard:true,stealth:false,autosave:true,confirmQuit:true,animations:true,kmkDefaultRounds:3,publicProfile:true,avatar:'🐱',theme:'dark',accent:'gold',bio:''};
+function loadSettings(){
+  try{ var raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(userSettings,JSON.parse(raw)); }catch(e){}
+  applyTheme(userSettings.theme);
+  applyAccent(userSettings.accent);
+}
+
 function authGetSession(){
   try{ var s=localStorage.getItem(SESSION_KEY); return s?JSON.parse(s):null; }catch(e){return null;}
 }
@@ -1945,8 +1954,6 @@ document.getElementById('btn-export-mail-kmk').addEventListener('click',exportKM
 // =====================
 //  PARAMÈTRES — THÈMES · AVATARS · ACCENT · BIO · SOCIAL
 // =====================
-var SETTINGS_KEY='jdc_settings';
-
 var AVATARS=['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
 
 var THEMES=[
@@ -1969,19 +1976,6 @@ var ACCENTS=[
   {id:'red',    color:'#ff4444',label:'Rouge'},
   {id:'cyan',   color:'#00ccdd',label:'Cyan'},
 ];
-
-var userSettings={
-  visibilityClassement:'all', visibilityKmk:'all',
-  leaderboard:true, stealth:false, autosave:true,
-  confirmQuit:true, animations:true, kmkDefaultRounds:3,
-  publicProfile:true, avatar:'🐱', theme:'dark', accent:'gold', bio:''
-};
-
-function loadSettings(){
-  try{ var raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(userSettings,JSON.parse(raw)); }catch(e){}
-  applyTheme(userSettings.theme);
-  applyAccent(userSettings.accent);
-}
 
 function saveSettings(){
   userSettings.visibilityClassement=document.getElementById('settings-visibility-classement').value;
