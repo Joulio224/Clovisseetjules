@@ -5,6 +5,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>Jeux de collégiens</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
@@ -336,6 +337,103 @@ padding: 40px 20px; text-align: center; margin-bottom: 16px;
 .pulse { animation: pulse 1.5s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+/* EXPORT */
+.export-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-export {
+flex: 1; padding: 14px 8px; background: none; border-radius: 14px;
+font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
+-webkit-appearance: none; text-align: center; letter-spacing: 1px;
+text-transform: uppercase; transition: all 0.15s;
+}
+.btn-export-pdf { border: 2px solid #cc44ff; color: #cc44ff; }
+.btn-export-pdf:hover { background: #cc44ff; color: #000; }
+.btn-export-mail { border: 2px solid #22bb55; color: #22bb55; }
+.btn-export-mail:hover { background: #22bb55; color: #000; }
+/* PARAMÈTRES */
+.settings-section {
+background: #131328; border: 2px solid #1e1e40; border-radius: 18px;
+margin-bottom: 14px; overflow: hidden;
+}
+.settings-section-header {
+padding: 16px 18px; display: flex; align-items: center; gap: 12px;
+border-bottom: 2px solid #1e1e40;
+}
+.settings-section-header .sh-icon { font-size: 22px; }
+.settings-section-header .sh-title { font-size: 15px; font-weight: 800; color: #fff; flex: 1; }
+.settings-section-header .sh-desc { font-size: 12px; color: #444; margin-top: 2px; }
+.settings-row {
+padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+border-bottom: 1px solid #0e0e20;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row .sr-label { flex: 1; }
+.settings-row .sr-name { font-size: 14px; font-weight: 700; color: #ddd; }
+.settings-row .sr-desc { font-size: 12px; color: #555; margin-top: 2px; line-height: 1.4; }
+/* Toggle switch */
+.toggle { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider {
+position: absolute; inset: 0; background: #2a2a55; border-radius: 26px;
+cursor: pointer; transition: background 0.2s;
+}
+.toggle-slider:before {
+content: ‘’; position: absolute; height: 18px; width: 18px;
+left: 4px; bottom: 4px; background: #555; border-radius: 50%;
+transition: all 0.2s;
+}
+.toggle input:checked + .toggle-slider { background: #FFD700; }
+.toggle input:checked + .toggle-slider:before { transform: translateX(22px); background: #000; }
+/* Select */
+.settings-select {
+background: #0e0e20; border: 2px solid #2a2a55; border-radius: 10px;
+color: #fff; padding: 8px 12px; font-size: 13px; font-weight: 700;
+font-family: inherit; outline: none; cursor: pointer; -webkit-appearance: none;
+}
+.settings-select:focus { border-color: #FFD700; }
+/* Danger zone */
+.settings-section.danger { border-color: #441111; }
+.settings-section.danger .settings-section-header { border-bottom-color: #441111; }
+.btn-danger {
+padding: 11px 18px; background: none; border: 2px solid #cc3333;
+border-radius: 12px; color: #cc3333; font-size: 13px; font-weight: 800;
+cursor: pointer; font-family: inherit; -webkit-appearance: none; white-space: nowrap;
+transition: all 0.15s;
+}
+.btn-danger:hover { background: #cc3333; color: #fff; }
+/* Modal confirmation */
+.modal-overlay {
+position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+display: flex; align-items: center; justify-content: center;
+z-index: 999; padding: 20px;
+}
+.modal-overlay.hidden { display: none; }
+.modal-box {
+background: #131328; border: 2px solid #cc3333; border-radius: 20px;
+padding: 28px 24px; max-width: 380px; width: 100%; text-align: center;
+}
+.modal-box .modal-icon { font-size: 40px; margin-bottom: 12px; }
+.modal-box .modal-title { font-size: 20px; font-weight: 900; color: #cc3333; margin-bottom: 10px; }
+.modal-box .modal-body { font-size: 14px; color: #888; line-height: 1.6; margin-bottom: 22px; }
+.modal-box .modal-body b { color: #fff; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions .btn-cancel-modal {
+flex: 1; padding: 14px; background: none; border: 2px solid #333;
+border-radius: 12px; color: #666; font-size: 14px; font-weight: 800;
+cursor: pointer; font-family: inherit; -webkit-appearance: none;
+}
+.modal-actions .btn-confirm-modal {
+flex: 1; padding: 14px; background: #cc3333; border: none;
+border-radius: 12px; color: #fff; font-size: 14px; font-weight: 800;
+cursor: pointer; font-family: inherit; -webkit-appearance: none;
+}
+/* Stats badge */
+.stat-pill {
+display: inline-block; padding: 5px 12px; border-radius: 20px;
+background: #0e0e20; border: 1.5px solid #2a2a55;
+font-size: 12px; font-weight: 700; color: #888; margin: 3px;
+}
+.stat-pill b { color: #FFD700; }
+
 /* Code de partie */
 .game-code-box {
 background: #0e1a0e; border: 2px solid #22bb55; border-radius: 14px;
@@ -351,7 +449,8 @@ padding: 18px; text-align: center; margin-bottom: 16px;
 
   <div id="auth-user-bar" class="auth-user-bar hidden">
     <span class="au-name" id="au-name-display"></span>
-    <button class="au-logout" id="btn-logout">Déconnexion</button>
+    <button class="au-logout" id="btn-open-settings" style="border-color:#FFD700;color:#FFD700;">⚙️ Paramètres</button>
+    <button class="au-logout" id="btn-logout">Déco</button>
   </div>
 
   <div class="tab-bar">
@@ -534,6 +633,10 @@ padding: 18px; text-align: center; margin-bottom: 16px;
     </div>
     <div id="kmk-result-list"></div>
     <button class="btn-primary" id="kmk-btn-save" style="margin-top:18px">💾 Sauvegarder</button>
+    <div class="export-row">
+      <button class="btn-export btn-export-pdf" id="btn-export-pdf-kmk">📄 PDF</button>
+      <button class="btn-export btn-export-mail" id="btn-export-mail-kmk">✉️ Mail</button>
+    </div>
     <button class="btn-outline" id="kmk-btn-new-game">Rejouer</button>
     <button class="btn-ghost" id="kmk-btn-change-game">Changer de jeu</button>
   </div>
@@ -602,6 +705,10 @@ padding: 18px; text-align: center; margin-bottom: 16px;
     <div id="result-badge-wrap"></div>
     <div id="result-list"></div>
     <button class="btn-primary" id="btn-save" style="margin-top:18px">💾 Sauvegarder dans Firebase</button>
+    <div class="export-row">
+      <button class="btn-export btn-export-pdf" id="btn-export-pdf-classement">📄 PDF</button>
+      <button class="btn-export btn-export-mail" id="btn-export-mail-classement">✉️ Mail</button>
+    </div>
     <button class="btn-outline" id="btn-new">Nouveau classement</button>
   </div>
 
@@ -614,6 +721,197 @@ padding: 18px; text-align: center; margin-bottom: 16px;
       <button class="tab" id="saved-tab-kmk" onclick="switchSavedTab('kmk')">💋 Kiss Marry Kill</button>
     </div>
     <div id="saved-list"><div style="color:#444;text-align:center;padding:40px">Chargement...</div></div>
+  </div>
+
+  <!-- PARAMÈTRES -->
+
+  <div id="screen-settings" class="hidden">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+      <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
+      <div style="font-size:28px;font-weight:900;color:#FFD700;letter-spacing:3px;">PARAMÈTRES</div>
+    </div>
+
+```
+<!-- Profil -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">👤</span>
+    <div><div class="sh-title">Profil</div><div class="sh-desc">Ton compte Jeux de Collégiens</div></div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Pseudo</div>
+      <div class="sr-desc" id="settings-pseudo-display">—</div>
+    </div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Statistiques</div>
+      <div id="settings-stats" style="margin-top:6px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Vie privée -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">🔒</span>
+    <div><div class="sh-title">Vie privée</div><div class="sh-desc">Qui peut voir tes résultats</div></div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Visibilité des classements</div>
+      <div class="sr-desc">Qui peut voir tes classements dans l'onglet Réponses</div>
+    </div>
+    <select class="settings-select" id="settings-visibility-classement">
+      <option value="all">Tout le monde</option>
+      <option value="friends">Amis seulement</option>
+      <option value="me">Moi uniquement</option>
+    </select>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Visibilité des KMK</div>
+      <div class="sr-desc">Qui peut voir tes résultats Kiss Marry Kill</div>
+    </div>
+    <select class="settings-select" id="settings-visibility-kmk">
+      <option value="all">Tout le monde</option>
+      <option value="friends">Amis seulement</option>
+      <option value="me">Moi uniquement</option>
+    </select>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Afficher dans les leaderboards</div>
+      <div class="sr-desc">Ton pseudo apparaît dans les futurs classements publics</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-leaderboard" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Mode discret</div>
+      <div class="sr-desc">Masque ton pseudo aux autres joueurs en multijoueur (affiche "Joueur mystère")</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-stealth" /><span class="toggle-slider"></span></label>
+  </div>
+</div>
+
+<!-- Expérience de jeu -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">🎮</span>
+    <div><div class="sh-title">Expérience de jeu</div><div class="sh-desc">Personnalise le comportement du jeu</div></div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Sauvegarde automatique</div>
+      <div class="sr-desc">Sauvegarde le classement à chaque question (recommandé)</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-autosave" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Confirmation avant de quitter</div>
+      <div class="sr-desc">Demande une confirmation si tu quittes un classement en cours</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-confirm-quit" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Animations</div>
+      <div class="sr-desc">Effets visuels lors des choix (désactiver si lent)</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-animations" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Manches KMK par défaut</div>
+      <div class="sr-desc">Nombre de manches pré-sélectionné au lancement</div>
+    </div>
+    <select class="settings-select" id="settings-kmk-default-rounds">
+      <option value="1">1</option>
+      <option value="3" selected>3</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+    </select>
+  </div>
+</div>
+
+<!-- Danger zone -->
+<div class="settings-section danger">
+  <div class="settings-section-header">
+    <span class="sh-icon">⚠️</span>
+    <div><div class="sh-title" style="color:#cc3333;">Zone de danger</div><div class="sh-desc">Actions irréversibles</div></div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Supprimer mes classements</div>
+      <div class="sr-desc">Efface tous tes classements sauvegardés</div>
+    </div>
+    <button class="btn-danger" id="btn-delete-classements">Supprimer</button>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Supprimer mes KMK</div>
+      <div class="sr-desc">Efface tous tes résultats Kiss Marry Kill</div>
+    </div>
+    <button class="btn-danger" id="btn-delete-kmk">Supprimer</button>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name" style="color:#cc3333;">Supprimer mon compte</div>
+      <div class="sr-desc">Supprime définitivement ton compte et toutes tes données. <b style="color:#ff6666;">Impossible de le recréer seul.</b></div>
+    </div>
+    <button class="btn-danger" id="btn-delete-account">Supprimer</button>
+  </div>
+</div>
+
+<div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
+  clovisseetjulles.netlify.app · v2.0
+</div>
+```
+
+  </div>
+
+  <!-- MODALS DE CONFIRMATION -->
+
+  <div class="modal-overlay hidden" id="modal-delete-classements">
+    <div class="modal-box">
+      <div class="modal-icon">🗑️</div>
+      <div class="modal-title">Supprimer les classements ?</div>
+      <div class="modal-body">Tous tes classements sauvegardés seront <b>définitivement effacés</b>. Cette action est irréversible.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" onclick="closeModal('modal-delete-classements')">Annuler</button>
+        <button class="btn-confirm-modal" id="confirm-delete-classements">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modal-delete-kmk">
+    <div class="modal-box">
+      <div class="modal-icon">🗑️</div>
+      <div class="modal-title">Supprimer les KMK ?</div>
+      <div class="modal-body">Tous tes résultats Kiss Marry Kill seront <b>définitivement effacés</b>. Cette action est irréversible.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" onclick="closeModal('modal-delete-kmk')">Annuler</button>
+        <button class="btn-confirm-modal" id="confirm-delete-kmk">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modal-delete-account">
+    <div class="modal-box" style="border-color:#ff2222;">
+      <div class="modal-icon">💀</div>
+      <div class="modal-title">Supprimer ton compte ?</div>
+      <div class="modal-body">
+        Ton compte, tous tes classements et résultats KMK seront <b>définitivement supprimés</b>.<br><br>
+        ⚠️ <b style="color:#ff6666;">Tu ne pourras pas recréer un compte toi-même.</b> Il faudra contacter un admin pour en avoir un nouveau.
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" onclick="closeModal('modal-delete-account')">Annuler</button>
+        <button class="btn-confirm-modal" id="confirm-delete-account" style="background:#ff2222;">SUPPRIMER MON COMPTE</button>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -1759,6 +2057,155 @@ document.getElementById('kmk-lobby-btn-cancel').addEventListener('click',functio
 document.getElementById('kmk-multi-wait-btn-quit').addEventListener('click',function(){
   kmkMultiQuit();
 });
+
+// =====================
+//  EXPORT PDF & MAIL
+// =====================
+
+// --- Classement ---
+function getClassementLines(){
+  var lines=[];
+  var medals=['🥇','🥈','🥉'];
+  if(!sortState) return lines;
+  var resultArr=isPartial?(function(){var pr=getPartialResult(sortState);return pr.ranked.concat(pr.unranked);})():sortState.result;
+  resultArr.forEach(function(name,i){
+    lines.push((i<3?medals[i]:'  #'+(i+1)+'  ')+' '+name);
+  });
+  return lines;
+}
+
+function exportClassementPDF(){
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  var date = new Date().toLocaleDateString('fr-FR');
+  // Fond sombre
+  doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F');
+  // Titre
+  doc.setTextColor(255,215,0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(28);
+  doc.text('CLASSEMENT', 105, 22, {align:'center'});
+  // Sous-titre
+  doc.setTextColor(150,150,180); doc.setFontSize(11);
+  doc.text(currentPseudo+' · '+date+(isPartial?' · Partiel':''), 105, 31, {align:'center'});
+  // Séparateur
+  doc.setDrawColor(255,215,0); doc.setLineWidth(0.5); doc.line(20,36,190,36);
+  // Liste
+  var y=46;
+  var lines=getClassementLines();
+  lines.forEach(function(line,i){
+    var isTop3=i<3;
+    if(isTop3){ doc.setTextColor(255,215,0); doc.setFontSize(13); }
+    else { doc.setTextColor(200,200,220); doc.setFontSize(12); }
+    doc.setFont('helvetica', isTop3?'bold':'normal');
+    // Fond alterné léger
+    if(i%2===0){ doc.setFillColor(20,20,40); doc.rect(18,y-5,174,8,'F'); }
+    doc.text(line, 22, y);
+    y+=9;
+    if(y>280){ doc.addPage(); doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F'); y=20; }
+  });
+  // Footer
+  doc.setTextColor(60,60,80); doc.setFontSize(9);
+  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
+  doc.save('classement-'+currentPseudo+'-'+date+'.pdf');
+  showToast('📄 PDF téléchargé !','info');
+}
+
+function exportClassementMail(){
+  var lines=getClassementLines();
+  var body='Mon classement — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n\n';
+  body+=lines.join('\n');
+  body+='\n\nclovisseetjulles.netlify.app';
+  var subject=encodeURIComponent('Mon classement — '+currentPseudo);
+  window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
+}
+
+document.getElementById('btn-export-pdf-classement').addEventListener('click', exportClassementPDF);
+document.getElementById('btn-export-mail-classement').addEventListener('click', exportClassementMail);
+
+// --- KMK ---
+function getKMKLines(results){
+  var lines=[];
+  results.forEach(function(r){
+    lines.push('— Manche '+r.round+' —');
+    lines.push('💋 Kiss  : '+r.kiss);
+    lines.push('💍 Marry : '+r.marry);
+    lines.push('💀 Kill  : '+r.kill);
+    lines.push('');
+  });
+  return lines;
+}
+
+function exportKMKPDF(){
+  var { jsPDF } = window.jspdf;
+  var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  var date = new Date().toLocaleDateString('fr-FR');
+  doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F');
+  // Titre
+  doc.setFont('helvetica','bold'); doc.setFontSize(24);
+  doc.setTextColor(255,107,157); doc.text('KISS ', 58, 22, {align:'right'});
+  doc.setTextColor(255,215,0);   doc.text('MARRY ', 105, 22, {align:'center'});
+  doc.setTextColor(255,68,68);   doc.text(' KILL', 152, 22, {align:'left'});
+  doc.setTextColor(150,150,180); doc.setFontSize(11); doc.setFont('helvetica','normal');
+  var sub=currentPseudo+' · '+date;
+  if(kmkIsMulti && kmkMultiOpponent) sub+=' · vs '+kmkMultiOpponent;
+  doc.text(sub, 105, 31, {align:'center'});
+  doc.setDrawColor(255,215,0); doc.setLineWidth(0.5); doc.line(20,36,190,36);
+
+  // Mes résultats
+  var y=46;
+  var catColors={kiss:[255,107,157], marry:[255,215,0], kill:[255,68,68]};
+  function drawRound(r){
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(100,100,140);
+    doc.text('MANCHE '+r.round, 22, y); y+=8;
+    [['kiss','💋 Kiss','kiss'],['marry','💍 Marry','marry'],['kill','💀 Kill','kill']].forEach(function(row){
+      var col=catColors[row[0]];
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(col[0],col[1],col[2]);
+      doc.text(row[1]+' :', 26, y);
+      doc.setFont('helvetica','normal'); doc.setTextColor(220,220,240);
+      doc.text(r[row[0]]||'', 55, y);
+      y+=7;
+    });
+    y+=3;
+    if(y>280){ doc.addPage(); doc.setFillColor(10,10,26); doc.rect(0,0,210,297,'F'); y=20; }
+  }
+
+  // Mes réponses
+  if(kmkAllResults.length>0){
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(255,215,0);
+    doc.text('Mes réponses', 22, y); y+=8;
+    kmkAllResults.forEach(drawRound);
+  }
+  // Réponses adversaire (multi)
+  if(kmkIsMulti && kmkMultiTheirResults.length>0){
+    y+=4;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(100,150,255);
+    doc.text('Réponses de '+kmkMultiOpponent, 22, y); y+=8;
+    kmkMultiTheirResults.forEach(function(r,i){drawRound({round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill});});
+  }
+
+  doc.setTextColor(60,60,80); doc.setFontSize(9);
+  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
+  doc.save('kmk-'+currentPseudo+'-'+date+'.pdf');
+  showToast('📄 PDF téléchargé !','info');
+}
+
+function exportKMKMail(){
+  var body='Kiss Marry Kill — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n';
+  if(kmkIsMulti && kmkMultiOpponent) body+='vs '+kmkMultiOpponent+'\n';
+  body+='\nMES RÉPONSES\n';
+  body+=getKMKLines(kmkAllResults).join('\n');
+  if(kmkIsMulti && kmkMultiTheirResults.length>0){
+    var theirFmt=kmkMultiTheirResults.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};});
+    body+='\nRÉPONSES DE '+kmkMultiOpponent.toUpperCase()+'\n';
+    body+=getKMKLines(theirFmt).join('\n');
+  }
+  body+='\nclovisseetjulles.netlify.app';
+  var subject=encodeURIComponent('Kiss Marry Kill — '+currentPseudo);
+  window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
+}
+
+document.getElementById('btn-export-pdf-kmk').addEventListener('click', exportKMKPDF);
+document.getElementById('btn-export-mail-kmk').addEventListener('click', exportKMKMail);
 </script>
 
 </body>
