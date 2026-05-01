@@ -1278,7 +1278,7 @@ function loadPauseFromFirebase(pseudo,callback){
     .catch(function(err){ callback(err,null); });
 }
 
-// Marque la pause comme inactive (ne supprime pas — reste lié au compte)
+// Marque la pause comme inactive
 function clearPauseFromFirebase(){
   if(!currentPseudo)return;
   db.collection("pauses").doc(currentPseudo.toLowerCase())
@@ -1286,25 +1286,20 @@ function clearPauseFromFirebase(){
     .catch(function(){});
 }
 
-// Listener temps réel — se branche sur le doc pause de l'utilisateur
-// Tant que active:true, la carte reste affichée. Dès que active:false ou inexistant → elle disparaît.
-var pauseListener=null;
-function startPauseListener(){
-  if(!currentPseudo)return;
-  stopPauseListener();
-  pauseListener=db.collection("pauses").doc(currentPseudo.toLowerCase())
-    .onSnapshot(function(doc){
+// Charge la pause et met à jour la carte — appelé à chaque affichage de game-select
+function refreshPauseCard(){
+  if(!currentPseudo){ document.getElementById('btn-game-resume').classList.add('hidden'); return; }
+  db.collection("pauses").doc(currentPseudo.toLowerCase()).get()
+    .then(function(doc){
       if(doc.exists && doc.data().active===true){
         updatePauseCardOnGameSelect(doc.data());
       } else {
-        // Pas de pause active → on masque la carte
-        var btn=document.getElementById('btn-game-resume');
-        if(btn) btn.classList.add('hidden');
+        document.getElementById('btn-game-resume').classList.add('hidden');
       }
-    }, function(){ /* erreur silencieuse */ });
-}
-function stopPauseListener(){
-  if(pauseListener){ pauseListener(); pauseListener=null; }
+    })
+    .catch(function(){
+      document.getElementById('btn-game-resume').classList.add('hidden');
+    });
 }
 
 function showResumeScreen(saved){
@@ -1319,17 +1314,13 @@ function showResumeScreen(saved){
   hideAll(); show("screen-resume");
 }
 
-// Navigue vers l'écran de sélection et démarre le listener temps réel
 function goToGameSelect(){
-  stopPauseListener();
   hideAll(); show('screen-game-select');
   document.getElementById('game-select-sub').textContent='Que veux-tu jouer, '+currentPseudo+' ?';
-  // Cache la carte par défaut en attendant Firebase
   document.getElementById('btn-game-resume').classList.add('hidden');
-  if(currentPseudo) startPauseListener();
+  refreshPauseCard();
 }
 
-// Appelée par le listener — met à jour la carte
 function updatePauseCardOnGameSelect(saved){
   var btn=document.getElementById('btn-game-resume');
   if(!saved || !saved.sortState || saved.active===false){
@@ -1438,9 +1429,7 @@ document.getElementById("btn-resume").addEventListener("click",function(){
     names=saved.names; estimated=saved.estimated; sortState=saved.sortState;
     previousSortState=null; isPartial=false;
     document.getElementById("btn-undo").disabled=true;
-    // On NE touche PAS à Firebase ici — la pause reste active:true
-    // Elle sera mise à jour à chaque réponse via savePauseToFirebase
-    stopPauseListener();
+    // La pause reste active:true dans Firebase — sera mise à jour à chaque réponse
     hideAll(); show("screen-compare"); renderQ();
   });
 });
@@ -1468,7 +1457,6 @@ document.getElementById('btn-game-resume').addEventListener('click',function(){
       return;
     }
     currentGame='classement';
-    stopPauseListener(); // Stop le listener pendant qu'on joue
     showResumeScreen(saved);
   });
 });
@@ -1546,9 +1534,27 @@ document.getElementById("btn-undo").addEventListener("click",function(){
 });
 
 document.getElementById("btn-pause").addEventListener("click",function(){
-  try{ savePauseToFirebase(null); }catch(e){}
-  showToast("⏸ Pause sauvegardée !","info");
-  goToGameSelect();
+  var btnP=this;
+  btnP.disabled=true; btnP.textContent="⏸ Sauvegarde...";
+  // Timeout de sécurité : si Firebase ne répond pas en 5s, on navigue quand même
+  var done=false;
+  var timer=setTimeout(function(){
+    if(done)return; done=true;
+    btnP.disabled=false; btnP.textContent="⏸ Pause — reprendre plus tard";
+    showToast("⏸ Pause sauvegardée !","info");
+    goToGameSelect();
+  },5000);
+  savePauseToFirebase(function(err,data){
+    if(done)return; done=true;
+    clearTimeout(timer);
+    btnP.disabled=false; btnP.textContent="⏸ Pause — reprendre plus tard";
+    if(err){
+      showToast("❌ Erreur de sauvegarde, réessaie","error");
+    } else {
+      showToast("⏸ Pause sauvegardée !","info");
+      goToGameSelect();
+    }
+  });
 });
 
 document.getElementById("btn-stop").addEventListener("click",function(){
