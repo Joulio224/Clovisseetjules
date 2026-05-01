@@ -1302,22 +1302,23 @@ function clearPauseFromFirebase(){
     .catch(function(){});
 }
 
-// Charge la pause et met à jour la carte — appelé à chaque affichage de game-select
 function refreshPauseCard(){
   if(!currentPseudo){ document.getElementById('btn-game-resume').classList.add('hidden'); return; }
-  console.log('[PAUSE] Chargement pause pour', currentPseudo);
   db.collection("pauses").doc(currentPseudo.toLowerCase()).get()
     .then(function(doc){
-      console.log('[PAUSE] Doc existe:', doc.exists, doc.exists ? JSON.stringify(doc.data()).substring(0,100) : 'vide');
       if(doc.exists && doc.data().active===true){
-        updatePauseCardOnGameSelect(doc.data());
+        var data=doc.data();
+        // Désérialise sortStateJson si nécessaire
+        if(data.sortStateJson && !data.sortState){
+          try{ data.sortState=JSON.parse(data.sortStateJson); }catch(e){ data.sortState=null; }
+        }
+        updatePauseCardOnGameSelect(data);
       } else {
         document.getElementById('btn-game-resume').classList.add('hidden');
       }
     })
     .catch(function(err){
-      console.error('[PAUSE] Erreur lecture:', err.code, err.message);
-      showToast('Erreur lecture pause: '+err.message,'error');
+      console.error('[PAUSE] Erreur lecture:', err.message);
       document.getElementById('btn-game-resume').classList.add('hidden');
     });
 }
