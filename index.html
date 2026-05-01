@@ -240,7 +240,7 @@ font-family: inherit; -webkit-appearance: none; transition: all 0.18s;
 .game-card .gc-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
 .game-card .gc-title { font-size: 22px; font-weight: 900; color: #FFD700; letter-spacing: 2px; margin-bottom: 6px; }
 .game-card .gc-desc { font-size: 13px; color: #666; line-height: 1.5; }
-/* Carte de reprise de pause sur l'écran de sélection */
+/* Carte de reprise de pause sur l’écran de sélection */
 .game-card.pause-card { border-color: #4488ff; }
 .game-card.pause-card:hover { border-color: #88bbff; }
 .game-card.pause-card .gc-title { color: #4488ff; }
@@ -342,10 +342,10 @@ padding: 40px 20px; text-align: center; margin-bottom: 16px;
 /* EXPORT */
 .export-row { display: flex; gap: 10px; margin-top: 10px; }
 .btn-export {
-  flex: 1; padding: 14px 8px; background: none; border-radius: 14px;
-  font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
-  -webkit-appearance: none; text-align: center; letter-spacing: 1px;
-  text-transform: uppercase; transition: all 0.15s;
+flex: 1; padding: 14px 8px; background: none; border-radius: 14px;
+font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
+-webkit-appearance: none; text-align: center; letter-spacing: 1px;
+text-transform: uppercase; transition: all 0.15s;
 }
 .btn-export-pdf { border: 2px solid #cc44ff; color: #cc44ff; }
 .btn-export-pdf:hover { background: #cc44ff; color: #000; }
@@ -353,19 +353,19 @@ padding: 40px 20px; text-align: center; margin-bottom: 16px;
 .btn-export-mail:hover { background: #22bb55; color: #000; }
 /* PARAMÈTRES */
 .settings-section {
-  background: #131328; border: 2px solid #1e1e40; border-radius: 18px;
-  margin-bottom: 14px; overflow: hidden;
+background: #131328; border: 2px solid #1e1e40; border-radius: 18px;
+margin-bottom: 14px; overflow: hidden;
 }
 .settings-section-header {
-  padding: 16px 18px; display: flex; align-items: center; gap: 12px;
-  border-bottom: 2px solid #1e1e40;
+padding: 16px 18px; display: flex; align-items: center; gap: 12px;
+border-bottom: 2px solid #1e1e40;
 }
 .settings-section-header .sh-icon { font-size: 22px; }
 .settings-section-header .sh-title { font-size: 15px; font-weight: 800; color: #fff; flex: 1; }
 .settings-section-header .sh-desc { font-size: 12px; color: #444; margin-top: 2px; }
 .settings-row {
-  padding: 14px 18px; display: flex; align-items: center; gap: 14px;
-  border-bottom: 1px solid #0e0e20;
+padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+border-bottom: 1px solid #0e0e20;
 }
 .settings-row:last-child { border-bottom: none; }
 .settings-row .sr-label { flex: 1; }
@@ -375,43 +375,43 @@ padding: 40px 20px; text-align: center; margin-bottom: 16px;
 .toggle { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
 .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
 .toggle-slider {
-  position: absolute; inset: 0; background: #2a2a55; border-radius: 26px;
-  cursor: pointer; transition: background 0.2s;
+position: absolute; inset: 0; background: #2a2a55; border-radius: 26px;
+cursor: pointer; transition: background 0.2s;
 }
 .toggle-slider:before {
-  content: ''; position: absolute; height: 18px; width: 18px;
-  left: 4px; bottom: 4px; background: #555; border-radius: 50%;
-  transition: all 0.2s;
+content: ‘’; position: absolute; height: 18px; width: 18px;
+left: 4px; bottom: 4px; background: #555; border-radius: 50%;
+transition: all 0.2s;
 }
 .toggle input:checked + .toggle-slider { background: #FFD700; }
 .toggle input:checked + .toggle-slider:before { transform: translateX(22px); background: #000; }
 /* Select */
 .settings-select {
-  background: #0e0e20; border: 2px solid #2a2a55; border-radius: 10px;
-  color: #fff; padding: 8px 12px; font-size: 13px; font-weight: 700;
-  font-family: inherit; outline: none; cursor: pointer; -webkit-appearance: none;
+background: #0e0e20; border: 2px solid #2a2a55; border-radius: 10px;
+color: #fff; padding: 8px 12px; font-size: 13px; font-weight: 700;
+font-family: inherit; outline: none; cursor: pointer; -webkit-appearance: none;
 }
 .settings-select:focus { border-color: #FFD700; }
 /* Danger zone */
 .settings-section.danger { border-color: #441111; }
 .settings-section.danger .settings-section-header { border-bottom-color: #441111; }
 .btn-danger {
-  padding: 11px 18px; background: none; border: 2px solid #cc3333;
-  border-radius: 12px; color: #cc3333; font-size: 13px; font-weight: 800;
-  cursor: pointer; font-family: inherit; -webkit-appearance: none; white-space: nowrap;
-  transition: all 0.15s;
+padding: 11px 18px; background: none; border: 2px solid #cc3333;
+border-radius: 12px; color: #cc3333; font-size: 13px; font-weight: 800;
+cursor: pointer; font-family: inherit; -webkit-appearance: none; white-space: nowrap;
+transition: all 0.15s;
 }
 .btn-danger:hover { background: #cc3333; color: #fff; }
 /* Modal confirmation */
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 999; padding: 20px;
+position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+display: flex; align-items: center; justify-content: center;
+z-index: 999; padding: 20px;
 }
 .modal-overlay.hidden { display: none; }
 .modal-box {
-  background: #131328; border: 2px solid #cc3333; border-radius: 20px;
-  padding: 28px 24px; max-width: 380px; width: 100%; text-align: center;
+background: #131328; border: 2px solid #cc3333; border-radius: 20px;
+padding: 28px 24px; max-width: 380px; width: 100%; text-align: center;
 }
 .modal-box .modal-icon { font-size: 40px; margin-bottom: 12px; }
 .modal-box .modal-title { font-size: 20px; font-weight: 900; color: #cc3333; margin-bottom: 10px; }
@@ -419,20 +419,20 @@ padding: 40px 20px; text-align: center; margin-bottom: 16px;
 .modal-box .modal-body b { color: #fff; }
 .modal-actions { display: flex; gap: 10px; }
 .modal-actions .btn-cancel-modal {
-  flex: 1; padding: 14px; background: none; border: 2px solid #333;
-  border-radius: 12px; color: #666; font-size: 14px; font-weight: 800;
-  cursor: pointer; font-family: inherit; -webkit-appearance: none;
+flex: 1; padding: 14px; background: none; border: 2px solid #333;
+border-radius: 12px; color: #666; font-size: 14px; font-weight: 800;
+cursor: pointer; font-family: inherit; -webkit-appearance: none;
 }
 .modal-actions .btn-confirm-modal {
-  flex: 1; padding: 14px; background: #cc3333; border: none;
-  border-radius: 12px; color: #fff; font-size: 14px; font-weight: 800;
-  cursor: pointer; font-family: inherit; -webkit-appearance: none;
+flex: 1; padding: 14px; background: #cc3333; border: none;
+border-radius: 12px; color: #fff; font-size: 14px; font-weight: 800;
+cursor: pointer; font-family: inherit; -webkit-appearance: none;
 }
 /* Stats badge */
 .stat-pill {
-  display: inline-block; padding: 5px 12px; border-radius: 20px;
-  background: #0e0e20; border: 1.5px solid #2a2a55;
-  font-size: 12px; font-weight: 700; color: #888; margin: 3px;
+display: inline-block; padding: 5px 12px; border-radius: 20px;
+background: #0e0e20; border: 1.5px solid #2a2a55;
+font-size: 12px; font-weight: 700; color: #888; margin: 3px;
 }
 .stat-pill b { color: #FFD700; }
 
@@ -446,34 +446,34 @@ padding: 18px; text-align: center; margin-bottom: 16px;
 
 /* THÈMES */
 .theme-chip {
-  width: 72px; height: 52px; border-radius: 12px; cursor: pointer;
-  border: 3px solid transparent; transition: all 0.15s; flex-shrink: 0;
-  display: flex; align-items: flex-end; justify-content: center;
-  padding-bottom: 4px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.8);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+width: 72px; height: 52px; border-radius: 12px; cursor: pointer;
+border: 3px solid transparent; transition: all 0.15s; flex-shrink: 0;
+display: flex; align-items: flex-end; justify-content: center;
+padding-bottom: 4px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.8);
+text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 .theme-chip.active { border-color: #fff; transform: scale(1.08); }
 
-/* COULEURS D'ACCENT */
+/* COULEURS D’ACCENT */
 .accent-chip {
-  width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
-  border: 3px solid transparent; transition: all 0.15s;
+width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+border: 3px solid transparent; transition: all 0.15s;
 }
 .accent-chip.active { border-color: #fff; transform: scale(1.15); }
 
 /* AVATARS */
 .avatar-chip {
-  width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
-  background: #0e0e20; border: 2px solid #2a2a55;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; transition: all 0.15s;
+width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+background: #0e0e20; border: 2px solid #2a2a55;
+display: flex; align-items: center; justify-content: center;
+font-size: 22px; transition: all 0.15s;
 }
-.avatar-chip.active { border-color: var(--accent); background: #1a1a35; transform: scale(1.12); }
+.avatar-chip.active { border-color: var(–accent); background: #1a1a35; transform: scale(1.12); }
 
 /* BADGE DE NIVEAU */
 .level-badge {
-  display: inline-block; padding: 3px 10px; border-radius: 20px;
-  font-size: 11px; font-weight: 800; letter-spacing: 1px;
+display: inline-block; padding: 3px 10px; border-radius: 20px;
+font-size: 11px; font-weight: 800; letter-spacing: 1px;
 }
 .level-rookie  { background:#1a1a35; border:1.5px solid #555; color:#888; }
 .level-joueur  { background:#0e1a0e; border:1.5px solid #22bb55; color:#22bb55; }
@@ -482,15 +482,15 @@ padding: 18px; text-align: center; margin-bottom: 16px;
 
 /* PROFIL PUBLIC */
 .profile-header {
-  background: #131328; border: 2px solid #2a2a55; border-radius: 20px;
-  padding: 24px; margin-bottom: 16px; text-align: center;
+background: #131328; border: 2px solid #2a2a55; border-radius: 20px;
+padding: 24px; margin-bottom: 16px; text-align: center;
 }
 .profile-header .ph-avatar { font-size: 56px; margin-bottom: 8px; }
 .profile-header .ph-pseudo { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
 .profile-header .ph-bio { font-size: 13px; color: #666; margin-bottom: 10px; }
 .profile-result-card {
-  background: #131328; border: 2px solid #1e1e40; border-radius: 14px;
-  padding: 14px 18px; margin-bottom: 10px;
+background: #131328; border: 2px solid #1e1e40; border-radius: 14px;
+padding: 14px 18px; margin-bottom: 10px;
 }
 .profile-result-card .prc-title { font-size: 11px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
 .profile-result-card .prc-podium { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -498,12 +498,12 @@ padding: 18px; text-align: center; margin-bottom: 16px;
 /* RÉACTIONS */
 .reaction-bar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .reaction-btn {
-  padding: 5px 12px; background: #0e0e20; border: 1.5px solid #2a2a55;
-  border-radius: 20px; color: #888; font-size: 13px; font-weight: 700;
-  cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all 0.15s;
+padding: 5px 12px; background: #0e0e20; border: 1.5px solid #2a2a55;
+border-radius: 20px; color: #888; font-size: 13px; font-weight: 700;
+cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all 0.15s;
 }
-.reaction-btn:hover { border-color: var(--accent); color: var(--accent); }
-.reaction-btn.reacted { background: #1a1a0a; border-color: var(--accent); color: var(--accent); }
+.reaction-btn:hover { border-color: var(–accent); color: var(–accent); }
+.reaction-btn.reacted { background: #1a1a0a; border-color: var(–accent); color: var(–accent); }
 .reaction-count { font-size: 11px; color: #555; margin-left: 3px; }
 </style>
 
@@ -552,55 +552,59 @@ padding: 18px; text-align: center; margin-bottom: 16px;
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="subtitle" style="margin-bottom:28px" id="kmk-setup-sub">Configuration</div>
 
-    <!-- Mode de jeu : solo ou multijoueur -->
-    <div style="display:flex;gap:8px;margin-bottom:20px;">
-      <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
-      <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
-    </div>
+```
+<!-- Mode de jeu : solo ou multijoueur -->
+<div style="display:flex;gap:8px;margin-bottom:20px;">
+  <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
+  <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
+</div>
 
-    <!-- Configuration solo -->
-    <div id="kmk-solo-config">
-      <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
-      <div class="suggest-groups" id="kmk-suggest-groups"></div>
-      <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
-      <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
-      <div style="margin-top:20px; margin-bottom:6px">
-        <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
-        <div class="kmk-rounds-input">
-          <button id="kmk-rounds-minus">−</button>
-          <span id="kmk-rounds-val">3</span>
-          <button id="kmk-rounds-plus">+</button>
-        </div>
-      </div>
-      <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
+<!-- Configuration solo -->
+<div id="kmk-solo-config">
+  <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
+  <div class="suggest-groups" id="kmk-suggest-groups"></div>
+  <textarea id="kmk-textarea" placeholder="Ou ajoute tes propres noms ici, un par ligne..." style="margin-top:8px"></textarea>
+  <div class="hint" id="kmk-hint">Sélectionne ou écris au moins 3 noms</div>
+  <div style="margin-top:20px; margin-bottom:6px">
+    <div class="kmk-setup-label" style="text-align:center">Nombre de manches</div>
+    <div class="kmk-rounds-input">
+      <button id="kmk-rounds-minus">−</button>
+      <span id="kmk-rounds-val">3</span>
+      <button id="kmk-rounds-plus">+</button>
     </div>
+  </div>
+  <button class="btn-primary" id="kmk-btn-start" disabled>Commencer →</button>
+</div>
 
-    <!-- Configuration multijoueur -->
-    <div id="kmk-multi-config" class="hidden">
-      <div class="multi-badge">👥 Mode multijoueur</div>
-      <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
-        Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
-      </p>
-      <div id="kmk-multi-create-section">
-        <div style="margin-bottom:6px">
-          <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
-          <div class="kmk-rounds-input">
-            <button id="kmk-multi-rounds-minus">−</button>
-            <span id="kmk-multi-rounds-val">3</span>
-            <button id="kmk-multi-rounds-plus">+</button>
-          </div>
-        </div>
-        <button class="btn-primary" id="kmk-multi-btn-create">🎮 Créer une partie →</button>
-        <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou rejoindre une partie existante —</div>
-        <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px;text-align:center" />
-        <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
+<!-- Configuration multijoueur -->
+<div id="kmk-multi-config" class="hidden">
+  <div class="multi-badge">👥 Mode multijoueur</div>
+  <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
+    Chaque joueur choisit à tour de rôle 3 personnes <b style="color:#fff">pour l'adversaire</b>.
+  </p>
+  <div id="kmk-multi-create-section">
+    <div style="margin-bottom:6px">
+      <div class="kmk-setup-label" style="text-align:center">Nombre de manches chacun</div>
+      <div class="kmk-rounds-input">
+        <button id="kmk-multi-rounds-minus">−</button>
+        <span id="kmk-multi-rounds-val">3</span>
+        <button id="kmk-multi-rounds-plus">+</button>
       </div>
     </div>
+    <button class="btn-primary" id="kmk-multi-btn-create">🎮 Créer une partie →</button>
+    <div style="margin:16px 0;text-align:center;color:#333;font-size:13px">— ou rejoindre une partie existante —</div>
+    <input class="input-field" id="kmk-multi-join-code" type="text" placeholder="Code de la partie..." maxlength="6" style="text-transform:uppercase;letter-spacing:4px;text-align:center" />
+    <button class="btn-outline" id="kmk-multi-btn-join">Rejoindre →</button>
+  </div>
+</div>
 
-    <button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
+<button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
+```
+
   </div>
 
   <!-- KMK MULTI LOBBY (attente de l'adversaire) -->
+
   <div id="screen-kmk-multi-lobby" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="multi-badge pulse" id="kmk-lobby-status-badge">⏳ En attente...</div>
@@ -623,6 +627,7 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI PLAY : CHOISIR 3 NOMS POUR L'ADVERSAIRE -->
+
   <div id="screen-kmk-multi-pick" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div id="kmk-multi-pick-banner" class="multi-turn-banner" style="margin-bottom:16px;">
@@ -639,6 +644,7 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI PLAY : JOUER SA MANCHE (noms choisis par l'adversaire) -->
+
   <div id="screen-kmk-play" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="kmk-round-info" id="kmk-round-info">Manche 1 / 3</div>
@@ -666,6 +672,7 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- KMK MULTI : ATTENTE DU TOUR DE L'ADVERSAIRE -->
+
   <div id="screen-kmk-multi-wait" class="hidden">
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="multi-waiting-overlay">
@@ -781,208 +788,213 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- PARAMÈTRES -->
+
   <div id="screen-settings" class="hidden">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
       <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
       <div style="font-size:28px;font-weight:900;color:#FFD700;letter-spacing:3px;">PARAMÈTRES</div>
     </div>
 
-    <!-- Profil -->
-    <div class="settings-section">
-      <div class="settings-section-header">
-        <span class="sh-icon">👤</span>
-        <div><div class="sh-title">Profil</div><div class="sh-desc">Ton compte Jeux de Collégiens</div></div>
-      </div>
-      <!-- Avatar + pseudo + badge -->
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
-        <div style="display:flex;align-items:center;gap:16px;width:100%;">
-          <div id="settings-avatar-preview" style="font-size:48px;width:64px;height:64px;background:#0e0e20;border:2px solid #2a2a55;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🐱</div>
-          <div style="flex:1;">
-            <div class="sr-name" id="settings-pseudo-display" style="font-size:18px;">—</div>
-            <div id="settings-badge-display" style="margin-top:4px;"></div>
-            <div id="settings-stats" style="margin-top:6px;"></div>
-          </div>
-        </div>
-        <!-- Grille d'avatars -->
-        <div style="width:100%;">
-          <div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Choisis ton avatar</div>
-          <div id="avatar-grid" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-        </div>
-        <!-- Bio -->
-        <div style="width:100%;">
-          <div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Petite bio</div>
-          <input class="input-field" id="settings-bio" type="text" placeholder="Une phrase sur toi..." maxlength="60" style="margin-bottom:0;font-size:14px;padding:12px;" />
-          <div style="color:#444;font-size:11px;margin-top:4px;text-align:right;"><span id="settings-bio-count">0</span>/60</div>
-        </div>
+```
+<!-- Profil -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">👤</span>
+    <div><div class="sh-title">Profil</div><div class="sh-desc">Ton compte Jeux de Collégiens</div></div>
+  </div>
+  <!-- Avatar + pseudo + badge -->
+  <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
+    <div style="display:flex;align-items:center;gap:16px;width:100%;">
+      <div id="settings-avatar-preview" style="font-size:48px;width:64px;height:64px;background:#0e0e20;border:2px solid #2a2a55;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🐱</div>
+      <div style="flex:1;">
+        <div class="sr-name" id="settings-pseudo-display" style="font-size:18px;">—</div>
+        <div id="settings-badge-display" style="margin-top:4px;"></div>
+        <div id="settings-stats" style="margin-top:6px;"></div>
       </div>
     </div>
+    <!-- Grille d'avatars -->
+    <div style="width:100%;">
+      <div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Choisis ton avatar</div>
+      <div id="avatar-grid" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+    <!-- Bio -->
+    <div style="width:100%;">
+      <div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Petite bio</div>
+      <input class="input-field" id="settings-bio" type="text" placeholder="Une phrase sur toi..." maxlength="60" style="margin-bottom:0;font-size:14px;padding:12px;" />
+      <div style="color:#444;font-size:11px;margin-top:4px;text-align:right;"><span id="settings-bio-count">0</span>/60</div>
+    </div>
+  </div>
+</div>
 
-    <!-- Apparence -->
-    <div class="settings-section">
-      <div class="settings-section-header">
-        <span class="sh-icon">🎨</span>
-        <div><div class="sh-title">Apparence</div><div class="sh-desc">Personnalise l'interface</div></div>
-      </div>
-      <!-- Thème -->
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;">
-        <div class="sr-label" style="width:100%;">
-          <div class="sr-name">Fond d'écran</div>
-          <div class="sr-desc">Change l'ambiance de l'application</div>
-        </div>
-        <div id="theme-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div>
-      </div>
-      <!-- Couleur d'accent -->
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;">
-        <div class="sr-label" style="width:100%;">
-          <div class="sr-name">Couleur d'accent</div>
-          <div class="sr-desc">Couleur des boutons, titres et highlights</div>
-        </div>
-        <div id="accent-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div>
-      </div>
+<!-- Apparence -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">🎨</span>
+    <div><div class="sh-title">Apparence</div><div class="sh-desc">Personnalise l'interface</div></div>
+  </div>
+  <!-- Thème -->
+  <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;">
+    <div class="sr-label" style="width:100%;">
+      <div class="sr-name">Fond d'écran</div>
+      <div class="sr-desc">Change l'ambiance de l'application</div>
     </div>
+    <div id="theme-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div>
+  </div>
+  <!-- Couleur d'accent -->
+  <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px;">
+    <div class="sr-label" style="width:100%;">
+      <div class="sr-name">Couleur d'accent</div>
+      <div class="sr-desc">Couleur des boutons, titres et highlights</div>
+    </div>
+    <div id="accent-grid" style="display:flex;flex-wrap:wrap;gap:8px;width:100%;"></div>
+  </div>
+</div>
 
-    <!-- Vie privée -->
-    <div class="settings-section">
-      <div class="settings-section-header">
-        <span class="sh-icon">🔒</span>
-        <div><div class="sh-title">Vie privée</div><div class="sh-desc">Qui peut voir tes résultats</div></div>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Visibilité des classements</div>
-          <div class="sr-desc">Qui peut voir tes classements dans l'onglet Réponses</div>
-        </div>
-        <select class="settings-select" id="settings-visibility-classement">
-          <option value="all">Tout le monde</option>
-          <option value="friends">Amis seulement</option>
-          <option value="me">Moi uniquement</option>
-        </select>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Visibilité des KMK</div>
-          <div class="sr-desc">Qui peut voir tes résultats Kiss Marry Kill</div>
-        </div>
-        <select class="settings-select" id="settings-visibility-kmk">
-          <option value="all">Tout le monde</option>
-          <option value="friends">Amis seulement</option>
-          <option value="me">Moi uniquement</option>
-        </select>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Profil public</div>
-          <div class="sr-desc">Les autres peuvent voir ta page profil en cherchant ton pseudo</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="settings-public-profile" checked /><span class="toggle-slider"></span></label>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Afficher dans les leaderboards</div>
-          <div class="sr-desc">Ton pseudo apparaît dans les futurs classements publics</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="settings-leaderboard" checked /><span class="toggle-slider"></span></label>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Mode discret</div>
-          <div class="sr-desc">Masque ton pseudo aux autres joueurs en multijoueur</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="settings-stealth" /><span class="toggle-slider"></span></label>
-      </div>
+<!-- Vie privée -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">🔒</span>
+    <div><div class="sh-title">Vie privée</div><div class="sh-desc">Qui peut voir tes résultats</div></div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Visibilité des classements</div>
+      <div class="sr-desc">Qui peut voir tes classements dans l'onglet Réponses</div>
     </div>
+    <select class="settings-select" id="settings-visibility-classement">
+      <option value="all">Tout le monde</option>
+      <option value="friends">Amis seulement</option>
+      <option value="me">Moi uniquement</option>
+    </select>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Visibilité des KMK</div>
+      <div class="sr-desc">Qui peut voir tes résultats Kiss Marry Kill</div>
+    </div>
+    <select class="settings-select" id="settings-visibility-kmk">
+      <option value="all">Tout le monde</option>
+      <option value="friends">Amis seulement</option>
+      <option value="me">Moi uniquement</option>
+    </select>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Profil public</div>
+      <div class="sr-desc">Les autres peuvent voir ta page profil en cherchant ton pseudo</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-public-profile" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Afficher dans les leaderboards</div>
+      <div class="sr-desc">Ton pseudo apparaît dans les futurs classements publics</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-leaderboard" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Mode discret</div>
+      <div class="sr-desc">Masque ton pseudo aux autres joueurs en multijoueur</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-stealth" /><span class="toggle-slider"></span></label>
+  </div>
+</div>
 
-    <!-- Expérience de jeu -->
-    <div class="settings-section">
-      <div class="settings-section-header">
-        <span class="sh-icon">🎮</span>
-        <div><div class="sh-title">Expérience de jeu</div><div class="sh-desc">Personnalise le comportement du jeu</div></div>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Sauvegarde automatique</div>
-          <div class="sr-desc">Sauvegarde le classement à chaque question (recommandé)</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="settings-autosave" checked /><span class="toggle-slider"></span></label>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Confirmation avant de quitter</div>
-          <div class="sr-desc">Demande une confirmation si tu quittes un classement en cours</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="settings-confirm-quit" checked /><span class="toggle-slider"></span></label>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Animations</div>
-          <div class="sr-desc">Effets visuels lors des choix (désactiver si lent)</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="settings-animations" checked /><span class="toggle-slider"></span></label>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Manches KMK par défaut</div>
-          <div class="sr-desc">Nombre de manches pré-sélectionné au lancement</div>
-        </div>
-        <select class="settings-select" id="settings-kmk-default-rounds">
-          <option value="1">1</option>
-          <option value="3" selected>3</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-        </select>
-      </div>
+<!-- Expérience de jeu -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">🎮</span>
+    <div><div class="sh-title">Expérience de jeu</div><div class="sh-desc">Personnalise le comportement du jeu</div></div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Sauvegarde automatique</div>
+      <div class="sr-desc">Sauvegarde le classement à chaque question (recommandé)</div>
     </div>
+    <label class="toggle"><input type="checkbox" id="settings-autosave" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Confirmation avant de quitter</div>
+      <div class="sr-desc">Demande une confirmation si tu quittes un classement en cours</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-confirm-quit" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Animations</div>
+      <div class="sr-desc">Effets visuels lors des choix (désactiver si lent)</div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="settings-animations" checked /><span class="toggle-slider"></span></label>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Manches KMK par défaut</div>
+      <div class="sr-desc">Nombre de manches pré-sélectionné au lancement</div>
+    </div>
+    <select class="settings-select" id="settings-kmk-default-rounds">
+      <option value="1">1</option>
+      <option value="3" selected>3</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+    </select>
+  </div>
+</div>
 
-    <!-- Social -->
-    <div class="settings-section">
-      <div class="settings-section-header">
-        <span class="sh-icon">🔍</span>
-        <div><div class="sh-title">Voir un profil</div><div class="sh-desc">Consulte la page publique d'un joueur</div></div>
-      </div>
-      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
-        <div style="display:flex;gap:8px;width:100%;">
-          <input class="input-field" id="settings-search-pseudo" type="text" placeholder="Pseudo du joueur..." maxlength="30" style="margin-bottom:0;flex:1;font-size:14px;padding:12px;" />
-          <button class="btn-primary" id="btn-search-profile" style="width:auto;padding:12px 18px;font-size:13px;letter-spacing:1px;">Voir</button>
-        </div>
-        <div id="settings-search-result"></div>
-      </div>
+<!-- Social -->
+<div class="settings-section">
+  <div class="settings-section-header">
+    <span class="sh-icon">🔍</span>
+    <div><div class="sh-title">Voir un profil</div><div class="sh-desc">Consulte la page publique d'un joueur</div></div>
+  </div>
+  <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+    <div style="display:flex;gap:8px;width:100%;">
+      <input class="input-field" id="settings-search-pseudo" type="text" placeholder="Pseudo du joueur..." maxlength="30" style="margin-bottom:0;flex:1;font-size:14px;padding:12px;" />
+      <button class="btn-primary" id="btn-search-profile" style="width:auto;padding:12px 18px;font-size:13px;letter-spacing:1px;">Voir</button>
     </div>
+    <div id="settings-search-result"></div>
+  </div>
+</div>
 
-    <!-- Danger zone -->
-    <div class="settings-section danger">
-      <div class="settings-section-header">
-        <span class="sh-icon">⚠️</span>
-        <div><div class="sh-title" style="color:#cc3333;">Zone de danger</div><div class="sh-desc">Actions irréversibles</div></div>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Supprimer mes classements</div>
-          <div class="sr-desc">Efface tous tes classements sauvegardés</div>
-        </div>
-        <button class="btn-danger" id="btn-delete-classements">Supprimer</button>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name">Supprimer mes KMK</div>
-          <div class="sr-desc">Efface tous tes résultats Kiss Marry Kill</div>
-        </div>
-        <button class="btn-danger" id="btn-delete-kmk">Supprimer</button>
-      </div>
-      <div class="settings-row">
-        <div class="sr-label">
-          <div class="sr-name" style="color:#cc3333;">Supprimer mon compte</div>
-          <div class="sr-desc">Supprime définitivement ton compte et toutes tes données. <b style="color:#ff6666;">Impossible de le recréer seul.</b></div>
-        </div>
-        <button class="btn-danger" id="btn-delete-account">Supprimer</button>
-      </div>
+<!-- Danger zone -->
+<div class="settings-section danger">
+  <div class="settings-section-header">
+    <span class="sh-icon">⚠️</span>
+    <div><div class="sh-title" style="color:#cc3333;">Zone de danger</div><div class="sh-desc">Actions irréversibles</div></div>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Supprimer mes classements</div>
+      <div class="sr-desc">Efface tous tes classements sauvegardés</div>
     </div>
+    <button class="btn-danger" id="btn-delete-classements">Supprimer</button>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name">Supprimer mes KMK</div>
+      <div class="sr-desc">Efface tous tes résultats Kiss Marry Kill</div>
+    </div>
+    <button class="btn-danger" id="btn-delete-kmk">Supprimer</button>
+  </div>
+  <div class="settings-row">
+    <div class="sr-label">
+      <div class="sr-name" style="color:#cc3333;">Supprimer mon compte</div>
+      <div class="sr-desc">Supprime définitivement ton compte et toutes tes données. <b style="color:#ff6666;">Impossible de le recréer seul.</b></div>
+    </div>
+    <button class="btn-danger" id="btn-delete-account">Supprimer</button>
+  </div>
+</div>
 
-    <div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
-      clovisseetjulles.netlify.app · v3.0
-    </div>
+<div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
+  clovisseetjulles.netlify.app · v3.0
+</div>
+```
+
   </div>
 
   <!-- PROFIL PUBLIC -->
+
   <div id="screen-public-profile" class="hidden">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
       <button id="btn-back-from-profile" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -992,6 +1004,7 @@ padding: 18px; text-align: center; margin-bottom: 16px;
   </div>
 
   <!-- MODALS DE CONFIRMATION -->
+
   <div class="modal-overlay hidden" id="modal-delete-classements">
     <div class="modal-box">
       <div class="modal-icon">🗑️</div>
