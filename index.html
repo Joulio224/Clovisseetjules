@@ -1259,11 +1259,11 @@ function savePauseToFirebase(callback){
     pseudo:currentPseudo,
     names:names,
     estimated:est,
-    sortState:JSON.parse(JSON.stringify(sortState)),
+    sortStateJson:JSON.stringify(sortState), // Sérialisé en string pour éviter les nested arrays
     savedAt:new Date().toISOString(),
     active:true
   };
-  console.log('[PAUSE] Tentative de sauvegarde pour', currentPseudo, data);
+  console.log('[PAUSE] Tentative de sauvegarde pour', currentPseudo);
   db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data)
     .then(function(){
       console.log('[PAUSE] Sauvegarde réussie !');
@@ -1280,8 +1280,16 @@ function savePauseToFirebase(callback){
 function loadPauseFromFirebase(pseudo,callback){
   db.collection("pauses").doc(pseudo.toLowerCase()).get()
     .then(function(doc){
-      if(doc.exists && doc.data().active===true){ callback(null,doc.data()); }
-      else{ callback(null,null); }
+      if(doc.exists && doc.data().active===true){
+        var data=doc.data();
+        // Désérialise le sortState depuis la string JSON
+        if(data.sortStateJson && !data.sortState){
+          try{ data.sortState=JSON.parse(data.sortStateJson); }catch(e){ data.sortState=null; }
+        }
+        callback(null,data);
+      } else {
+        callback(null,null);
+      }
     })
     .catch(function(err){ callback(err,null); });
 }
@@ -1297,15 +1305,19 @@ function clearPauseFromFirebase(){
 // Charge la pause et met à jour la carte — appelé à chaque affichage de game-select
 function refreshPauseCard(){
   if(!currentPseudo){ document.getElementById('btn-game-resume').classList.add('hidden'); return; }
+  console.log('[PAUSE] Chargement pause pour', currentPseudo);
   db.collection("pauses").doc(currentPseudo.toLowerCase()).get()
     .then(function(doc){
+      console.log('[PAUSE] Doc existe:', doc.exists, doc.exists ? JSON.stringify(doc.data()).substring(0,100) : 'vide');
       if(doc.exists && doc.data().active===true){
         updatePauseCardOnGameSelect(doc.data());
       } else {
         document.getElementById('btn-game-resume').classList.add('hidden');
       }
     })
-    .catch(function(){
+    .catch(function(err){
+      console.error('[PAUSE] Erreur lecture:', err.code, err.message);
+      showToast('Erreur lecture pause: '+err.message,'error');
       document.getElementById('btn-game-resume').classList.add('hidden');
     });
 }
