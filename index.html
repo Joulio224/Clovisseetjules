@@ -1570,11 +1570,11 @@ function choose(pL){
     busy=false;
     document.getElementById("btn-undo").disabled=false;
     if(sortState.done){
-      clearPauseFromFirebase();isPartial=false;previousSortState=null;hideAll();showResult(false);
+      clearPauseFromFirebase(); // Classement terminé → active:false
+      isPartial=false; previousSortState=null; hideAll(); showResult(false);
     } else {
       renderQ();
-      // Auto-sauvegarde silencieuse à chaque réponse
-      savePauseToFirebase(null);
+      savePauseToFirebase(null); // Mise à jour auto de la pause à chaque réponse
     }
   },200);
 }
