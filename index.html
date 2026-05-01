@@ -1539,17 +1539,10 @@ document.getElementById("btn-undo").addEventListener("click",function(){
 });
 
 document.getElementById("btn-pause").addEventListener("click",function(){
-  var btnP=document.getElementById("btn-pause");
-  btnP.disabled=true;btnP.textContent="⏸ Sauvegarde...";
-  savePauseToFirebase(function(err,savedData){
-    if(err){
-      btnP.disabled=false;btnP.textContent="⏸ Pause — reprendre plus tard";
-      showToast("❌ Erreur lors de la sauvegarde","error");
-    }else{
-      showToast("⏸ Pause sauvegardée !","info");
-      goToGameSelect();
-    }
-  });
+  // Sauvegarde en arrière-plan sans attendre la confirmation Firebase
+  savePauseToFirebase(null);
+  showToast("⏸ Pause sauvegardée !","info");
+  goToGameSelect();
 });
 
 document.getElementById("btn-stop").addEventListener("click",function(){
