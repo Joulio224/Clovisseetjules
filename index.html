@@ -1253,7 +1253,7 @@ var currentGame=null;
 
 // Sauvegarde la pause dans Firebase (active:true)
 function savePauseToFirebase(callback){
-  if(!currentPseudo)return;
+  if(!currentPseudo || !sortState || !names || names.length===0){ if(callback) callback(null,null); return; }
   var est=estimated||estimateTotal(names.length)||1;
   var data={
     pseudo:currentPseudo,
@@ -1435,21 +1435,27 @@ init();
 document.getElementById("btn-resume").addEventListener("click",function(){
   loadPauseFromFirebase(currentPseudo, function(err, saved){
     if(err || !saved){showToast("Erreur : pause introuvable","error");return;}
-    names=saved.names;estimated=saved.estimated;sortState=saved.sortState;
+    names=saved.names; estimated=saved.estimated; sortState=saved.sortState;
     previousSortState=null; isPartial=false;
     document.getElementById("btn-undo").disabled=true;
-    hideAll();show("screen-compare");renderQ();
+    // On NE touche PAS à Firebase ici — la pause reste active:true
+    // Elle sera mise à jour à chaque réponse via savePauseToFirebase
+    stopPauseListener();
+    hideAll(); show("screen-compare"); renderQ();
   });
 });
 document.getElementById("btn-resume-stop").addEventListener("click",function(){
   loadPauseFromFirebase(currentPseudo, function(err, saved){
     if(err || !saved)return;
-    names=saved.names;estimated=saved.estimated;sortState=saved.sortState;
-    isPartial=true;clearPauseFromFirebase();hideAll();showResult(true);
+    names=saved.names; estimated=saved.estimated; sortState=saved.sortState;
+    isPartial=true;
+    clearPauseFromFirebase(); // Fin définitive → active:false
+    hideAll(); showResult(true);
   });
 });
 document.getElementById("btn-resume-delete").addEventListener("click",function(){
-  clearPauseFromFirebase();sortState=null;previousSortState=null;names=[];
+  clearPauseFromFirebase(); // Suppression → active:false
+  sortState=null; previousSortState=null; names=[];
   goToGameSelect();
 });
 
@@ -1462,6 +1468,7 @@ document.getElementById('btn-game-resume').addEventListener('click',function(){
       return;
     }
     currentGame='classement';
+    stopPauseListener(); // Stop le listener pendant qu'on joue
     showResumeScreen(saved);
   });
 });
@@ -1539,8 +1546,7 @@ document.getElementById("btn-undo").addEventListener("click",function(){
 });
 
 document.getElementById("btn-pause").addEventListener("click",function(){
-  // Sauvegarde en arrière-plan sans attendre la confirmation Firebase
-  savePauseToFirebase(null);
+  try{ savePauseToFirebase(null); }catch(e){}
   showToast("⏸ Pause sauvegardée !","info");
   goToGameSelect();
 });
