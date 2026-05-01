@@ -1263,9 +1263,17 @@ function savePauseToFirebase(callback){
     savedAt:new Date().toISOString(),
     active:true
   };
+  console.log('[PAUSE] Tentative de sauvegarde pour', currentPseudo, data);
   db.collection("pauses").doc(currentPseudo.toLowerCase()).set(data)
-    .then(function(){ if(callback) callback(null,data); })
-    .catch(function(err){ if(callback) callback(err,null); });
+    .then(function(){
+      console.log('[PAUSE] Sauvegarde réussie !');
+      if(callback) callback(null,data);
+    })
+    .catch(function(err){
+      console.error('[PAUSE] Erreur sauvegarde:', err.code, err.message);
+      showToast('Erreur pause : '+err.message, 'error');
+      if(callback) callback(err,null);
+    });
 }
 
 // Charge la pause depuis Firebase (one-shot, pour reprendre)
