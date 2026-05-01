@@ -5,6 +5,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>Jeux de collégiens</title>
+
+<!-- PWA -->
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#FFD700" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Jeux Collégiens" />
+<link rel="apple-touch-icon" href="icon-192.png" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -2872,6 +2881,14 @@ document.getElementById('confirm-delete-account').addEventListener('click',funct
 
 // Charge les settings au démarrage
 loadSettings();
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
 </script>
 
 </body>
