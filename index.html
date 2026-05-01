@@ -1396,7 +1396,6 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
 });
 
 document.getElementById('btn-logout').addEventListener('click', function(){
-  stopPauseListener();
   authClearSession();
   authClearLocalStorage();
   currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
@@ -1410,7 +1409,7 @@ document.getElementById('btn-logout').addEventListener('click', function(){
 });
 
 function authClearLocalStorage(){
-  clearPauseFromFirebase();
+  // Ne pas toucher à la pause Firebase — elle appartient au compte
 }
 
 function authSuccess(pseudo){
