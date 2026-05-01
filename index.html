@@ -1321,6 +1321,43 @@ function genCode(){
 }
 
 // =====================
+//  SETTINGS — déclarés tôt pour être dispo dès le login
+// =====================
+var SETTINGS_KEY='jdc_settings';
+var AVATARS=['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
+var THEMES=[
+  {id:'dark',    label:'Sombre',  style:'background:#0a0a1a'},
+  {id:'purple',  label:'Violet',  style:'background:linear-gradient(135deg,#0d0020,#1a0035)'},
+  {id:'stars',   label:'Étoilé',  style:'background:#060618',stars:true},
+  {id:'midnight',label:'Minuit',  style:'background:linear-gradient(180deg,#000510,#001030)'},
+  {id:'forest',  label:'Forêt',   style:'background:linear-gradient(135deg,#010d05,#021a0a)'},
+  {id:'sunset',  label:'Coucher', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)'},
+  {id:'light',   label:'Clair',   style:'background:#f0f0f8',light:true},
+];
+var ACCENTS=[
+  {id:'gold',   color:'#FFD700',label:'Or'},
+  {id:'pink',   color:'#ff6b9d',label:'Rose'},
+  {id:'blue',   color:'#4488ff',label:'Bleu'},
+  {id:'green',  color:'#22bb55',label:'Vert'},
+  {id:'purple', color:'#cc44ff',label:'Violet'},
+  {id:'orange', color:'#ff8800',label:'Orange'},
+  {id:'red',    color:'#ff4444',label:'Rouge'},
+  {id:'cyan',   color:'#00ccdd',label:'Cyan'},
+];
+var userSettings={
+  visibilityClassement:'all',visibilityKmk:'all',
+  leaderboard:true,stealth:false,autosave:true,
+  confirmQuit:true,animations:true,kmkDefaultRounds:3,
+  publicProfile:true,avatar:'🐱',theme:'dark',accent:'gold',bio:''
+};
+function loadSettings(){
+  try{var raw=localStorage.getItem(SETTINGS_KEY);if(raw)Object.assign(userSettings,JSON.parse(raw));}catch(e){}
+  applyTheme(userSettings.theme);
+  applyAccent(userSettings.accent);
+  if(document.getElementById('settings-visibility-classement')) applySettingsToUI();
+}
+
+// =====================
 //  STATE
 // =====================
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
@@ -2482,45 +2519,6 @@ document.getElementById('btn-export-mail-kmk').addEventListener('click', exportK
 // =====================
 //  PARAMÈTRES — THÈMES, AVATARS, ACCENT, BIO, SOCIAL
 // =====================
-var SETTINGS_KEY = 'jdc_settings';
-
-var AVATARS = ['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
-
-var THEMES = [
-  { id:'dark',    label:'Sombre',    bg:'#0a0a1a',   style:'background:#0a0a1a' },
-  { id:'purple',  label:'Violet',    bg:'linear-gradient(135deg,#0d0020,#1a0035)', style:'background:linear-gradient(135deg,#0d0020,#1a0035)' },
-  { id:'stars',   label:'Étoilé',    bg:'#060618',   style:'background:#060618', stars:true },
-  { id:'midnight',label:'Minuit',    bg:'linear-gradient(180deg,#000510,#001030)', style:'background:linear-gradient(180deg,#000510,#001030)' },
-  { id:'forest',  label:'Forêt',     bg:'linear-gradient(135deg,#010d05,#021a0a)', style:'background:linear-gradient(135deg,#010d05,#021a0a)' },
-  { id:'sunset',  label:'Coucher',   bg:'linear-gradient(135deg,#1a0505,#1a0a00)', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)' },
-  { id:'light',   label:'Clair',     bg:'#f0f0f8',   style:'background:#f0f0f8', light:true },
-];
-
-var ACCENTS = [
-  { id:'gold',   color:'#FFD700', label:'Or' },
-  { id:'pink',   color:'#ff6b9d', label:'Rose' },
-  { id:'blue',   color:'#4488ff', label:'Bleu' },
-  { id:'green',  color:'#22bb55', label:'Vert' },
-  { id:'purple', color:'#cc44ff', label:'Violet' },
-  { id:'orange', color:'#ff8800', label:'Orange' },
-  { id:'red',    color:'#ff4444', label:'Rouge' },
-  { id:'cyan',   color:'#00ccdd', label:'Cyan' },
-];
-
-var userSettings = {
-  visibilityClassement:'all', visibilityKmk:'all',
-  leaderboard:true, stealth:false, autosave:true,
-  confirmQuit:true, animations:true, kmkDefaultRounds:3,
-  publicProfile:true,
-  avatar:'🐱', theme:'dark', accent:'gold', bio:''
-};
-
-function loadSettings(){
-  try{ var raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(userSettings,JSON.parse(raw)); }catch(e){}
-  applyTheme(userSettings.theme);
-  applyAccent(userSettings.accent);
-  applySettingsToUI();
-}
 
 function saveSettings(){
   userSettings.visibilityClassement=document.getElementById('settings-visibility-classement').value;
