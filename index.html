@@ -2999,15 +2999,19 @@ function clearOneSignal(){
   });
 }
 function sendPushNotif(toPseudo, title, message){
+  if(!toPseudo || toPseudo===currentPseudo) return;
   fetch('https://onesignal.com/api/v1/notifications',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Basic os_v2_app_c4d36iqfozfnzgt2nbwrjomcwbafvpxunbf52cvlkdvpbih3hpnjjtkfqnrznmpavk7iq4yicfhytxhb2fvlb7j4h5mxjifp7iqhki'
+    },
     body:JSON.stringify({
       app_id:'23280fe5-538a-4776-a4db-ea1b5df57f20',
       filters:[{field:'tag',key:'pseudo',relation:'=',value:toPseudo}],
       headings:{fr:title,en:title},
       contents:{fr:message,en:message},
-      url:'https://juvisoff.netlify.app'
+      url:'https://clovisseetjulles.netlify.app'
     })
   }).catch(function(){});
 }
@@ -3112,8 +3116,7 @@ function startGlobalListeners(){
                 showToast('💬 '+partner+' : '+text.substring(0,40),'info');
                 unreadMessagesCount++;
                 updateFriendsBadge();
-                // Notif push OneSignal (si app ouverte ça duplique le toast — normal)
-                sendPushNotif(currentPseudo,'💬 Message de '+partner,text.substring(0,100));
+                // App déjà ouverte — le toast suffit, pas de notif push redondante
               }
             });
           });
