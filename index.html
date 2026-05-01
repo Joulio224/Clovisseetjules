@@ -7,13 +7,26 @@
 <title>Jeux de collégiens</title>
 
 <!-- PWA -->
-
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#FFD700" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Jeux Collégiens" />
 <link rel="apple-touch-icon" href="icon-192.png" />
+
+<!-- OneSignal -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "23280fe5-538a-4776-a4db-ea1b5df57f20",
+      safari_web_id: "web.onesignal.auto.23280fe5-538a-4776-a4db-ea1b5df57f20",
+      notifyButton: { enable: false },
+      allowLocalhostAsSecureOrigin: true,
+    });
+  });
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -515,34 +528,34 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 .reaction-btn.reacted { background: #1a1a0a; border-color: var(–accent); color: var(–accent); }
 .reaction-count { font-size: 11px; color: #555; margin-left: 3px; }
 /* AMIS */
-.friend-row { display:flex; align-items:center; gap:12px; background:#131328; border:2px solid #1e1e40; border-radius:14px; padding:12px 14px; margin-bottom:8px; cursor:pointer; transition:border-color 0.15s; }
-.friend-row:hover { border-color:#22bb55; }
-.fr-avatar { font-size:28px; flex-shrink:0; position:relative; }
-.status-dot { position:absolute; bottom:0; right:-2px; width:10px; height:10px; border-radius:50%; border:2px solid #131328; }
-.status-dot.online { background:#22bb55; }
-.status-dot.offline { background:#444; }
-.fr-info { flex:1; min-width:0; }
-.fr-name { font-size:15px; font-weight:800; color:#fff; }
-.fr-status { font-size:11px; margin-top:2px; }
-.fr-status.online { color:#22bb55; }
-.fr-status.offline { color:#555; }
-.fr-actions { display:flex; gap:6px; flex-shrink:0; }
-.btn-chat-open { padding:7px 12px; background:none; border:1.5px solid #22bb55; border-radius:10px; color:#22bb55; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.15s; }
-.btn-chat-open:hover { background:#22bb55; color:#000; }
-.btn-unfriend { padding:7px 10px; background:none; border:1.5px solid #333; border-radius:10px; color:#555; font-size:13px; cursor:pointer; font-family:inherit; transition:all 0.15s; }
-.btn-unfriend:hover { border-color:#cc3333; color:#cc3333; }
-.request-row { display:flex; align-items:center; gap:10px; background:#1a1200; border:2px solid #ff880033; border-radius:14px; padding:12px 14px; margin-bottom:8px; }
-.request-row .rr-name { font-size:14px; font-weight:800; color:#fff; flex:1; }
-.btn-accept { padding:7px 14px; background:#22bb55; border:none; border-radius:10px; color:#fff; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; }
-.btn-decline { padding:7px 10px; background:none; border:1.5px solid #333; border-radius:10px; color:#555; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+.friend-row{display:flex;align-items:center;gap:12px;background:#131328;border:2px solid #1e1e40;border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s;}
+.friend-row:hover{border-color:#22bb55;}
+.fr-avatar{font-size:28px;flex-shrink:0;position:relative;}
+.status-dot{position:absolute;bottom:0;right:-2px;width:10px;height:10px;border-radius:50%;border:2px solid #131328;}
+.status-dot.online{background:#22bb55;}
+.status-dot.offline{background:#444;}
+.fr-info{flex:1;min-width:0;}
+.fr-name{font-size:15px;font-weight:800;color:#fff;}
+.fr-status{font-size:11px;margin-top:2px;}
+.fr-status.online{color:#22bb55;}
+.fr-status.offline{color:#555;}
+.fr-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-chat-open{padding:7px 12px;background:none;border:1.5px solid #22bb55;border-radius:10px;color:#22bb55;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.btn-chat-open:hover{background:#22bb55;color:#000;}
+.btn-unfriend{padding:7px 10px;background:none;border:1.5px solid #333;border-radius:10px;color:#555;font-size:13px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.btn-unfriend:hover{border-color:#cc3333;color:#cc3333;}
+.request-row{display:flex;align-items:center;gap:10px;background:#1a1200;border:2px solid #ff880033;border-radius:14px;padding:12px 14px;margin-bottom:8px;}
+.request-row .rr-name{font-size:14px;font-weight:800;color:#fff;flex:1;}
+.btn-accept{padding:7px 14px;background:#22bb55;border:none;border-radius:10px;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;}
+.btn-decline{padding:7px 10px;background:none;border:1.5px solid #333;border-radius:10px;color:#555;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
 /* CHAT */
-.msg-bubble { max-width:78%; padding:10px 14px; border-radius:18px; font-size:14px; line-height:1.5; word-break:break-word; }
-.msg-mine { background:#22bb55; color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
-.msg-theirs { background:#131328; border:2px solid #1e1e40; color:#fff; align-self:flex-start; border-bottom-left-radius:4px; }
-.msg-wrap { display:flex; flex-direction:column; }
-.msg-wrap.mine { align-items:flex-end; }
-.msg-wrap.theirs { align-items:flex-start; }
-.msg-time { font-size:10px; color:#555; margin-top:2px; }
+.msg-bubble{max-width:78%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word;}
+.msg-mine{background:#22bb55;color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.msg-theirs{background:#131328;border:2px solid #1e1e40;color:#fff;align-self:flex-start;border-bottom-left-radius:4px;}
+.msg-wrap{display:flex;flex-direction:column;}
+.msg-wrap.mine{align-items:flex-end;}
+.msg-wrap.theirs{align-items:flex-start;}
+.msg-time{font-size:10px;color:#555;margin-top:2px;}
 </style>
 
 </head>
@@ -553,7 +566,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <span class="au-name" id="au-name-display"></span>
     <button class="au-logout" id="btn-open-friends" style="border-color:#22bb55;color:#22bb55;">👥 Amis</button>
     <button class="au-logout" id="btn-open-settings" style="border-color:#FFD700;color:#FFD700;">⚙️ Paramètres</button>
-    <button class="au-logout" id="btn-logout">Déco</button>
+    <button class="au-logout" id="btn-logout">Déconnexion</button>
   </div>
 
   <div class="tab-bar">
@@ -1084,7 +1097,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- AMIS -->
-
   <div id="screen-friends" class="hidden">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
       <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -1110,7 +1122,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- CHAT -->
-
   <div id="screen-chat" class="hidden">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <button id="btn-chat-back" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -1321,43 +1332,6 @@ function genCode(){
 }
 
 // =====================
-//  SETTINGS — déclarés tôt pour être dispo dès le login
-// =====================
-var SETTINGS_KEY='jdc_settings';
-var AVATARS=['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
-var THEMES=[
-  {id:'dark',    label:'Sombre',  style:'background:#0a0a1a'},
-  {id:'purple',  label:'Violet',  style:'background:linear-gradient(135deg,#0d0020,#1a0035)'},
-  {id:'stars',   label:'Étoilé',  style:'background:#060618',stars:true},
-  {id:'midnight',label:'Minuit',  style:'background:linear-gradient(180deg,#000510,#001030)'},
-  {id:'forest',  label:'Forêt',   style:'background:linear-gradient(135deg,#010d05,#021a0a)'},
-  {id:'sunset',  label:'Coucher', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)'},
-  {id:'light',   label:'Clair',   style:'background:#f0f0f8',light:true},
-];
-var ACCENTS=[
-  {id:'gold',   color:'#FFD700',label:'Or'},
-  {id:'pink',   color:'#ff6b9d',label:'Rose'},
-  {id:'blue',   color:'#4488ff',label:'Bleu'},
-  {id:'green',  color:'#22bb55',label:'Vert'},
-  {id:'purple', color:'#cc44ff',label:'Violet'},
-  {id:'orange', color:'#ff8800',label:'Orange'},
-  {id:'red',    color:'#ff4444',label:'Rouge'},
-  {id:'cyan',   color:'#00ccdd',label:'Cyan'},
-];
-var userSettings={
-  visibilityClassement:'all',visibilityKmk:'all',
-  leaderboard:true,stealth:false,autosave:true,
-  confirmQuit:true,animations:true,kmkDefaultRounds:3,
-  publicProfile:true,avatar:'🐱',theme:'dark',accent:'gold',bio:''
-};
-function loadSettings(){
-  try{var raw=localStorage.getItem(SETTINGS_KEY);if(raw)Object.assign(userSettings,JSON.parse(raw));}catch(e){}
-  applyTheme(userSettings.theme);
-  applyAccent(userSettings.accent);
-  if(document.getElementById('settings-visibility-classement')) applySettingsToUI();
-}
-
-// =====================
 //  STATE
 // =====================
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
@@ -1519,10 +1493,16 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
 document.getElementById('btn-logout').addEventListener('click', function(){
   setOffline();
   clearInterval(statusInterval);
+  clearOneSignal();
+  if(globalRequestsListener){ globalRequestsListener(); globalRequestsListener=null; }
+  globalChatListeners.forEach(function(l){l();});
+  globalChatListeners=[];
   if(friendsListener){ friendsListener(); friendsListener=null; }
   if(requestsListener){ requestsListener(); requestsListener=null; }
   if(chatListener){ chatListener(); chatListener=null; }
+  chatPartner=''; unreadRequestsCount=0; unreadMessagesCount=0;
   authClearSession();
+  authClearLocalStorage();
   currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
   document.getElementById('auth-user-bar').classList.add('hidden');
   document.getElementById('tab-saved').classList.add('hidden');
@@ -1548,6 +1528,8 @@ function authSuccess(pseudo){
   btnS.disabled=false; btnS.textContent='Se connecter →';
   loadSettings();
   startPresence();
+  setupOneSignal(pseudo);
+  setTimeout(function(){ startGlobalListeners(); }, 1500);
   goToGameSelect();
 }
 
@@ -1561,6 +1543,8 @@ function init(){
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
     loadSettings();
     startPresence();
+    setupOneSignal(session.pseudo);
+    setTimeout(function(){ startGlobalListeners(); }, 1500);
     goToGameSelect();
   } else {
     hideAll(); show('screen-auth');
@@ -2519,6 +2503,45 @@ document.getElementById('btn-export-mail-kmk').addEventListener('click', exportK
 // =====================
 //  PARAMÈTRES — THÈMES, AVATARS, ACCENT, BIO, SOCIAL
 // =====================
+var SETTINGS_KEY = 'jdc_settings';
+
+var AVATARS = ['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
+
+var THEMES = [
+  { id:'dark',    label:'Sombre',    bg:'#0a0a1a',   style:'background:#0a0a1a' },
+  { id:'purple',  label:'Violet',    bg:'linear-gradient(135deg,#0d0020,#1a0035)', style:'background:linear-gradient(135deg,#0d0020,#1a0035)' },
+  { id:'stars',   label:'Étoilé',    bg:'#060618',   style:'background:#060618', stars:true },
+  { id:'midnight',label:'Minuit',    bg:'linear-gradient(180deg,#000510,#001030)', style:'background:linear-gradient(180deg,#000510,#001030)' },
+  { id:'forest',  label:'Forêt',     bg:'linear-gradient(135deg,#010d05,#021a0a)', style:'background:linear-gradient(135deg,#010d05,#021a0a)' },
+  { id:'sunset',  label:'Coucher',   bg:'linear-gradient(135deg,#1a0505,#1a0a00)', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)' },
+  { id:'light',   label:'Clair',     bg:'#f0f0f8',   style:'background:#f0f0f8', light:true },
+];
+
+var ACCENTS = [
+  { id:'gold',   color:'#FFD700', label:'Or' },
+  { id:'pink',   color:'#ff6b9d', label:'Rose' },
+  { id:'blue',   color:'#4488ff', label:'Bleu' },
+  { id:'green',  color:'#22bb55', label:'Vert' },
+  { id:'purple', color:'#cc44ff', label:'Violet' },
+  { id:'orange', color:'#ff8800', label:'Orange' },
+  { id:'red',    color:'#ff4444', label:'Rouge' },
+  { id:'cyan',   color:'#00ccdd', label:'Cyan' },
+];
+
+var userSettings = {
+  visibilityClassement:'all', visibilityKmk:'all',
+  leaderboard:true, stealth:false, autosave:true,
+  confirmQuit:true, animations:true, kmkDefaultRounds:3,
+  publicProfile:true,
+  avatar:'🐱', theme:'dark', accent:'gold', bio:''
+};
+
+function loadSettings(){
+  try{ var raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(userSettings,JSON.parse(raw)); }catch(e){}
+  applyTheme(userSettings.theme);
+  applyAccent(userSettings.accent);
+  applySettingsToUI();
+}
 
 function saveSettings(){
   userSettings.visibilityClassement=document.getElementById('settings-visibility-classement').value;
@@ -2963,6 +2986,38 @@ document.getElementById('confirm-delete-account').addEventListener('click',funct
 loadSettings();
 
 // =====================
+//  ONESIGNAL — NOTIFICATIONS PUSH
+// =====================
+function setupOneSignal(pseudo){
+  if(!window.OneSignalDeferred) return;
+  OneSignalDeferred.push(async function(OneSignal){
+    try{
+      await OneSignal.Notifications.requestPermission();
+      await OneSignal.User.addTag('pseudo', pseudo);
+    }catch(e){ console.warn('[OneSignal]',e); }
+  });
+}
+function clearOneSignal(){
+  if(!window.OneSignalDeferred) return;
+  OneSignalDeferred.push(async function(OneSignal){
+    try{ await OneSignal.User.removeTag('pseudo'); }catch(e){}
+  });
+}
+function sendPushNotif(toPseudo, title, message){
+  fetch('https://onesignal.com/api/v1/notifications',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      app_id:'23280fe5-538a-4776-a4db-ea1b5df57f20',
+      filters:[{field:'tag',key:'pseudo',relation:'=',value:toPseudo}],
+      headings:{fr:title,en:title},
+      contents:{fr:message,en:message},
+      url:'https://juvisoff.netlify.app'
+    })
+  }).catch(function(){});
+}
+
+// =====================
 //  AMIS, STATUTS & MESSAGERIE
 // =====================
 var friendsListener=null, requestsListener=null, chatListener=null;
@@ -2987,25 +3042,95 @@ function timeAgo(ts){
 // --- Présence ---
 function setOnline(){
   if(!currentPseudo) return;
-  db.collection('users').doc(currentPseudo).update({online:true, lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+  db.collection('users').doc(currentPseudo).update({online:true,lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
 }
 function setOffline(){
   if(!currentPseudo) return;
-  db.collection('users').doc(currentPseudo).update({online:false, lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+  db.collection('users').doc(currentPseudo).update({online:false,lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
 }
 function startPresence(){
   setOnline();
   clearInterval(statusInterval);
-  statusInterval=setInterval(setOnline, 60000);
-  window.addEventListener('beforeunload', setOffline);
-  document.addEventListener('visibilitychange', function(){
+  statusInterval=setInterval(setOnline,60000);
+  window.addEventListener('beforeunload',setOffline);
+  document.addEventListener('visibilitychange',function(){
     if(document.hidden) setOffline(); else setOnline();
   });
 }
 
+// --- Badges de notifs non lues ---
+var unreadRequestsCount=0, unreadMessagesCount=0;
+function updateFriendsBadge(){
+  var total=unreadRequestsCount+unreadMessagesCount;
+  var btn=document.getElementById('btn-open-friends');
+  if(!btn) return;
+  var badge=btn.querySelector('.notif-badge');
+  if(total>0){
+    if(!badge){
+      badge=document.createElement('span');
+      badge.className='notif-badge';
+      badge.style.cssText='display:inline-block;background:#cc3333;color:#fff;border-radius:50%;font-size:10px;font-weight:900;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 3px;margin-left:4px;';
+      btn.appendChild(badge);
+    }
+    badge.textContent=total>9?'9+':total;
+  } else {
+    if(badge) badge.remove();
+  }
+}
+
+// --- Écoute globale des demandes (pour badge) ---
+var globalRequestsListener=null;
+var globalChatListeners=[];
+function startGlobalListeners(){
+  if(!currentPseudo) return;
+  // Demandes d'amis reçues
+  if(globalRequestsListener) globalRequestsListener();
+  globalRequestsListener=db.collection('friend_requests').where('to','==',currentPseudo)
+    .onSnapshot(function(snap){
+      var prev=unreadRequestsCount;
+      unreadRequestsCount=snap.size;
+      // Notif si nouvelle demande
+      if(unreadRequestsCount>prev){
+        snap.docChanges().forEach(function(change){
+          if(change.type==='added'){
+            var from=change.doc.data().from;
+            showToast('👥 Demande d\'ami de '+from,'info');
+          }
+        });
+      }
+      updateFriendsBadge();
+    });
+  // Nouveaux messages non lus (on écoute les amis)
+  db.collection('friends').where('members','array-contains',currentPseudo).get()
+    .then(function(snap){
+      snap.forEach(function(doc){
+        var partner=doc.data().members.find(function(m){return m!==currentPseudo;});
+        var chatId=getChatId(currentPseudo,partner);
+        var listener=db.collection('chats').doc(chatId).collection('messages')
+          .where('to','==',currentPseudo)
+          .orderBy('createdAt','desc').limit(1)
+          .onSnapshot(function(msgSnap){
+            if(msgSnap.empty) return;
+            msgSnap.docChanges().forEach(function(change){
+              if(change.type==='added' && chatPartner!==partner){
+                var text=change.doc.data().text||'';
+                showToast('💬 '+partner+' : '+text.substring(0,40),'info');
+                unreadMessagesCount++;
+                updateFriendsBadge();
+                // Notif push OneSignal (si app ouverte ça duplique le toast — normal)
+                sendPushNotif(currentPseudo,'💬 Message de '+partner,text.substring(0,100));
+              }
+            });
+          });
+        globalChatListeners.push(listener);
+      });
+    });
+}
+
 // --- Ouvrir amis ---
-document.getElementById('btn-open-friends').addEventListener('click', function(){
-  if(!currentPseudo){ showToast('Connecte-toi d\'abord','error'); return; }
+document.getElementById('btn-open-friends').addEventListener('click',function(){
+  if(!currentPseudo){showToast('Connecte-toi d\'abord','error');return;}
+  unreadRequestsCount=0; unreadMessagesCount=0; updateFriendsBadge();
   hideAll(); show('screen-friends');
   document.getElementById('friends-add-result').textContent='';
   document.getElementById('friends-add-input').value='';
@@ -3013,84 +3138,64 @@ document.getElementById('btn-open-friends').addEventListener('click', function()
   loadFriends();
 });
 
-// --- Ajouter un ami (logique corrigée et linéaire) ---
-document.getElementById('btn-friends-add').addEventListener('click', function(){
+// --- Ajouter un ami ---
+document.getElementById('btn-friends-add').addEventListener('click',function(){
   var btn=this;
   var target=document.getElementById('friends-add-input').value.trim().toLowerCase();
   var resultEl=document.getElementById('friends-add-result');
-
   resultEl.style.color='#555'; resultEl.textContent='';
-  if(!target){ resultEl.style.color='#cc3333'; resultEl.textContent='Entre un pseudo.'; return; }
-  if(target===currentPseudo){ resultEl.style.color='#cc3333'; resultEl.textContent='C\'est toi-même !'; return; }
-
+  if(!target){resultEl.style.color='#cc3333';resultEl.textContent='Entre un pseudo.';return;}
+  if(target===currentPseudo){resultEl.style.color='#cc3333';resultEl.textContent='C\'est toi-même !';return;}
   btn.disabled=true; btn.textContent='...';
   resultEl.style.color='#555'; resultEl.textContent='Recherche...';
-
-  // Étape 1 : est-ce que le joueur existe ?
-  db.collection('users').doc(target).get()
-    .then(function(userDoc){
-      if(!userDoc.exists){
-        resultEl.style.color='#cc3333'; resultEl.textContent='Joueur "'+target+'" introuvable.';
-        btn.disabled=false; btn.textContent='Ajouter';
-        return;
+  db.collection('users').doc(target).get().then(function(userDoc){
+    if(!userDoc.exists){
+      resultEl.style.color='#cc3333';resultEl.textContent='Joueur "'+target+'" introuvable.';
+      btn.disabled=false;btn.textContent='Ajouter';return;
+    }
+    var friendId=getChatId(currentPseudo,target);
+    db.collection('friends').doc(friendId).get().then(function(friendDoc){
+      if(friendDoc.exists){
+        resultEl.style.color='#cc3333';resultEl.textContent='Vous êtes déjà amis !';
+        btn.disabled=false;btn.textContent='Ajouter';return;
       }
-      // Étape 2 : déjà amis ?
-      var friendId=getChatId(currentPseudo, target);
-      db.collection('friends').doc(friendId).get()
-        .then(function(friendDoc){
-          if(friendDoc.exists){
-            resultEl.style.color='#cc3333'; resultEl.textContent='Vous êtes déjà amis !';
-            btn.disabled=false; btn.textContent='Ajouter';
-            return;
-          }
-          // Étape 3 : demande déjà envoyée ?
-          var reqId=currentPseudo+'_to_'+target;
-          db.collection('friend_requests').doc(reqId).get()
-            .then(function(reqDoc){
-              if(reqDoc.exists){
-                resultEl.style.color='#cc3333'; resultEl.textContent='Demande déjà envoyée à '+target+'.';
-                btn.disabled=false; btn.textContent='Ajouter';
-                return;
-              }
-              // Étape 4 : envoyer la demande
-              db.collection('friend_requests').doc(reqId).set({
-                from:currentPseudo, to:target,
-                createdAt:firebase.firestore.FieldValue.serverTimestamp()
-              }).then(function(){
-                resultEl.style.color='#22bb55';
-                resultEl.textContent='✅ Demande envoyée à '+target+' !';
-                document.getElementById('friends-add-input').value='';
-                btn.disabled=false; btn.textContent='Ajouter';
-              }).catch(function(err){
-                resultEl.style.color='#cc3333'; resultEl.textContent='Erreur envoi : '+err.message;
-                btn.disabled=false; btn.textContent='Ajouter';
-              });
-            }).catch(function(err){
-              resultEl.style.color='#cc3333'; resultEl.textContent='Erreur : '+err.message;
-              btn.disabled=false; btn.textContent='Ajouter';
-            });
+      var reqId=currentPseudo+'_to_'+target;
+      db.collection('friend_requests').doc(reqId).get().then(function(reqDoc){
+        if(reqDoc.exists){
+          resultEl.style.color='#cc3333';resultEl.textContent='Demande déjà envoyée.';
+          btn.disabled=false;btn.textContent='Ajouter';return;
+        }
+        db.collection('friend_requests').doc(reqId).set({
+          from:currentPseudo,to:target,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function(){
+          resultEl.style.color='#22bb55';
+          resultEl.textContent='✅ Demande envoyée à '+target+' !';
+          document.getElementById('friends-add-input').value='';
+          btn.disabled=false;btn.textContent='Ajouter';
+          // Notif push au destinataire
+          sendPushNotif(target,'👥 Demande d\'ami',currentPseudo+' veut t\'ajouter en ami !');
         }).catch(function(err){
-          resultEl.style.color='#cc3333'; resultEl.textContent='Erreur : '+err.message;
-          btn.disabled=false; btn.textContent='Ajouter';
+          resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;
+          btn.disabled=false;btn.textContent='Ajouter';
         });
-    }).catch(function(err){
-      resultEl.style.color='#cc3333'; resultEl.textContent='Erreur : '+err.message;
-      btn.disabled=false; btn.textContent='Ajouter';
-    });
+      }).catch(function(err){resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;btn.disabled=false;btn.textContent='Ajouter';});
+    }).catch(function(err){resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;btn.disabled=false;btn.textContent='Ajouter';});
+  }).catch(function(err){resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;btn.disabled=false;btn.textContent='Ajouter';});
 });
 
-document.getElementById('friends-add-input').addEventListener('keydown', function(e){
+document.getElementById('friends-add-input').addEventListener('keydown',function(e){
   if(e.key==='Enter') document.getElementById('btn-friends-add').click();
 });
 
 // --- Demandes reçues ---
 function loadFriendRequests(){
-  if(requestsListener){ requestsListener(); requestsListener=null; }
+  if(requestsListener){requestsListener();requestsListener=null;}
   requestsListener=db.collection('friend_requests').where('to','==',currentPseudo)
     .onSnapshot(function(snap){
       var section=document.getElementById('friends-requests-section');
       var list=document.getElementById('friends-requests-list');
-      if(snap.empty){ section.classList.add('hidden'); return; }
+      if(snap.empty){section.classList.add('hidden');return;}
       section.classList.remove('hidden');
       var html='';
       snap.forEach(function(doc){
@@ -3104,58 +3209,57 @@ function loadFriendRequests(){
       });
       list.innerHTML=html;
       list.querySelectorAll('.btn-accept').forEach(function(btn){
-        btn.addEventListener('click', function(){
+        btn.addEventListener('click',function(){
           var from=this.getAttribute('data-from');
           var reqId=this.getAttribute('data-id');
-          var friendId=getChatId(currentPseudo, from);
+          var friendId=getChatId(currentPseudo,from);
           db.collection('friends').doc(friendId).set({
-            members:[currentPseudo, from],
+            members:[currentPseudo,from],
             createdAt:firebase.firestore.FieldValue.serverTimestamp()
           }).then(function(){
             db.collection('friend_requests').doc(reqId).delete();
             showToast('✅ '+from+' ajouté !','info');
-          }).catch(function(err){ showToast('Erreur : '+err.message,'error'); });
+            // Notif push à celui qui avait envoyé la demande
+            sendPushNotif(from,'✅ Demande acceptée',currentPseudo+' a accepté ta demande d\'ami !');
+          }).catch(function(err){showToast('Erreur : '+err.message,'error');});
         });
       });
       list.querySelectorAll('.btn-decline').forEach(function(btn){
-        btn.addEventListener('click', function(){
+        btn.addEventListener('click',function(){
           db.collection('friend_requests').doc(this.getAttribute('data-id')).delete();
         });
       });
-    }, function(err){ console.error('Requests error:', err); });
+    },function(err){console.error('Requests error:',err);});
 }
 
 // --- Liste d'amis ---
 function loadFriends(){
-  if(friendsListener){ friendsListener(); friendsListener=null; }
+  if(friendsListener){friendsListener();friendsListener=null;}
   var list=document.getElementById('friends-list');
   list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Chargement...</div>';
   friendsListener=db.collection('friends').where('members','array-contains',currentPseudo)
     .onSnapshot(function(snap){
-      if(snap.empty){ list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami pour l\'instant.</div>'; return; }
+      if(snap.empty){list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami pour l\'instant.</div>';return;}
       var friends=[];
       snap.forEach(function(doc){
-        doc.data().members.forEach(function(m){ if(m!==currentPseudo) friends.push({fid:doc.id,pseudo:m}); });
+        doc.data().members.forEach(function(m){if(m!==currentPseudo) friends.push({fid:doc.id,pseudo:m});});
       });
-      var done=0;
-      var results=[];
+      var done=0,results=[];
       friends.forEach(function(f,i){
         db.collection('users').doc(f.pseudo).get().then(function(d){
-          results[i]={fid:f.fid, pseudo:f.pseudo, data:d.exists?d.data():{}};
-          done++;
-          if(done===friends.length) renderFriendsList(results);
+          results[i]={fid:f.fid,pseudo:f.pseudo,data:d.exists?d.data():{}};
+          done++;if(done===friends.length) renderFriendsList(results);
         }).catch(function(){
-          results[i]={fid:f.fid, pseudo:f.pseudo, data:{}};
-          done++;
-          if(done===friends.length) renderFriendsList(results);
+          results[i]={fid:f.fid,pseudo:f.pseudo,data:{}};
+          done++;if(done===friends.length) renderFriendsList(results);
         });
       });
-    }, function(err){ list.innerHTML='<div style="color:#cc3333;text-align:center;padding:20px;">Erreur</div>'; });
+    },function(){list.innerHTML='<div style="color:#cc3333;text-align:center;padding:20px;">Erreur</div>';});
 }
 
 function renderFriendsList(friends){
   var list=document.getElementById('friends-list');
-  if(!friends.length){ list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami.</div>'; return; }
+  if(!friends.length){list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami.</div>';return;}
   var html='';
   friends.forEach(function(f){
     var online=f.data.online===true;
@@ -3172,17 +3276,17 @@ function renderFriendsList(friends){
   });
   list.innerHTML=html;
   list.querySelectorAll('.friend-row').forEach(function(row){
-    row.addEventListener('click', function(){ openChat(this.getAttribute('data-pseudo')); });
+    row.addEventListener('click',function(){openChat(this.getAttribute('data-pseudo'));});
   });
   list.querySelectorAll('.btn-chat-open').forEach(function(btn){
-    btn.addEventListener('click', function(e){ e.stopPropagation(); openChat(this.getAttribute('data-pseudo')); });
+    btn.addEventListener('click',function(e){e.stopPropagation();openChat(this.getAttribute('data-pseudo'));});
   });
   list.querySelectorAll('.btn-unfriend').forEach(function(btn){
-    btn.addEventListener('click', function(e){
+    btn.addEventListener('click',function(e){
       e.stopPropagation();
-      var fid=this.getAttribute('data-fid'), pseudo=this.getAttribute('data-pseudo');
+      var fid=this.getAttribute('data-fid'),pseudo=this.getAttribute('data-pseudo');
       if(confirm('Supprimer '+pseudo+' de tes amis ?')){
-        db.collection('friends').doc(fid).delete().then(function(){ showToast('Ami supprimé','info'); });
+        db.collection('friends').doc(fid).delete().then(function(){showToast('Ami supprimé','info');});
       }
     });
   });
@@ -3191,14 +3295,13 @@ function renderFriendsList(friends){
 // --- Chat ---
 function openChat(pseudo){
   chatPartner=pseudo;
-  if(chatListener){ chatListener(); chatListener=null; }
-  hideAll(); show('screen-chat');
+  if(chatListener){chatListener();chatListener=null;}
+  hideAll();show('screen-chat');
   document.getElementById('chat-header-avatar').textContent='👤';
   document.getElementById('chat-header-name').textContent=pseudo;
   document.getElementById('chat-header-status').textContent='';
   document.getElementById('chat-messages').innerHTML='<div style="color:#444;text-align:center;padding:20px;">Chargement...</div>';
   document.getElementById('chat-input').value='';
-  // Infos du partenaire
   db.collection('users').doc(pseudo).get().then(function(doc){
     if(doc.exists){
       var d=doc.data();
@@ -3208,16 +3311,15 @@ function openChat(pseudo){
       document.getElementById('chat-header-status').style.color=online?'#22bb55':'#555';
     }
   });
-  var chatId=getChatId(currentPseudo, pseudo);
-  // Listener messages
+  var chatId=getChatId(currentPseudo,pseudo);
   chatListener=db.collection('chats').doc(chatId).collection('messages')
     .orderBy('createdAt','asc').limit(100)
     .onSnapshot(function(snap){
       var el=document.getElementById('chat-messages');
-      if(snap.empty){ el.innerHTML='<div style="color:#444;text-align:center;padding:20px;">Aucun message — dites bonjour ! 👋</div>'; return; }
+      if(snap.empty){el.innerHTML='<div style="color:#444;text-align:center;padding:20px;">Aucun message — dites bonjour ! 👋</div>';return;}
       var html='';
       snap.forEach(function(doc){
-        var d=doc.data(); var mine=d.from===currentPseudo;
+        var d=doc.data();var mine=d.from===currentPseudo;
         html+='<div class="msg-wrap '+(mine?'mine':'theirs')+'">';
         html+='<div class="msg-bubble msg-'+(mine?'mine':'theirs')+'">'+escHtml(d.text)+'</div>';
         html+='<div class="msg-time">'+(d.createdAt?formatTime(d.createdAt):'')+'</div>';
@@ -3225,44 +3327,45 @@ function openChat(pseudo){
       });
       el.innerHTML=html;
       el.scrollTop=el.scrollHeight;
-    }, function(err){ console.error('Chat error:',err); });
+    },function(err){console.error('Chat error:',err);});
 }
 
 function sendMessage(){
   var input=document.getElementById('chat-input');
   var text=input.value.trim();
   if(!text||!chatPartner) return;
-  input.value=''; input.style.height='';
-  var chatId=getChatId(currentPseudo, chatPartner);
+  input.value='';input.style.height='';
+  var chatId=getChatId(currentPseudo,chatPartner);
   db.collection('chats').doc(chatId).collection('messages').add({
-    from:currentPseudo, to:chatPartner, text:text,
+    from:currentPseudo,to:chatPartner,text:text,
     createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  }).catch(function(err){ showToast('Erreur : '+err.message,'error'); });
+  }).then(function(){
+    // Notif push au destinataire
+    sendPushNotif(chatPartner,'💬 Message de '+currentPseudo, text.substring(0,100));
+  }).catch(function(err){showToast('Erreur : '+err.message,'error');});
 }
 
-document.getElementById('btn-chat-send').addEventListener('click', sendMessage);
-document.getElementById('chat-input').addEventListener('keydown', function(e){
-  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
+document.getElementById('btn-chat-send').addEventListener('click',sendMessage);
+document.getElementById('chat-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
 });
-document.getElementById('chat-input').addEventListener('input', function(){
-  this.style.height=''; this.style.height=Math.min(this.scrollHeight,120)+'px';
+document.getElementById('chat-input').addEventListener('input',function(){
+  this.style.height='';this.style.height=Math.min(this.scrollHeight,120)+'px';
 });
-document.getElementById('btn-chat-back').addEventListener('click', function(){
-  if(chatListener){ chatListener(); chatListener=null; }
+document.getElementById('btn-chat-back').addEventListener('click',function(){
+  if(chatListener){chatListener();chatListener=null;}
   chatPartner='';
-  hideAll(); show('screen-friends');
-  loadFriendRequests();
-  loadFriends();
+  hideAll();show('screen-friends');
+  loadFriendRequests();loadFriends();
 });
 </script>
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load', function(){
+  window.addEventListener('load',function(){
     navigator.serviceWorker.register('sw.js').catch(function(){});
   });
 }
 </script>
-
 </body>
 </html>
