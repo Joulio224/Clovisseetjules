@@ -979,25 +979,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 </div>
 
-<!-- Notifications ntfy -->
-<div class="settings-section">
-  <div class="settings-section-header">
-    <span class="sh-icon">🔔</span>
-    <div><div class="sh-title">Notifications (ntfy)</div><div class="sh-desc">Reçois des notifs même app fermée</div></div>
-  </div>
-  <div style="padding:14px 18px;">
-    <div style="font-size:12px;color:#888;margin-bottom:10px;">
-      1. Installe <strong style="color:#fff">ntfy</strong> sur l'App Store<br>
-      2. Dans ntfy → <strong style="color:#fff">+</strong> → abonne-toi à ce topic :<br>
-    </div>
-    <div style="background:#0d0d1f;border:2px solid var(--accent);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-      <span id="ntfy-topic-display" style="font-family:monospace;font-size:13px;color:var(--accent);flex:1;word-break:break-all;">chargement...</span>
-      <button onclick="copyNtfyTopic()" style="background:none;border:1.5px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;">Copier</button>
-    </div>
-    <div style="font-size:11px;color:#555;text-align:center;">Chaque compte a son topic unique et secret</div>
-  </div>
-</div>
-
 <!-- Social -->
 <div class="settings-section">
   <div class="settings-section-header">
@@ -1496,7 +1477,7 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
 document.getElementById('btn-logout').addEventListener('click', function(){
   setOffline();
   clearInterval(statusInterval);
-  clearOneSignal();
+  clearNotifs();
   if(globalRequestsListener){ globalRequestsListener(); globalRequestsListener=null; }
   globalChatListeners.forEach(function(l){l();});
   globalChatListeners=[];
@@ -1531,26 +1512,9 @@ function authSuccess(pseudo){
   btnS.disabled=false; btnS.textContent='Se connecter →';
   loadSettings();
   startPresence();
-  setupOneSignal(pseudo);
+  setupNotifs(pseudo);
   setTimeout(function(){ startGlobalListeners(); }, 1500);
   goToGameSelect();
-}
-
-function copyNtfyTopic(){
-  var el = document.getElementById('ntfy-topic-display');
-  if(!el) return;
-  var topic = el.textContent;
-  if(!topic || topic==='chargement...') return;
-  navigator.clipboard.writeText(topic).then(function(){
-    showToast('Topic copié !','info');
-  }).catch(function(){
-    // Fallback
-    var ta = document.createElement('textarea');
-    ta.value = topic; document.body.appendChild(ta);
-    ta.select(); document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('Topic copié !','info');
-  });
 }
 
 function init(){
@@ -1563,7 +1527,7 @@ function init(){
     document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
     loadSettings();
     startPresence();
-    setupOneSignal(session.pseudo);
+    setupNotifs(session.pseudo);
     setTimeout(function(){ startGlobalListeners(); }, 1500);
     goToGameSelect();
   } else {
@@ -2732,11 +2696,7 @@ function openSettings(){
   renderThemeGrid();
   renderAccentGrid();
   loadSettingsStats();
-  // Rafraîchit le topic ntfy à chaque ouverture des paramètres
-  setupNtfyTopic(currentPseudo, function(topic){
-    var el = document.getElementById('ntfy-topic-display');
-    if(el) el.textContent = topic || 'Erreur — reconnecte-toi';
-  });
+
 }
 
 function loadSettingsStats(){
@@ -3014,58 +2974,21 @@ loadSettings();
 // =====================
 var notifListener = null;
 
-function setupOneSignal(pseudo){
+function setupNotifs(pseudo){
   startNotifListener(pseudo);
-  setupNtfyTopic(pseudo, function(topic){
-    var el = document.getElementById('ntfy-topic-display');
-    if(el && topic) el.textContent = topic;
-  });
 }
 
-function clearOneSignal(){
+function clearNotifs(){
   stopNotifListener();
 }
 
 function sendPushNotif(toPseudo, title, message){
   if(!toPseudo || toPseudo === currentPseudo) return;
-  // Firestore in-app (quand app ouverte)
+  // Notif Firestore in-app
   db.collection('notifications').doc(toPseudo).collection('items').add({
     title: title, message: message, from: currentPseudo,
     seen: false, createdAt: firebase.firestore.FieldValue.serverTimestamp()
   }).catch(function(){});
-  // ntfy — notif vraie même app fermée
-  db.collection('users').doc(toPseudo).get().then(function(doc){
-    if(!doc.exists) return;
-    var topic = doc.data().ntfyTopic;
-    if(!topic) return;
-    fetch('https://ntfy.sh/' + topic, {
-      method: 'POST',
-      headers: {
-        'Title': encodeURIComponent(title),
-        'Priority': 'default',
-        'Tags': 'bell',
-        'Content-Type': 'text/plain'
-      },
-      body: message
-    }).then(function(r){ console.log('[ntfy] status:', r.status); })
-      .catch(function(e){ console.warn('[ntfy] erreur:', e); });
-  }).catch(function(){});
-}
-
-// Génère ou récupère le topic ntfy de l'utilisateur
-function setupNtfyTopic(pseudo, callback){
-  db.collection('users').doc(pseudo).get().then(function(doc){
-    if(!doc.exists){ callback(null); return; }
-    var topic = doc.data().ntfyTopic;
-    if(topic){ callback(topic); return; }
-    // Génère un topic unique
-    var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    var t = 'cjlu-' + pseudo + '-';
-    for(var i=0;i<8;i++) t += chars[Math.floor(Math.random()*chars.length)];
-    db.collection('users').doc(pseudo).update({ ntfyTopic: t }).then(function(){
-      callback(t);
-    }).catch(function(){ callback(null); });
-  }).catch(function(){ callback(null); });
 }
 
 function startNotifListener(pseudo){
