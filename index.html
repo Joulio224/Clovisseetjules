@@ -14,21 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="Jeux Collégiens" />
 <link rel="apple-touch-icon" href="icon-192.png" />
 
-<!-- OneSignal -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "23280fe5-538a-4776-a4db-ea1b5df57f20",
-      safari_web_id: "web.onesignal.auto.23280fe5-538a-4776-a4db-ea1b5df57f20",
-      notifyButton: { enable: false },
-      allowLocalhostAsSecureOrigin: true,
-      serviceWorkerParam: { scope: '/' },
-      serviceWorkerPath: 'OneSignalSDKWorker.js',
-    });
-  });
-</script>
+<!-- Notifs via Firestore -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -2983,39 +2969,85 @@ document.getElementById('confirm-delete-account').addEventListener('click',funct
 loadSettings();
 
 // =====================
-//  ONESIGNAL — NOTIFICATIONS PUSH
+//  NOTIFS IN-APP (Firestore)
 // =====================
+var notifListener = null;
+
 function setupOneSignal(pseudo){
-  if(!window.OneSignalDeferred) return;
-  OneSignalDeferred.push(async function(OneSignal){
-    try{
-      await OneSignal.Notifications.requestPermission();
-      await OneSignal.User.addTag('pseudo', pseudo);
-    }catch(e){ console.warn('[OneSignal]',e); }
-  });
+  // Remplacé par Firestore — écoute les notifs en temps réel
+  startNotifListener(pseudo);
 }
+
 function clearOneSignal(){
-  if(!window.OneSignalDeferred) return;
-  OneSignalDeferred.push(async function(OneSignal){
-    try{ await OneSignal.User.removeTag('pseudo'); }catch(e){}
-  });
+  stopNotifListener();
 }
+
 function sendPushNotif(toPseudo, title, message){
-  if(!toPseudo || toPseudo===currentPseudo) return;
-  fetch('https://onesignal.com/api/v1/notifications',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'Authorization':'Basic os_v2_app_emua7zktrjdxnjg35inv35l7edpdeslvheie2ke2uvlseh5bsuntsjiaoq7vz4spmpcullkvpps2woqipbwrf34a6ofn527ahh3qpei'
-    },
-    body:JSON.stringify({
-      app_id:'23280fe5-538a-4776-a4db-ea1b5df57f20',
-      filters:[{field:'tag',key:'pseudo',relation:'=',value:toPseudo}],
-      headings:{fr:title,en:title},
-      contents:{fr:message,en:message},
-      url:'https://cjlu.netlify.app'
-    })
+  if(!toPseudo || toPseudo === currentPseudo) return;
+  // Écrit la notif dans Firestore — le destinataire la reçoit en temps réel
+  db.collection('notifications').doc(toPseudo).collection('items').add({
+    title: title,
+    message: message,
+    from: currentPseudo,
+    seen: false,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
   }).catch(function(){});
+}
+
+function startNotifListener(pseudo){
+  if(notifListener) notifListener();
+  notifListener = db.collection('notifications').doc(pseudo).collection('items')
+    .where('seen', '==', false)
+    .onSnapshot(function(snap){
+      snap.docChanges().forEach(function(change){
+        if(change.type !== 'added') return;
+        var d = change.doc.data();
+        // Ne pas notifier si le doc vient d'être créé côté serveur (timestamp null = local)
+        if(!d.createdAt) return;
+        showInAppNotif(d.title, d.message);
+        // Marquer comme vue
+        change.doc.ref.update({ seen: true }).catch(function(){});
+      });
+    });
+}
+
+function stopNotifListener(){
+  if(notifListener){ notifListener(); notifListener = null; }
+}
+
+// Bannière de notif in-app
+function showInAppNotif(title, message){
+  var el = document.getElementById('inapp-notif');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'inapp-notif';
+    el.style.cssText = [
+      'position:fixed','top:18px','left:50%','transform:translateX(-50%) translateY(-120px)',
+      'background:#1e1e40','border:2px solid var(--accent)','border-radius:16px',
+      'padding:14px 20px','z-index:9999','max-width:320px','width:90%',
+      'box-shadow:0 8px 32px rgba(0,0,0,0.5)',
+      'transition:transform 0.35s cubic-bezier(.175,.885,.32,1.275)',
+      'cursor:pointer'
+    ].join(';');
+    el.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--accent)" id="inapp-notif-title"></div>'
+                 + '<div style="font-size:12px;color:#ccc;margin-top:4px" id="inapp-notif-msg"></div>';
+    el.addEventListener('click', function(){ hideInAppNotif(); });
+    document.body.appendChild(el);
+  }
+  document.getElementById('inapp-notif-title').textContent = title;
+  document.getElementById('inapp-notif-msg').textContent = message;
+  // Slide in
+  requestAnimationFrame(function(){
+    el.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  // Auto-hide après 4s
+  clearTimeout(el._timer);
+  el._timer = setTimeout(hideInAppNotif, 4000);
+}
+
+function hideInAppNotif(){
+  var el = document.getElementById('inapp-notif');
+  if(el) el.style.transform = 'translateX(-50%) translateY(-120px)';
 }
 
 // =====================
