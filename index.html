@@ -2732,6 +2732,11 @@ function openSettings(){
   renderThemeGrid();
   renderAccentGrid();
   loadSettingsStats();
+  // Rafraîchit le topic ntfy à chaque ouverture des paramètres
+  setupNtfyTopic(currentPseudo, function(topic){
+    var el = document.getElementById('ntfy-topic-display');
+    if(el) el.textContent = topic || 'Erreur — reconnecte-toi';
+  });
 }
 
 function loadSettingsStats(){
@@ -3036,12 +3041,14 @@ function sendPushNotif(toPseudo, title, message){
     fetch('https://ntfy.sh/' + topic, {
       method: 'POST',
       headers: {
-        'Title': title,
+        'Title': encodeURIComponent(title),
         'Priority': 'default',
-        'Content-Type': 'text/plain; charset=utf-8'
+        'Tags': 'bell',
+        'Content-Type': 'text/plain'
       },
       body: message
-    }).catch(function(){});
+    }).then(function(r){ console.log('[ntfy] status:', r.status); })
+      .catch(function(e){ console.warn('[ntfy] erreur:', e); });
   }).catch(function(){});
 }
 
