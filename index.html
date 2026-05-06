@@ -7,7 +7,6 @@
 <title>Jeux de collégiens</title>
 
 <!-- PWA -->
-
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#FFD700" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -16,13 +15,9 @@
 <link rel="apple-touch-icon" href="icon-192.png" />
 
 <!-- Notifs via Firestore -->
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyDBifGmvM_Z7_LePiej0S6hk3TXXBjYlxY",
@@ -36,7 +31,6 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 </script>
-
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root { --accent: #FFD700; --accent-rgb: 255,215,0; }
@@ -599,14 +593,12 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <div class="subtitle" style="margin-bottom:28px" id="kmk-setup-sub">Configuration</div>
 
 <!-- Mode de jeu : solo ou multijoueur -->
-
 <div style="display:flex;gap:8px;margin-bottom:20px;">
   <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
   <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
 </div>
 
 <!-- Configuration solo -->
-
 <div id="kmk-solo-config">
   <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
   <div class="suggest-groups" id="kmk-suggest-groups"></div>
@@ -624,7 +616,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Configuration multijoueur -->
-
 <div id="kmk-multi-config" class="hidden">
   <div class="multi-badge">👥 Mode multijoueur</div>
   <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
@@ -849,7 +840,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     </div>
 
 <!-- Profil -->
-
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">👤</span>
@@ -880,7 +870,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Apparence -->
-
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🎨</span>
@@ -905,7 +894,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Vie privée -->
-
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🔒</span>
@@ -957,7 +945,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Expérience de jeu -->
-
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🎮</span>
@@ -999,7 +986,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Social -->
-
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🔍</span>
@@ -1015,7 +1001,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Danger zone -->
-
 <div class="settings-section danger">
   <div class="settings-section-header">
     <span class="sh-icon">⚠️</span>
@@ -1102,7 +1087,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- AMIS -->
-
   <div id="screen-friends" class="hidden">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
       <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -1128,7 +1112,6 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- CHAT -->
-
   <div id="screen-chat" class="hidden">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <button id="btn-chat-back" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -2316,7 +2299,7 @@ function kmkMultiAfterPlayRound(roundResult){
           kmkMultiShowFinalResult(data);
         } else {
           document.getElementById('kmk-multi-wait-text').textContent='Tu as terminé ! En attente des autres...';
-          document.getElementById('kmk-multi-wait-sub').textContent='Tous les joueurs n'ont pas encore fini.';
+          document.getElementById('kmk-multi-wait-sub').textContent="Tous les joueurs n'ont pas encore fini.";
           hideAll(); show('screen-kmk-multi-wait');
           kmkMultiListenForEndGame();
         }
@@ -3493,6 +3476,5 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
-
 </body>
 </html>
