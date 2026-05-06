@@ -7,6 +7,7 @@
 <title>Jeux de collégiens</title>
 
 <!-- PWA -->
+
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#FFD700" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,22 +16,27 @@
 <link rel="apple-touch-icon" href="icon-192.png" />
 
 <!-- Notifs via Firestore -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyCtDEqEus0IUhw1Wm76XbwOfEMTLA4IoPA",
-    authDomain: "classement-de-fille.firebaseapp.com",
-    projectId: "classement-de-fille",
-    storageBucket: "classement-de-fille.firebasestorage.app",
-    messagingSenderId: "746285560422",
-    appId: "1:746285560422:web:d2751e200a2eda7fbc73a7",
+    apiKey: "AIzaSyDBifGmvM_Z7_LePiej0S6hk3TXXBjYlxY",
+    authDomain: "clovisseetjulles-c870f.firebaseapp.com",
+    projectId: "clovisseetjulles-c870f",
+    storageBucket: "clovisseetjulles-c870f.firebasestorage.app",
+    messagingSenderId: "969435884082",
+    appId: "1:969435884082:web:581a07e517ea0bf7eeea2b",
     measurementId: "G-ZJRGF3EC0G"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 </script>
+
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root { --accent: #FFD700; --accent-rgb: 255,215,0; }
@@ -593,12 +599,14 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <div class="subtitle" style="margin-bottom:28px" id="kmk-setup-sub">Configuration</div>
 
 <!-- Mode de jeu : solo ou multijoueur -->
+
 <div style="display:flex;gap:8px;margin-bottom:20px;">
   <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
   <button class="tab" id="kmk-mode-multi" onclick="kmkSetMode('multi')">👥 Multijoueur</button>
 </div>
 
 <!-- Configuration solo -->
+
 <div id="kmk-solo-config">
   <div class="suggest-label" style="color:#555;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Choisis les personnes</div>
   <div class="suggest-groups" id="kmk-suggest-groups"></div>
@@ -616,6 +624,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Configuration multijoueur -->
+
 <div id="kmk-multi-config" class="hidden">
   <div class="multi-badge">👥 Mode multijoueur</div>
   <p style="color:#666;font-size:13px;text-align:center;margin-bottom:20px;line-height:1.6">
@@ -651,7 +660,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
       <div class="gc-code" id="kmk-lobby-code">---</div>
     </div>
     <div class="multi-lobby">
-      <div class="ml-label">Joueurs</div>
+      <div class="ml-label">Joueurs (2 ou 3)</div>
       <div class="multi-player-row you">
         <span class="mp-name" id="kmk-lobby-p1-name">Toi</span>
         <span class="mp-status">✓ Connecté</span>
@@ -660,7 +669,12 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
         <span class="mp-name" id="kmk-lobby-p2-name">—</span>
         <span class="mp-status" id="kmk-lobby-p2-status">En attente...</span>
       </div>
+      <div class="multi-player-row waiting" id="kmk-lobby-p3-row">
+        <span class="mp-name" id="kmk-lobby-p3-name">—</span>
+        <span class="mp-status" id="kmk-lobby-p3-status">Optionnel</span>
+      </div>
     </div>
+    <button class="btn-primary" id="kmk-lobby-btn-start" style="display:none">▶ Lancer la partie</button>
     <button class="btn-ghost" id="kmk-lobby-btn-cancel">✕ Annuler</button>
   </div>
 
@@ -729,9 +743,10 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <div class="kmk-title" style="margin-bottom:4px"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="result-sub" id="kmk-result-sub" style="margin-bottom:18px"></div>
     <!-- Sélecteur de joueur (multijoueur) -->
-    <div id="kmk-result-tabs" class="hidden" style="display:flex;gap:8px;margin-bottom:18px;">
+    <div id="kmk-result-tabs" class="hidden" style="display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;">
       <button class="tab active" id="kmk-res-tab-me" onclick="kmkResultShowTab('me')">Mes réponses</button>
-      <button class="tab" id="kmk-res-tab-them" onclick="kmkResultShowTab('them')">Réponses de <span id="kmk-res-tab-them-name">l'adversaire</span></button>
+      <button class="tab" id="kmk-res-tab-p2" onclick="kmkResultShowTab('p2')" style="display:none"><span id="kmk-res-tab-p2-name">Joueur 2</span></button>
+      <button class="tab" id="kmk-res-tab-p3" onclick="kmkResultShowTab('p3')" style="display:none"><span id="kmk-res-tab-p3-name">Joueur 3</span></button>
     </div>
     <div id="kmk-result-list"></div>
     <button class="btn-primary" id="kmk-btn-save" style="margin-top:18px">💾 Sauvegarder</button>
@@ -834,6 +849,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     </div>
 
 <!-- Profil -->
+
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">👤</span>
@@ -864,6 +880,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Apparence -->
+
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🎨</span>
@@ -888,6 +905,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Vie privée -->
+
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🔒</span>
@@ -939,6 +957,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Expérience de jeu -->
+
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🎮</span>
@@ -980,6 +999,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Social -->
+
 <div class="settings-section">
   <div class="settings-section-header">
     <span class="sh-icon">🔍</span>
@@ -995,6 +1015,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <!-- Danger zone -->
+
 <div class="settings-section danger">
   <div class="settings-section-header">
     <span class="sh-icon">⚠️</span>
@@ -1024,7 +1045,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
-  clovisseetjulles.netlify.app · v3.0
+  labitedu57.netlify.app · v3.0
 </div>
 
   </div>
@@ -1081,6 +1102,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- AMIS -->
+
   <div id="screen-friends" class="hidden">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
       <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -1106,6 +1128,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- CHAT -->
+
   <div id="screen-chat" class="hidden">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <button id="btn-chat-back" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -1147,7 +1170,7 @@ var SUGGESTION_GROUPS = [
     id: 'garcons',
     label: 'Garçons de 3e',
     names: [
-      "Kimora","Erza","Tya","Ajla","Capucine","Louise","Victoria","Vicoria","Divana","Lia","Agnia","Garance","Lison","Agathe","Sophia","Emma","Clémence","Clara","Romane","Saphia","Kimia","Cloé","Charlotte","Kimora","Nina","Léa"
+      "Gabriel"
     ]
   }
 ];
@@ -1983,18 +2006,22 @@ document.getElementById('kmk-btn-save').addEventListener('click',function(){
 document.getElementById('kmk-btn-change-game').addEventListener('click',function(){kmkMultiCleanup();goToGameSelect();});
 
 // =====================
-//  KMK — MULTIJOUEUR
+//  KMK — MULTIJOUEUR (2 ou 3 joueurs)
 // =====================
-var kmkMultiGameId=null;       // ID du doc Firestore de la partie
-var kmkMultiOpponent='';       // pseudo de l'adversaire
-var kmkMultiIsCreator=false;   // true si on a créé la partie
-var kmkMultiRoundsTotal=3;     // manches chacun
-var kmkMultiListener=null;     // unsubscribe Firestore listener
-var kmkMultiMyResults=[];      // résultats de mes manches à moi
-var kmkMultiTheirResults=[];   // résultats des manches de l'adversaire
-var kmkMultiCurrentPickRound=0; // quelle manche je suis en train de choisir
-var kmkMultiMyPlayRound=0;      // quelle manche je suis en train de jouer
-var kmkMultiSelectedForPick={}; // selectedByGroup pour l'écran de sélection des noms
+var kmkMultiGameId=null;
+var kmkMultiPlayers=[];        // [pseudo1, pseudo2, pseudo3?] — ordre des joueurs
+var kmkMultiIsCreator=false;
+var kmkMultiRoundsTotal=3;
+var kmkMultiListener=null;
+var kmkMultiMyResults=[];
+var kmkMultiAllResults={};     // { pseudo: [résultats] }
+var kmkMultiCurrentPickRound=0;
+var kmkMultiCurrentPickTarget=''; // pour qui je choisis en ce moment
+var kmkMultiMyPlayRound=0;
+var kmkMultiSelectedForPick={};
+// Helpers
+function kmkMultiOpponents(){ return kmkMultiPlayers.filter(function(p){return p!==currentPseudo;}); }
+function kmkMultiOpponent(){ return kmkMultiOpponents()[0]||''; } // compat ancienne API
 
 // Compteur de manches pour le multi
 var kmkMultiRoundsMinusEl=document.getElementById('kmk-multi-rounds-minus');
@@ -2002,14 +2029,14 @@ var kmkMultiRoundsPlusEl=document.getElementById('kmk-multi-rounds-plus');
 kmkMultiRoundsMinusEl.addEventListener('click',function(){if(kmkMultiRoundsTotal>1){kmkMultiRoundsTotal--;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;}});
 kmkMultiRoundsPlusEl.addEventListener('click',function(){kmkMultiRoundsTotal++;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;});
 
-// Créer une partie multijoueur (pas besoin de connaître le pseudo de l'ami à l'avance)
+// Créer une partie multijoueur (2 ou 3 joueurs)
 document.getElementById('kmk-multi-btn-create').addEventListener('click',function(){
   var btn=this; btn.disabled=true; btn.textContent='Création...';
   var code=genCode();
   var gameData={
     code:code,
     creator:currentPseudo,
-    opponent:'',           // sera rempli quand l'ami rejoint
+    players:[currentPseudo],   // liste des joueurs connectés
     roundsTotal:kmkMultiRoundsTotal,
     status:'waiting',
     createdAt:firebase.firestore.FieldValue.serverTimestamp(),
@@ -2019,26 +2046,47 @@ document.getElementById('kmk-multi-btn-create').addEventListener('click',functio
   db.collection('kmk_parties').add(gameData).then(function(ref){
     btn.disabled=false; btn.textContent='Créer la partie →';
     kmkMultiGameId=ref.id;
-    kmkMultiOpponent='';
+    kmkMultiPlayers=[currentPseudo];
     kmkMultiIsCreator=true;
     kmkMultiRoundsTotal=gameData.roundsTotal;
     kmkMultiMyResults=[];
-    kmkMultiTheirResults=[];
+    kmkMultiAllResults={};
     kmkMultiCurrentPickRound=0;
     kmkMultiMyPlayRound=0;
-    // Affiche le lobby avec le code à partager
+    kmkMultiUpdateLobbyUI();
     document.getElementById('kmk-lobby-code').textContent=code;
-    document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
-    document.getElementById('kmk-lobby-p2-name').textContent='—';
-    document.getElementById('kmk-lobby-p2-status').textContent='En attente...';
-    document.getElementById('kmk-lobby-p2-row').className='multi-player-row waiting';
-    document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente d\'un joueur...';
+    document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente de joueurs...';
+    document.getElementById('kmk-lobby-btn-start').style.display='none';
     hideAll();show('screen-kmk-multi-lobby');
     kmkMultiListenLobby(ref.id);
   }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
 });
 
-// Rejoindre une partie
+function kmkMultiUpdateLobbyUI(){
+  var slots=[
+    {nameEl:'kmk-lobby-p1-name',rowEl:'kmk-lobby-p1-row',statusEl:null},
+    {nameEl:'kmk-lobby-p2-name',rowEl:'kmk-lobby-p2-row',statusEl:'kmk-lobby-p2-status'},
+    {nameEl:'kmk-lobby-p3-name',rowEl:'kmk-lobby-p3-row',statusEl:'kmk-lobby-p3-status'}
+  ];
+  var players=kmkMultiPlayers;
+  // Slot 1 = toi
+  document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
+  // Slot 2
+  var p2=players[1]||null;
+  document.getElementById('kmk-lobby-p2-name').textContent=p2||'—';
+  document.getElementById('kmk-lobby-p2-status').textContent=p2?'✓ Connecté':'En attente...';
+  document.getElementById('kmk-lobby-p2-row').className='multi-player-row '+(p2?'connected':'waiting');
+  // Slot 3
+  var p3=players[2]||null;
+  document.getElementById('kmk-lobby-p3-name').textContent=p3||'—';
+  document.getElementById('kmk-lobby-p3-status').textContent=p3?'✓ Connecté':'Optionnel';
+  document.getElementById('kmk-lobby-p3-row').className='multi-player-row '+(p3?'connected':'waiting');
+  // Bouton démarrer si au moins 2 joueurs
+  var canStart=kmkMultiIsCreator && players.length>=2;
+  document.getElementById('kmk-lobby-btn-start').style.display=canStart?'':'none';
+}
+
+// Rejoindre une partie (max 3 joueurs)
 document.getElementById('kmk-multi-btn-join').addEventListener('click',function(){
   var code=document.getElementById('kmk-multi-join-code').value.trim().toUpperCase();
   if(code.length<4){showToast('Entre le code de la partie','error');return;}
@@ -2049,61 +2097,86 @@ document.getElementById('kmk-multi-btn-join').addEventListener('click',function(
       if(snap.empty){showToast('Partie introuvable ou déjà commencée','error');return;}
       var docRef=snap.docs[0];
       var data=docRef.data();
-      if(data.creator===currentPseudo){showToast('Tu ne peux pas rejoindre ta propre partie !','error');return;}
-      // Écrit son pseudo comme adversaire et passe le statut à playing
-      docRef.ref.update({status:'playing', opponent:currentPseudo}).then(function(){
+      var players=data.players||[data.creator];
+      if(players.indexOf(currentPseudo)!==-1){showToast('Tu es déjà dans cette partie !','error');return;}
+      if(players.length>=3){showToast('Partie complète (3 joueurs max)','error');return;}
+      var newPlayers=players.concat([currentPseudo]);
+      docRef.ref.update({players:newPlayers}).then(function(){
         kmkMultiGameId=docRef.id;
-        kmkMultiOpponent=data.creator;
+        kmkMultiPlayers=newPlayers;
         kmkMultiIsCreator=false;
         kmkMultiRoundsTotal=data.roundsTotal||3;
         kmkMultiMyResults=[];
-        kmkMultiTheirResults=[];
+        kmkMultiAllResults={};
         kmkMultiCurrentPickRound=0;
         kmkMultiMyPlayRound=0;
         showToast('✅ Partie rejointe !','info');
-        hideAll();
-        kmkMultiStartPickPhase();
+        // Affiche le lobby en attendant que le créateur lance
+        kmkMultiUpdateLobbyUI();
+        document.getElementById('kmk-lobby-code').textContent=data.code;
+        document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente du créateur...';
+        document.getElementById('kmk-lobby-btn-start').style.display='none';
+        hideAll(); show('screen-kmk-multi-lobby');
+        kmkMultiListenLobby(docRef.id);
       }).catch(function(err){showToast('Erreur : '+err.message,'error');});
     }).catch(function(err){btn.disabled=false;btn.textContent='Rejoindre →';showToast('Erreur : '+err.message,'error');});
 });
 
-// Listener du lobby (créateur attend que l'adversaire rejoigne)
+// Listener du lobby — met à jour les slots en temps réel et attend le lancement
 function kmkMultiListenLobby(gameId){
   if(kmkMultiListener)kmkMultiListener();
   kmkMultiListener=db.collection('kmk_parties').doc(gameId).onSnapshot(function(doc){
     if(!doc.exists)return;
     var data=doc.data();
+    kmkMultiPlayers=data.players||[data.creator];
+    kmkMultiRoundsTotal=data.roundsTotal||kmkMultiRoundsTotal;
+    kmkMultiUpdateLobbyUI();
+    var nb=kmkMultiPlayers.length;
+    if(nb===2) document.getElementById('kmk-lobby-status-badge').textContent='✅ 2 joueurs — tu peux lancer ou attendre un 3ème';
+    if(nb===3) document.getElementById('kmk-lobby-status-badge').textContent='✅ 3 joueurs — prêt à lancer !';
     if(data.status==='playing'){
-      // Récupère le pseudo de l'adversaire depuis le doc
-      kmkMultiOpponent=data.opponent||'Adversaire';
-      document.getElementById('kmk-lobby-p2-name').textContent=kmkMultiOpponent;
-      document.getElementById('kmk-lobby-p2-row').className='multi-player-row connected';
-      document.getElementById('kmk-lobby-p2-status').textContent='✓ Connecté';
-      document.getElementById('kmk-lobby-status-badge').textContent='✅ '+kmkMultiOpponent+' a rejoint !';
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
-      setTimeout(function(){
-        hideAll();
-        kmkMultiStartPickPhase();
-      },800);
+      setTimeout(function(){hideAll();kmkMultiStartPickPhase();},600);
     }
   });
 }
 
-// Phase de sélection : on choisit les 3 noms pour l'adversaire
+// Le créateur lance la partie
+document.getElementById('kmk-lobby-btn-start').addEventListener('click',function(){
+  if(kmkMultiPlayers.length<2){showToast('Il faut au moins 2 joueurs','error');return;}
+  db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'playing'}).then(function(){
+    if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
+    hideAll();kmkMultiStartPickPhase();
+  }).catch(function(err){showToast('Erreur : '+err.message,'error');});
+});
+
+// Phase de sélection : avec N joueurs, je dois choisir pour chaque adversaire × chaque manche
+// Ordre : pour adversaire1 manche1, pour adversaire1 manche2..., pour adversaire2 manche1, etc.
+function kmkMultiGetPickQueue(){
+  // Retourne la liste de {forPlayer, round} que je dois encore compléter
+  var queue=[];
+  kmkMultiOpponents().forEach(function(opp){
+    for(var r=1;r<=kmkMultiRoundsTotal;r++){
+      queue.push({forPlayer:opp, round:r});
+    }
+  });
+  return queue;
+}
+
 function kmkMultiStartPickPhase(){
-  kmkMultiCurrentPickRound++;
-  if(kmkMultiCurrentPickRound>kmkMultiRoundsTotal){
-    // J'ai fini de choisir pour l'adversaire — j'attends qu'il choisisse pour moi
+  var queue=kmkMultiGetPickQueue();
+  if(kmkMultiCurrentPickRound>=queue.length){
     kmkMultiWaitForPick();
     return;
   }
-  // Reset sélection
+  var current=queue[kmkMultiCurrentPickRound];
+  kmkMultiCurrentPickTarget=current.forPlayer;
   SUGGESTION_GROUPS.forEach(function(g){selectedByGroupMulti[g.id]=[];});
   document.getElementById('kmk-multi-textarea').value='';
   document.getElementById('kmk-multi-hint').textContent='Sélectionne ou écris exactement 3 noms';
   document.getElementById('kmk-multi-pick-btn-confirm').disabled=true;
-  document.getElementById('kmk-multi-pick-for').textContent=kmkMultiOpponent;
-  document.getElementById('kmk-multi-pick-round').textContent=kmkMultiCurrentPickRound;
+  document.getElementById('kmk-multi-pick-for').textContent=current.forPlayer;
+  document.getElementById('kmk-multi-pick-round').textContent=current.round;
   document.getElementById('kmk-multi-pick-total').textContent=kmkMultiRoundsTotal;
   hideAll(); show('screen-kmk-multi-pick');
   renderGroups('kmk-multi-suggest-groups','kmk-multi-textarea',kmkMultiPickUpdateHint,3,selectedByGroupMulti);
@@ -2136,11 +2209,12 @@ document.getElementById('kmk-multi-pick-btn-confirm').addEventListener('click',f
   var trio=kmkMultiGetPickNames();
   if(trio.length!==3)return;
   var btn=this; btn.disabled=true; btn.textContent='Envoi...';
-  // Sauvegarde le trio dans Firebase
+  var queue=kmkMultiGetPickQueue();
+  var current=queue[kmkMultiCurrentPickRound];
   var pickEntry={
-    round:kmkMultiCurrentPickRound,
+    round:current.round,
     pickedBy:currentPseudo,
-    forPlayer:kmkMultiOpponent,
+    forPlayer:current.forPlayer,
     trio:trio
   };
   db.collection('kmk_parties').doc(kmkMultiGameId).update({
@@ -2148,7 +2222,8 @@ document.getElementById('kmk-multi-pick-btn-confirm').addEventListener('click',f
   }).then(function(){
     btn.disabled=false; btn.textContent='Envoyer ces 3 noms →';
     showToast('✅ Noms envoyés !','info');
-    kmkMultiStartPickPhase(); // passe à la manche suivante
+    kmkMultiCurrentPickRound++;
+    kmkMultiStartPickPhase();
   }).catch(function(err){
     btn.disabled=false; btn.textContent='Envoyer ces 3 noms →';
     showToast('Erreur : '+err.message,'error');
@@ -2157,7 +2232,7 @@ document.getElementById('kmk-multi-pick-btn-confirm').addEventListener('click',f
 
 // Attente que l'adversaire ait choisi tous mes trios
 function kmkMultiWaitForPick(){
-  document.getElementById('kmk-multi-wait-text').textContent=kmkMultiOpponent+' choisit tes 3 personnes...';
+  document.getElementById('kmk-multi-wait-text').textContent='En attente que les autres choisissent tes noms...';
   document.getElementById('kmk-multi-wait-sub').textContent='Manche '+kmkMultiMyPlayRound+' / '+kmkMultiRoundsTotal;
   document.getElementById('kmk-multi-wait-results').innerHTML='';
   hideAll(); show('screen-kmk-multi-wait');
@@ -2170,23 +2245,24 @@ function kmkMultiListenForMyTrio(){
     if(!doc.exists)return;
     var data=doc.data();
     var nextRound=kmkMultiMyPlayRound+1;
-    // Cherche le trio pour ma prochaine manche
     var myTrio=null;
     (data.picks||[]).forEach(function(p){
       if(p.forPlayer===currentPseudo && p.round===nextRound) myTrio=p;
     });
     if(myTrio){
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
-      kmkMultiPlayMyRound(myTrio.trio, nextRound, data.roundsTotal||kmkMultiRoundsTotal);
+      kmkMultiPlayMyRound(myTrio.trio, nextRound, data.roundsTotal||kmkMultiRoundsTotal, myTrio.pickedBy);
     }
-    // Affiche les résultats de l'adversaire si déjà jouées
-    var theirRes=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
-    if(theirRes.length>0){
-      var html='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Réponses de '+escHtml(kmkMultiOpponent)+' (en direct)</div>';
-      html+=kmkBuildResultHtml(theirRes.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
-      document.getElementById('kmk-multi-wait-results').innerHTML=html;
-    }
-    // Vérifie si partie terminée
+    // Affiche les résultats des autres en direct
+    var html='';
+    kmkMultiOpponents().forEach(function(opp){
+      var res=(data.results||[]).filter(function(r){return r.playedBy===opp;});
+      if(res.length>0){
+        html+='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">'+escHtml(opp)+' (en direct)</div>';
+        html+=kmkBuildResultHtml(res.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
+      }
+    });
+    if(html) document.getElementById('kmk-multi-wait-results').innerHTML=html;
     if(data.status==='done'){
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
       kmkMultiShowFinalResult(data);
@@ -2194,8 +2270,8 @@ function kmkMultiListenForMyTrio(){
   });
 }
 
-// Jouer une manche (trios choisis par l'adversaire pour moi)
-function kmkMultiPlayMyRound(trio, round, total){
+// Jouer une manche (trios choisis par un autre joueur pour moi)
+function kmkMultiPlayMyRound(trio, round, total, chosenBy){
   kmkMultiMyPlayRound=round;
   kmkTrio=trio;
   kmkAssigned={};
@@ -2203,7 +2279,7 @@ function kmkMultiPlayMyRound(trio, round, total){
   hide('screen-kmk-multi-wait');
   document.getElementById('kmk-round-info').textContent='Manche '+round+' / '+total;
   document.getElementById('kmk-multi-play-banner').classList.remove('hidden');
-  document.getElementById('kmk-multi-play-chooser').textContent=kmkMultiOpponent;
+  document.getElementById('kmk-multi-play-chooser').textContent=chosenBy||kmkMultiOpponents()[0]||'';
   var trioNamesEl=document.getElementById('kmk-trio-names');
   trioNamesEl.innerHTML='';
   kmkTrio.forEach(function(name){
@@ -2220,7 +2296,6 @@ function kmkMultiAfterPlayRound(roundResult){
   var resultEntry={
     round:roundResult.round,
     playedBy:currentPseudo,
-    forChosenBy:kmkMultiOpponent,
     kiss:roundResult.kiss,
     marry:roundResult.marry,
     kill:roundResult.kill
@@ -2229,27 +2304,24 @@ function kmkMultiAfterPlayRound(roundResult){
   db.collection('kmk_parties').doc(kmkMultiGameId).update({
     results:firebase.firestore.FieldValue.arrayUnion(resultEntry)
   }).then(function(){
-    // Vérifie si j'ai joué toutes mes manches
     if(kmkMultiMyPlayRound>=kmkMultiRoundsTotal){
-      // J'ai tout joué — regarde si l'adversaire aussi
       db.collection('kmk_parties').doc(kmkMultiGameId).get().then(function(doc){
         var data=doc.data();
-        var theirResults=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
-        var allDone=(theirResults.length>=kmkMultiRoundsTotal);
+        var players=data.players||[data.creator];
+        var allDone=players.every(function(p){
+          return (data.results||[]).filter(function(r){return r.playedBy===p;}).length>=kmkMultiRoundsTotal;
+        });
         if(allDone){
           db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'done'});
-          kmkMultiTheirResults=theirResults;
           kmkMultiShowFinalResult(data);
         } else {
-          // J'attends que l'adversaire finisse
-          document.getElementById('kmk-multi-wait-text').textContent=kmkMultiOpponent+' joue encore...';
-          document.getElementById('kmk-multi-wait-sub').textContent='Tu as terminé toutes tes manches !';
+          document.getElementById('kmk-multi-wait-text').textContent='Tu as terminé ! En attente des autres...';
+          document.getElementById('kmk-multi-wait-sub').textContent='Tous les joueurs n'ont pas encore fini.';
           hideAll(); show('screen-kmk-multi-wait');
           kmkMultiListenForEndGame();
         }
       });
     } else {
-      // Prochain tour : je dois attendre que l'adversaire choisisse le prochain trio pour moi
       kmkMultiWaitForPick();
     }
   }).catch(function(err){showToast('Erreur sync : '+err.message,'error');});
@@ -2260,17 +2332,23 @@ function kmkMultiListenForEndGame(){
   kmkMultiListener=db.collection('kmk_parties').doc(kmkMultiGameId).onSnapshot(function(doc){
     if(!doc.exists)return;
     var data=doc.data();
-    var theirRes=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
-    // Affiche en direct
-    if(theirRes.length>0){
-      var html='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Réponses de '+escHtml(kmkMultiOpponent)+' (en direct)</div>';
-      html+=kmkBuildResultHtml(theirRes.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
-      document.getElementById('kmk-multi-wait-results').innerHTML=html;
-    }
-    if(data.status==='done' || theirRes.length>=kmkMultiRoundsTotal){
+    var players=data.players||[data.creator];
+    // Affiche les résultats des autres en direct
+    var html='';
+    kmkMultiOpponents().forEach(function(opp){
+      var res=(data.results||[]).filter(function(r){return r.playedBy===opp;});
+      if(res.length>0){
+        html+='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">'+escHtml(opp)+' (en direct)</div>';
+        html+=kmkBuildResultHtml(res.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
+      }
+    });
+    if(html) document.getElementById('kmk-multi-wait-results').innerHTML=html;
+    var allDone=players.every(function(p){
+      return (data.results||[]).filter(function(r){return r.playedBy===p;}).length>=kmkMultiRoundsTotal;
+    });
+    if(data.status==='done' || allDone){
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
       if(data.status!=='done') db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'done'});
-      kmkMultiTheirResults=theirRes;
       kmkMultiShowFinalResult(data);
     }
   });
@@ -2279,25 +2357,41 @@ function kmkMultiListenForEndGame(){
 function kmkMultiShowFinalResult(data){
   if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
   kmkAllResults=kmkMultiMyResults;
-  kmkMultiTheirResults=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+  kmkMultiAllResults={};
+  var players=data.players||[data.creator];
+  players.forEach(function(p){
+    kmkMultiAllResults[p]=(data.results||[]).filter(function(r){return r.playedBy===p;});
+  });
   hideAll(); show('screen-kmk-result');
   show('kmk-result-tabs');
-  document.getElementById('kmk-result-sub').textContent='Partie terminée · '+kmkMultiRoundsTotal+' manche(s) chacun';
-  document.getElementById('kmk-res-tab-them-name').textContent=kmkMultiOpponent;
+  document.getElementById('kmk-result-sub').textContent='Partie terminée · '+kmkMultiRoundsTotal+' manche(s) · '+players.length+' joueurs';
+  // Affiche tabs pour chaque autre joueur
+  var opponents=kmkMultiOpponents();
+  var p2=opponents[0]||null, p3=opponents[1]||null;
+  var tab2=document.getElementById('kmk-res-tab-p2');
+  var tab3=document.getElementById('kmk-res-tab-p3');
+  if(p2){ document.getElementById('kmk-res-tab-p2-name').textContent=p2; tab2.style.display=''; }
+  else { tab2.style.display='none'; }
+  if(p3){ document.getElementById('kmk-res-tab-p3-name').textContent=p3; tab3.style.display=''; }
+  else { tab3.style.display='none'; }
   kmkResultShowTab('me');
 }
 
 var kmkResultCurrentTab='me';
 function kmkResultShowTab(tab){
   kmkResultCurrentTab=tab;
-  document.getElementById('kmk-res-tab-me').className='tab'+(tab==='me'?' active':'');
-  document.getElementById('kmk-res-tab-them').className='tab'+(tab==='them'?' active':'');
+  ['me','p2','p3'].forEach(function(t){
+    var el=document.getElementById('kmk-res-tab-'+t);
+    if(el) el.className='tab'+(t===tab?' active':'');
+  });
   if(tab==='me'){
     document.getElementById('kmk-result-list').innerHTML=kmkBuildResultHtml(kmkAllResults);
   } else {
-    var theirFormatted=kmkMultiTheirResults.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};});
-    document.getElementById('kmk-result-list').innerHTML=theirFormatted.length>0
-      ? kmkBuildResultHtml(theirFormatted)
+    var pseudo=tab==='p2'?kmkMultiOpponents()[0]:kmkMultiOpponents()[1];
+    var res=pseudo?(kmkMultiAllResults[pseudo]||[]):[];
+    var formatted=res.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};});
+    document.getElementById('kmk-result-list').innerHTML=formatted.length>0
+      ? kmkBuildResultHtml(formatted)
       : '<div style="color:#444;text-align:center;padding:30px">Pas encore de résultats...</div>';
   }
 }
@@ -2313,10 +2407,10 @@ function kmkMultiQuit(){
 function kmkMultiCleanup(){
   if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
   kmkMultiGameId=null;
-  kmkMultiOpponent='';
+  kmkMultiPlayers=[];
   kmkMultiIsCreator=false;
   kmkMultiMyResults=[];
-  kmkMultiTheirResults=[];
+  kmkMultiAllResults={};
   kmkMultiCurrentPickRound=0;
   kmkMultiMyPlayRound=0;
   kmkIsMulti=false;
@@ -2381,7 +2475,7 @@ function exportClassementPDF(){
   });
   // Footer
   doc.setTextColor(60,60,80); doc.setFontSize(9);
-  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
+  doc.text('labitedu57.netlify.app', 105, 292, {align:'center'});
   doc.save('classement-'+currentPseudo+'-'+date+'.pdf');
   showToast('📄 PDF téléchargé !','info');
 }
@@ -2390,7 +2484,7 @@ function exportClassementMail(){
   var lines=getClassementLines();
   var body='Mon classement — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n\n';
   body+=lines.join('\n');
-  body+='\n\nclovisseetjulles.netlify.app';
+  body+='\n\nlabitedu57.netlify.app';
   var subject=encodeURIComponent('Mon classement — '+currentPseudo);
   window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
 }
@@ -2460,7 +2554,7 @@ function exportKMKPDF(){
   }
 
   doc.setTextColor(60,60,80); doc.setFontSize(9);
-  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
+  doc.text('labitedu57.netlify.app', 105, 292, {align:'center'});
   doc.save('kmk-'+currentPseudo+'-'+date+'.pdf');
   showToast('📄 PDF téléchargé !','info');
 }
@@ -2475,7 +2569,7 @@ function exportKMKMail(){
     body+='\nRÉPONSES DE '+kmkMultiOpponent.toUpperCase()+'\n';
     body+=getKMKLines(theirFmt).join('\n');
   }
-  body+='\nclovisseetjulles.netlify.app';
+  body+='\nlabitedu57.netlify.app';
   var subject=encodeURIComponent('Kiss Marry Kill — '+currentPseudo);
   window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
 }
@@ -3399,5 +3493,6 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+
 </body>
 </html>
