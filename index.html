@@ -13,23 +13,23 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Jeux Collégiens" />
 <link rel="apple-touch-icon" href="icon-192.png" />
-
-<!-- Notifs via Firestore -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyDBifGmvM_Z7_LePiej0S6hk3TXXBjYlxY",
-    authDomain: "clovisseetjulles-c870f.firebaseapp.com",
-    projectId: "clovisseetjulles-c870f",
-    storageBucket: "clovisseetjulles-c870f.firebasestorage.app",
-    messagingSenderId: "969435884082",
-    appId: "1:969435884082:web:581a07e517ea0bf7eeea2b",
+    apiKey: "AIzaSyCtDEqEus0IUhw1Wm76XbwOfEMTLA4IoPA",
+    authDomain: "classement-de-fille.firebaseapp.com",
+    projectId: "classement-de-fille",
+    storageBucket: "classement-de-fille.firebasestorage.app",
+    messagingSenderId: "746285560422",
+    appId: "1:746285560422:web:d2751e200a2eda7fbc73a7",
     measurementId: "G-ZJRGF3EC0G"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  const auth = firebase.auth();
 </script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -516,34 +516,34 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 .reaction-btn.reacted { background: #1a1a0a; border-color: var(–accent); color: var(–accent); }
 .reaction-count { font-size: 11px; color: #555; margin-left: 3px; }
 /* AMIS */
-.friend-row{display:flex;align-items:center;gap:12px;background:#131328;border:2px solid #1e1e40;border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s;}
-.friend-row:hover{border-color:#22bb55;}
-.fr-avatar{font-size:28px;flex-shrink:0;position:relative;}
-.status-dot{position:absolute;bottom:0;right:-2px;width:10px;height:10px;border-radius:50%;border:2px solid #131328;}
-.status-dot.online{background:#22bb55;}
-.status-dot.offline{background:#444;}
-.fr-info{flex:1;min-width:0;}
-.fr-name{font-size:15px;font-weight:800;color:#fff;}
-.fr-status{font-size:11px;margin-top:2px;}
-.fr-status.online{color:#22bb55;}
-.fr-status.offline{color:#555;}
-.fr-actions{display:flex;gap:6px;flex-shrink:0;}
-.btn-chat-open{padding:7px 12px;background:none;border:1.5px solid #22bb55;border-radius:10px;color:#22bb55;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;}
-.btn-chat-open:hover{background:#22bb55;color:#000;}
-.btn-unfriend{padding:7px 10px;background:none;border:1.5px solid #333;border-radius:10px;color:#555;font-size:13px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
-.btn-unfriend:hover{border-color:#cc3333;color:#cc3333;}
-.request-row{display:flex;align-items:center;gap:10px;background:#1a1200;border:2px solid #ff880033;border-radius:14px;padding:12px 14px;margin-bottom:8px;}
-.request-row .rr-name{font-size:14px;font-weight:800;color:#fff;flex:1;}
-.btn-accept{padding:7px 14px;background:#22bb55;border:none;border-radius:10px;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;}
-.btn-decline{padding:7px 10px;background:none;border:1.5px solid #333;border-radius:10px;color:#555;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.friend-row { display:flex; align-items:center; gap:12px; background:#131328; border:2px solid #1e1e40; border-radius:14px; padding:12px 14px; margin-bottom:8px; cursor:pointer; transition:border-color 0.15s; }
+.friend-row:hover { border-color:#22bb55; }
+.fr-avatar { font-size:28px; flex-shrink:0; position:relative; }
+.status-dot { position:absolute; bottom:0; right:-2px; width:10px; height:10px; border-radius:50%; border:2px solid #131328; }
+.status-dot.online { background:#22bb55; }
+.status-dot.offline { background:#444; }
+.fr-info { flex:1; min-width:0; }
+.fr-name { font-size:15px; font-weight:800; color:#fff; }
+.fr-status { font-size:11px; margin-top:2px; }
+.fr-status.online { color:#22bb55; }
+.fr-status.offline { color:#555; }
+.fr-actions { display:flex; gap:6px; flex-shrink:0; }
+.btn-chat-open { padding:7px 12px; background:none; border:1.5px solid #22bb55; border-radius:10px; color:#22bb55; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.15s; }
+.btn-chat-open:hover { background:#22bb55; color:#000; }
+.btn-unfriend { padding:7px 10px; background:none; border:1.5px solid #333; border-radius:10px; color:#555; font-size:13px; cursor:pointer; font-family:inherit; transition:all 0.15s; }
+.btn-unfriend:hover { border-color:#cc3333; color:#cc3333; }
+.request-row { display:flex; align-items:center; gap:10px; background:#1a1200; border:2px solid #ff880033; border-radius:14px; padding:12px 14px; margin-bottom:8px; }
+.request-row .rr-name { font-size:14px; font-weight:800; color:#fff; flex:1; }
+.btn-accept { padding:7px 14px; background:#22bb55; border:none; border-radius:10px; color:#fff; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; }
+.btn-decline { padding:7px 10px; background:none; border:1.5px solid #333; border-radius:10px; color:#555; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
 /* CHAT */
-.msg-bubble{max-width:78%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word;}
-.msg-mine{background:#22bb55;color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
-.msg-theirs{background:#131328;border:2px solid #1e1e40;color:#fff;align-self:flex-start;border-bottom-left-radius:4px;}
-.msg-wrap{display:flex;flex-direction:column;}
-.msg-wrap.mine{align-items:flex-end;}
-.msg-wrap.theirs{align-items:flex-start;}
-.msg-time{font-size:10px;color:#555;margin-top:2px;}
+.msg-bubble { max-width:78%; padding:10px 14px; border-radius:18px; font-size:14px; line-height:1.5; word-break:break-word; }
+.msg-mine { background:#22bb55; color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.msg-theirs { background:#131328; border:2px solid #1e1e40; color:#fff; align-self:flex-start; border-bottom-left-radius:4px; }
+.msg-wrap { display:flex; flex-direction:column; }
+.msg-wrap.mine { align-items:flex-end; }
+.msg-wrap.theirs { align-items:flex-start; }
+.msg-time { font-size:10px; color:#555; margin-top:2px; }
 </style>
 
 </head>
@@ -554,7 +554,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <span class="au-name" id="au-name-display"></span>
     <button class="au-logout" id="btn-open-friends" style="border-color:#22bb55;color:#22bb55;">👥 Amis</button>
     <button class="au-logout" id="btn-open-settings" style="border-color:#FFD700;color:#FFD700;">⚙️ Paramètres</button>
-    <button class="au-logout" id="btn-logout">Déconnexion</button>
+    <button class="au-logout" id="btn-logout">Déco</button>
   </div>
 
   <div class="tab-bar">
@@ -592,6 +592,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <div class="kmk-title"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="subtitle" style="margin-bottom:28px" id="kmk-setup-sub">Configuration</div>
 
+```
 <!-- Mode de jeu : solo ou multijoueur -->
 <div style="display:flex;gap:8px;margin-bottom:20px;">
   <button class="tab active" id="kmk-mode-solo" onclick="kmkSetMode('solo')">🎮 Solo</button>
@@ -638,6 +639,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <button class="btn-ghost" id="kmk-btn-back-setup">← Changer de jeu</button>
+```
 
   </div>
 
@@ -651,7 +653,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
       <div class="gc-code" id="kmk-lobby-code">---</div>
     </div>
     <div class="multi-lobby">
-      <div class="ml-label">Joueurs (2 ou 3)</div>
+      <div class="ml-label">Joueurs</div>
       <div class="multi-player-row you">
         <span class="mp-name" id="kmk-lobby-p1-name">Toi</span>
         <span class="mp-status">✓ Connecté</span>
@@ -660,12 +662,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
         <span class="mp-name" id="kmk-lobby-p2-name">—</span>
         <span class="mp-status" id="kmk-lobby-p2-status">En attente...</span>
       </div>
-      <div class="multi-player-row waiting" id="kmk-lobby-p3-row">
-        <span class="mp-name" id="kmk-lobby-p3-name">—</span>
-        <span class="mp-status" id="kmk-lobby-p3-status">Optionnel</span>
-      </div>
     </div>
-    <button class="btn-primary" id="kmk-lobby-btn-start" style="display:none">▶ Lancer la partie</button>
     <button class="btn-ghost" id="kmk-lobby-btn-cancel">✕ Annuler</button>
   </div>
 
@@ -734,10 +731,9 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
     <div class="kmk-title" style="margin-bottom:4px"><span class="k1">KISS</span> <span class="k2">MARRY</span> <span class="k3">KILL</span></div>
     <div class="result-sub" id="kmk-result-sub" style="margin-bottom:18px"></div>
     <!-- Sélecteur de joueur (multijoueur) -->
-    <div id="kmk-result-tabs" class="hidden" style="display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;">
+    <div id="kmk-result-tabs" class="hidden" style="display:flex;gap:8px;margin-bottom:18px;">
       <button class="tab active" id="kmk-res-tab-me" onclick="kmkResultShowTab('me')">Mes réponses</button>
-      <button class="tab" id="kmk-res-tab-p2" onclick="kmkResultShowTab('p2')" style="display:none"><span id="kmk-res-tab-p2-name">Joueur 2</span></button>
-      <button class="tab" id="kmk-res-tab-p3" onclick="kmkResultShowTab('p3')" style="display:none"><span id="kmk-res-tab-p3-name">Joueur 3</span></button>
+      <button class="tab" id="kmk-res-tab-them" onclick="kmkResultShowTab('them')">Réponses de <span id="kmk-res-tab-them-name">l'adversaire</span></button>
     </div>
     <div id="kmk-result-list"></div>
     <button class="btn-primary" id="kmk-btn-save" style="margin-top:18px">💾 Sauvegarder</button>
@@ -839,6 +835,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
       <div style="font-size:28px;font-weight:900;color:#FFD700;letter-spacing:3px;">PARAMÈTRES</div>
     </div>
 
+```
 <!-- Profil -->
 <div class="settings-section">
   <div class="settings-section-header">
@@ -1030,8 +1027,9 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
 </div>
 
 <div style="color:#333;font-size:11px;text-align:center;padding:10px 0 30px;">
-  labitedu57.netlify.app · v3.0
+  clovisseetjulles.netlify.app · v3.0
 </div>
+```
 
   </div>
 
@@ -1322,6 +1320,43 @@ function genCode(){
 }
 
 // =====================
+//  SETTINGS — déclarés tôt pour être dispo dès le login
+// =====================
+var SETTINGS_KEY='jdc_settings';
+var AVATARS=['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
+var THEMES=[
+  {id:'dark',    label:'Sombre',  style:'background:#0a0a1a'},
+  {id:'purple',  label:'Violet',  style:'background:linear-gradient(135deg,#0d0020,#1a0035)'},
+  {id:'stars',   label:'Étoilé',  style:'background:#060618',stars:true},
+  {id:'midnight',label:'Minuit',  style:'background:linear-gradient(180deg,#000510,#001030)'},
+  {id:'forest',  label:'Forêt',   style:'background:linear-gradient(135deg,#010d05,#021a0a)'},
+  {id:'sunset',  label:'Coucher', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)'},
+  {id:'light',   label:'Clair',   style:'background:#f0f0f8',light:true},
+];
+var ACCENTS=[
+  {id:'gold',   color:'#FFD700',label:'Or'},
+  {id:'pink',   color:'#ff6b9d',label:'Rose'},
+  {id:'blue',   color:'#4488ff',label:'Bleu'},
+  {id:'green',  color:'#22bb55',label:'Vert'},
+  {id:'purple', color:'#cc44ff',label:'Violet'},
+  {id:'orange', color:'#ff8800',label:'Orange'},
+  {id:'red',    color:'#ff4444',label:'Rouge'},
+  {id:'cyan',   color:'#00ccdd',label:'Cyan'},
+];
+var userSettings={
+  visibilityClassement:'all',visibilityKmk:'all',
+  leaderboard:true,stealth:false,autosave:true,
+  confirmQuit:true,animations:true,kmkDefaultRounds:3,
+  publicProfile:true,avatar:'🐱',theme:'dark',accent:'gold',bio:''
+};
+function loadSettings(){
+  try{var raw=localStorage.getItem(SETTINGS_KEY);if(raw)Object.assign(userSettings,JSON.parse(raw));}catch(e){}
+  applyTheme(userSettings.theme);
+  applyAccent(userSettings.accent);
+  if(document.getElementById('settings-visibility-classement')) applySettingsToUI();
+}
+
+// =====================
 //  STATE
 // =====================
 var sortState=null, previousSortState=null, names=[], estimated=0, busy=false;
@@ -1444,34 +1479,38 @@ function updatePauseCardOnGameSelect(saved){
 // =====================
 //  AUTH
 // =====================
-var SESSION_KEY = 'jdc_session';
-
-function authGetSession(){
-  try{ var s=localStorage.getItem(SESSION_KEY); return s?JSON.parse(s):null; }catch(e){return null;}
-}
-function authSetSession(pseudo){
-  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({pseudo:pseudo})); }catch(e){}
-}
-function authClearSession(){
-  try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
-}
+// =====================
+//  AUTH — Firebase Authentication
+// =====================
 
 function authShowError(msg){ document.getElementById('auth-error').textContent = msg; }
 function authClearError(){ document.getElementById('auth-error').textContent = ''; }
 
+// Convertit un pseudo en email interne
+function pseudoToEmail(pseudo){ return pseudo.trim().toLowerCase()+'@jdc.app'; }
+
+// Connexion via Firebase Auth
 document.getElementById('auth-btn-submit').addEventListener('click', function(){
   var pseudo = document.getElementById('auth-pseudo').value.trim().toLowerCase();
   var mdp = document.getElementById('auth-mdp').value;
   if(!pseudo){ authShowError('Entre un pseudo.'); return; }
   if(!mdp){ authShowError('Entre un mot de passe.'); return; }
-  var btn = this; btn.disabled=true; btn.textContent='...';
+  var btn=this; btn.disabled=true; btn.textContent='...';
   authClearError();
-  db.collection('users').doc(pseudo).get().then(function(doc){
-    btn.disabled=false; btn.textContent='Se connecter →';
-    if(!doc.exists){ authShowError('Pseudo introuvable.'); return; }
-    if(doc.data().mdp !== mdp){ authShowError('Mot de passe incorrect.'); return; }
-    authSuccess(pseudo);
-  }).catch(function(err){ btn.disabled=false; btn.textContent='Se connecter →'; authShowError('Erreur : '+err.message); });
+  auth.signInWithEmailAndPassword(pseudoToEmail(pseudo), mdp)
+    .then(function(){
+      // onAuthStateChanged prend le relais
+    })
+    .catch(function(err){
+      btn.disabled=false; btn.textContent='Se connecter →';
+      if(err.code==='auth/user-not-found'||err.code==='auth/invalid-email'){
+        authShowError('Pseudo introuvable.');
+      } else if(err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'){
+        authShowError('Mot de passe incorrect.');
+      } else {
+        authShowError('Erreur : '+err.message);
+      }
+    });
 });
 
 ['auth-pseudo','auth-mdp'].forEach(function(id){
@@ -1480,66 +1519,59 @@ document.getElementById('auth-btn-submit').addEventListener('click', function(){
   });
 });
 
+// Déconnexion
 document.getElementById('btn-logout').addEventListener('click', function(){
   setOffline();
   clearInterval(statusInterval);
-  clearNotifs();
-  if(globalRequestsListener){ globalRequestsListener(); globalRequestsListener=null; }
-  globalChatListeners.forEach(function(l){l();});
-  globalChatListeners=[];
   if(friendsListener){ friendsListener(); friendsListener=null; }
   if(requestsListener){ requestsListener(); requestsListener=null; }
   if(chatListener){ chatListener(); chatListener=null; }
-  chatPartner=''; unreadRequestsCount=0; unreadMessagesCount=0;
-  authClearSession();
-  authClearLocalStorage();
-  currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
-  document.getElementById('auth-user-bar').classList.add('hidden');
-  document.getElementById('tab-saved').classList.add('hidden');
-  document.getElementById('tab-new').classList.add('active');
-  document.getElementById('auth-pseudo').value='';
-  document.getElementById('auth-mdp').value='';
-  authClearError();
-  hideAll(); show('screen-auth');
+  auth.signOut().then(function(){
+    currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
+    document.getElementById('auth-user-bar').classList.add('hidden');
+    document.getElementById('tab-saved').classList.add('hidden');
+    document.getElementById('tab-new').classList.add('active');
+    document.getElementById('auth-pseudo').value='';
+    document.getElementById('auth-mdp').value='';
+    authClearError();
+    hideAll(); show('screen-auth');
+  });
 });
 
-function authClearLocalStorage(){
-  // Ne pas toucher à la pause Firebase — elle appartient au compte
-}
-
 function authSuccess(pseudo){
-  authSetSession(pseudo);
   currentPseudo = pseudo;
   document.getElementById('subtitle-name').textContent = 'Classement de '+pseudo;
   document.getElementById('au-name-display').textContent = '👤 '+pseudo;
   document.getElementById('auth-user-bar').classList.remove('hidden');
   document.getElementById('tab-saved').classList.remove('hidden');
-  var btnS = document.getElementById('auth-btn-submit');
-  btnS.disabled=false; btnS.textContent='Se connecter →';
+  document.getElementById('auth-btn-submit').disabled=false;
+  document.getElementById('auth-btn-submit').textContent='Se connecter →';
   loadSettings();
   startPresence();
-  setupNotifs(pseudo);
-  setTimeout(function(){ startGlobalListeners(); }, 1500);
   goToGameSelect();
 }
 
+// Point d'entrée unique — Firebase Auth notifie l'état de connexion
 function init(){
-  var session = authGetSession();
-  if(session && session.pseudo){
-    currentPseudo = session.pseudo;
-    document.getElementById('au-name-display').textContent = '👤 '+session.pseudo;
-    document.getElementById('auth-user-bar').classList.remove('hidden');
-    document.getElementById('tab-saved').classList.remove('hidden');
-    document.getElementById('subtitle-name').textContent = 'Classement de '+session.pseudo;
-    loadSettings();
-    startPresence();
-    setupNotifs(session.pseudo);
-    setTimeout(function(){ startGlobalListeners(); }, 1500);
-    goToGameSelect();
-  } else {
-    hideAll(); show('screen-auth');
-  }
+  hideAll();
+  // Petit spinner pendant que Firebase vérifie la session
+  document.body.insertAdjacentHTML('beforeend',
+    '<div id="auth-loading" style="position:fixed;inset:0;background:#0a0a1a;display:flex;align-items:center;justify-content:center;z-index:9999;font-size:32px;">⏳</div>'
+  );
+  auth.onAuthStateChanged(function(user){
+    var loader=document.getElementById('auth-loading');
+    if(loader) loader.remove();
+    if(user){
+      // Récupère le pseudo depuis Firestore (email → pseudo)
+      var pseudo=user.email.replace('@jdc.app','');
+      authSuccess(pseudo);
+    } else {
+      show('screen-auth');
+    }
+  });
 }
+init();
+
 
 // =====================
 //  RESUME (écran dédié)
@@ -1989,22 +2021,18 @@ document.getElementById('kmk-btn-save').addEventListener('click',function(){
 document.getElementById('kmk-btn-change-game').addEventListener('click',function(){kmkMultiCleanup();goToGameSelect();});
 
 // =====================
-//  KMK — MULTIJOUEUR (2 ou 3 joueurs)
+//  KMK — MULTIJOUEUR
 // =====================
-var kmkMultiGameId=null;
-var kmkMultiPlayers=[];        // [pseudo1, pseudo2, pseudo3?] — ordre des joueurs
-var kmkMultiIsCreator=false;
-var kmkMultiRoundsTotal=3;
-var kmkMultiListener=null;
-var kmkMultiMyResults=[];
-var kmkMultiAllResults={};     // { pseudo: [résultats] }
-var kmkMultiCurrentPickRound=0;
-var kmkMultiCurrentPickTarget=''; // pour qui je choisis en ce moment
-var kmkMultiMyPlayRound=0;
-var kmkMultiSelectedForPick={};
-// Helpers
-function kmkMultiOpponents(){ return kmkMultiPlayers.filter(function(p){return p!==currentPseudo;}); }
-function kmkMultiOpponent(){ return kmkMultiOpponents()[0]||''; } // compat ancienne API
+var kmkMultiGameId=null;       // ID du doc Firestore de la partie
+var kmkMultiOpponent='';       // pseudo de l'adversaire
+var kmkMultiIsCreator=false;   // true si on a créé la partie
+var kmkMultiRoundsTotal=3;     // manches chacun
+var kmkMultiListener=null;     // unsubscribe Firestore listener
+var kmkMultiMyResults=[];      // résultats de mes manches à moi
+var kmkMultiTheirResults=[];   // résultats des manches de l'adversaire
+var kmkMultiCurrentPickRound=0; // quelle manche je suis en train de choisir
+var kmkMultiMyPlayRound=0;      // quelle manche je suis en train de jouer
+var kmkMultiSelectedForPick={}; // selectedByGroup pour l'écran de sélection des noms
 
 // Compteur de manches pour le multi
 var kmkMultiRoundsMinusEl=document.getElementById('kmk-multi-rounds-minus');
@@ -2012,14 +2040,14 @@ var kmkMultiRoundsPlusEl=document.getElementById('kmk-multi-rounds-plus');
 kmkMultiRoundsMinusEl.addEventListener('click',function(){if(kmkMultiRoundsTotal>1){kmkMultiRoundsTotal--;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;}});
 kmkMultiRoundsPlusEl.addEventListener('click',function(){kmkMultiRoundsTotal++;document.getElementById('kmk-multi-rounds-val').textContent=kmkMultiRoundsTotal;});
 
-// Créer une partie multijoueur (2 ou 3 joueurs)
+// Créer une partie multijoueur (pas besoin de connaître le pseudo de l'ami à l'avance)
 document.getElementById('kmk-multi-btn-create').addEventListener('click',function(){
   var btn=this; btn.disabled=true; btn.textContent='Création...';
   var code=genCode();
   var gameData={
     code:code,
     creator:currentPseudo,
-    players:[currentPseudo],   // liste des joueurs connectés
+    opponent:'',           // sera rempli quand l'ami rejoint
     roundsTotal:kmkMultiRoundsTotal,
     status:'waiting',
     createdAt:firebase.firestore.FieldValue.serverTimestamp(),
@@ -2029,47 +2057,26 @@ document.getElementById('kmk-multi-btn-create').addEventListener('click',functio
   db.collection('kmk_parties').add(gameData).then(function(ref){
     btn.disabled=false; btn.textContent='Créer la partie →';
     kmkMultiGameId=ref.id;
-    kmkMultiPlayers=[currentPseudo];
+    kmkMultiOpponent='';
     kmkMultiIsCreator=true;
     kmkMultiRoundsTotal=gameData.roundsTotal;
     kmkMultiMyResults=[];
-    kmkMultiAllResults={};
+    kmkMultiTheirResults=[];
     kmkMultiCurrentPickRound=0;
     kmkMultiMyPlayRound=0;
-    kmkMultiUpdateLobbyUI();
+    // Affiche le lobby avec le code à partager
     document.getElementById('kmk-lobby-code').textContent=code;
-    document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente de joueurs...';
-    document.getElementById('kmk-lobby-btn-start').style.display='none';
+    document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
+    document.getElementById('kmk-lobby-p2-name').textContent='—';
+    document.getElementById('kmk-lobby-p2-status').textContent='En attente...';
+    document.getElementById('kmk-lobby-p2-row').className='multi-player-row waiting';
+    document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente d\'un joueur...';
     hideAll();show('screen-kmk-multi-lobby');
     kmkMultiListenLobby(ref.id);
   }).catch(function(err){btn.disabled=false;btn.textContent='Créer la partie →';showToast('Erreur : '+err.message,'error');});
 });
 
-function kmkMultiUpdateLobbyUI(){
-  var slots=[
-    {nameEl:'kmk-lobby-p1-name',rowEl:'kmk-lobby-p1-row',statusEl:null},
-    {nameEl:'kmk-lobby-p2-name',rowEl:'kmk-lobby-p2-row',statusEl:'kmk-lobby-p2-status'},
-    {nameEl:'kmk-lobby-p3-name',rowEl:'kmk-lobby-p3-row',statusEl:'kmk-lobby-p3-status'}
-  ];
-  var players=kmkMultiPlayers;
-  // Slot 1 = toi
-  document.getElementById('kmk-lobby-p1-name').textContent='👤 '+currentPseudo+' (toi)';
-  // Slot 2
-  var p2=players[1]||null;
-  document.getElementById('kmk-lobby-p2-name').textContent=p2||'—';
-  document.getElementById('kmk-lobby-p2-status').textContent=p2?'✓ Connecté':'En attente...';
-  document.getElementById('kmk-lobby-p2-row').className='multi-player-row '+(p2?'connected':'waiting');
-  // Slot 3
-  var p3=players[2]||null;
-  document.getElementById('kmk-lobby-p3-name').textContent=p3||'—';
-  document.getElementById('kmk-lobby-p3-status').textContent=p3?'✓ Connecté':'Optionnel';
-  document.getElementById('kmk-lobby-p3-row').className='multi-player-row '+(p3?'connected':'waiting');
-  // Bouton démarrer si au moins 2 joueurs
-  var canStart=kmkMultiIsCreator && players.length>=2;
-  document.getElementById('kmk-lobby-btn-start').style.display=canStart?'':'none';
-}
-
-// Rejoindre une partie (max 3 joueurs)
+// Rejoindre une partie
 document.getElementById('kmk-multi-btn-join').addEventListener('click',function(){
   var code=document.getElementById('kmk-multi-join-code').value.trim().toUpperCase();
   if(code.length<4){showToast('Entre le code de la partie','error');return;}
@@ -2080,86 +2087,61 @@ document.getElementById('kmk-multi-btn-join').addEventListener('click',function(
       if(snap.empty){showToast('Partie introuvable ou déjà commencée','error');return;}
       var docRef=snap.docs[0];
       var data=docRef.data();
-      var players=data.players||[data.creator];
-      if(players.indexOf(currentPseudo)!==-1){showToast('Tu es déjà dans cette partie !','error');return;}
-      if(players.length>=3){showToast('Partie complète (3 joueurs max)','error');return;}
-      var newPlayers=players.concat([currentPseudo]);
-      docRef.ref.update({players:newPlayers}).then(function(){
+      if(data.creator===currentPseudo){showToast('Tu ne peux pas rejoindre ta propre partie !','error');return;}
+      // Écrit son pseudo comme adversaire et passe le statut à playing
+      docRef.ref.update({status:'playing', opponent:currentPseudo}).then(function(){
         kmkMultiGameId=docRef.id;
-        kmkMultiPlayers=newPlayers;
+        kmkMultiOpponent=data.creator;
         kmkMultiIsCreator=false;
         kmkMultiRoundsTotal=data.roundsTotal||3;
         kmkMultiMyResults=[];
-        kmkMultiAllResults={};
+        kmkMultiTheirResults=[];
         kmkMultiCurrentPickRound=0;
         kmkMultiMyPlayRound=0;
         showToast('✅ Partie rejointe !','info');
-        // Affiche le lobby en attendant que le créateur lance
-        kmkMultiUpdateLobbyUI();
-        document.getElementById('kmk-lobby-code').textContent=data.code;
-        document.getElementById('kmk-lobby-status-badge').textContent='⏳ En attente du créateur...';
-        document.getElementById('kmk-lobby-btn-start').style.display='none';
-        hideAll(); show('screen-kmk-multi-lobby');
-        kmkMultiListenLobby(docRef.id);
+        hideAll();
+        kmkMultiStartPickPhase();
       }).catch(function(err){showToast('Erreur : '+err.message,'error');});
     }).catch(function(err){btn.disabled=false;btn.textContent='Rejoindre →';showToast('Erreur : '+err.message,'error');});
 });
 
-// Listener du lobby — met à jour les slots en temps réel et attend le lancement
+// Listener du lobby (créateur attend que l'adversaire rejoigne)
 function kmkMultiListenLobby(gameId){
   if(kmkMultiListener)kmkMultiListener();
   kmkMultiListener=db.collection('kmk_parties').doc(gameId).onSnapshot(function(doc){
     if(!doc.exists)return;
     var data=doc.data();
-    kmkMultiPlayers=data.players||[data.creator];
-    kmkMultiRoundsTotal=data.roundsTotal||kmkMultiRoundsTotal;
-    kmkMultiUpdateLobbyUI();
-    var nb=kmkMultiPlayers.length;
-    if(nb===2) document.getElementById('kmk-lobby-status-badge').textContent='✅ 2 joueurs — tu peux lancer ou attendre un 3ème';
-    if(nb===3) document.getElementById('kmk-lobby-status-badge').textContent='✅ 3 joueurs — prêt à lancer !';
     if(data.status==='playing'){
+      // Récupère le pseudo de l'adversaire depuis le doc
+      kmkMultiOpponent=data.opponent||'Adversaire';
+      document.getElementById('kmk-lobby-p2-name').textContent=kmkMultiOpponent;
+      document.getElementById('kmk-lobby-p2-row').className='multi-player-row connected';
+      document.getElementById('kmk-lobby-p2-status').textContent='✓ Connecté';
+      document.getElementById('kmk-lobby-status-badge').textContent='✅ '+kmkMultiOpponent+' a rejoint !';
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
-      setTimeout(function(){hideAll();kmkMultiStartPickPhase();},600);
+      setTimeout(function(){
+        hideAll();
+        kmkMultiStartPickPhase();
+      },800);
     }
   });
 }
 
-// Le créateur lance la partie
-document.getElementById('kmk-lobby-btn-start').addEventListener('click',function(){
-  if(kmkMultiPlayers.length<2){showToast('Il faut au moins 2 joueurs','error');return;}
-  db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'playing'}).then(function(){
-    if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
-    hideAll();kmkMultiStartPickPhase();
-  }).catch(function(err){showToast('Erreur : '+err.message,'error');});
-});
-
-// Phase de sélection : avec N joueurs, je dois choisir pour chaque adversaire × chaque manche
-// Ordre : pour adversaire1 manche1, pour adversaire1 manche2..., pour adversaire2 manche1, etc.
-function kmkMultiGetPickQueue(){
-  // Retourne la liste de {forPlayer, round} que je dois encore compléter
-  var queue=[];
-  kmkMultiOpponents().forEach(function(opp){
-    for(var r=1;r<=kmkMultiRoundsTotal;r++){
-      queue.push({forPlayer:opp, round:r});
-    }
-  });
-  return queue;
-}
-
+// Phase de sélection : on choisit les 3 noms pour l'adversaire
 function kmkMultiStartPickPhase(){
-  var queue=kmkMultiGetPickQueue();
-  if(kmkMultiCurrentPickRound>=queue.length){
+  kmkMultiCurrentPickRound++;
+  if(kmkMultiCurrentPickRound>kmkMultiRoundsTotal){
+    // J'ai fini de choisir pour l'adversaire — j'attends qu'il choisisse pour moi
     kmkMultiWaitForPick();
     return;
   }
-  var current=queue[kmkMultiCurrentPickRound];
-  kmkMultiCurrentPickTarget=current.forPlayer;
+  // Reset sélection
   SUGGESTION_GROUPS.forEach(function(g){selectedByGroupMulti[g.id]=[];});
   document.getElementById('kmk-multi-textarea').value='';
   document.getElementById('kmk-multi-hint').textContent='Sélectionne ou écris exactement 3 noms';
   document.getElementById('kmk-multi-pick-btn-confirm').disabled=true;
-  document.getElementById('kmk-multi-pick-for').textContent=current.forPlayer;
-  document.getElementById('kmk-multi-pick-round').textContent=current.round;
+  document.getElementById('kmk-multi-pick-for').textContent=kmkMultiOpponent;
+  document.getElementById('kmk-multi-pick-round').textContent=kmkMultiCurrentPickRound;
   document.getElementById('kmk-multi-pick-total').textContent=kmkMultiRoundsTotal;
   hideAll(); show('screen-kmk-multi-pick');
   renderGroups('kmk-multi-suggest-groups','kmk-multi-textarea',kmkMultiPickUpdateHint,3,selectedByGroupMulti);
@@ -2192,12 +2174,11 @@ document.getElementById('kmk-multi-pick-btn-confirm').addEventListener('click',f
   var trio=kmkMultiGetPickNames();
   if(trio.length!==3)return;
   var btn=this; btn.disabled=true; btn.textContent='Envoi...';
-  var queue=kmkMultiGetPickQueue();
-  var current=queue[kmkMultiCurrentPickRound];
+  // Sauvegarde le trio dans Firebase
   var pickEntry={
-    round:current.round,
+    round:kmkMultiCurrentPickRound,
     pickedBy:currentPseudo,
-    forPlayer:current.forPlayer,
+    forPlayer:kmkMultiOpponent,
     trio:trio
   };
   db.collection('kmk_parties').doc(kmkMultiGameId).update({
@@ -2205,8 +2186,7 @@ document.getElementById('kmk-multi-pick-btn-confirm').addEventListener('click',f
   }).then(function(){
     btn.disabled=false; btn.textContent='Envoyer ces 3 noms →';
     showToast('✅ Noms envoyés !','info');
-    kmkMultiCurrentPickRound++;
-    kmkMultiStartPickPhase();
+    kmkMultiStartPickPhase(); // passe à la manche suivante
   }).catch(function(err){
     btn.disabled=false; btn.textContent='Envoyer ces 3 noms →';
     showToast('Erreur : '+err.message,'error');
@@ -2215,7 +2195,7 @@ document.getElementById('kmk-multi-pick-btn-confirm').addEventListener('click',f
 
 // Attente que l'adversaire ait choisi tous mes trios
 function kmkMultiWaitForPick(){
-  document.getElementById('kmk-multi-wait-text').textContent='En attente que les autres choisissent tes noms...';
+  document.getElementById('kmk-multi-wait-text').textContent=kmkMultiOpponent+' choisit tes 3 personnes...';
   document.getElementById('kmk-multi-wait-sub').textContent='Manche '+kmkMultiMyPlayRound+' / '+kmkMultiRoundsTotal;
   document.getElementById('kmk-multi-wait-results').innerHTML='';
   hideAll(); show('screen-kmk-multi-wait');
@@ -2228,24 +2208,23 @@ function kmkMultiListenForMyTrio(){
     if(!doc.exists)return;
     var data=doc.data();
     var nextRound=kmkMultiMyPlayRound+1;
+    // Cherche le trio pour ma prochaine manche
     var myTrio=null;
     (data.picks||[]).forEach(function(p){
       if(p.forPlayer===currentPseudo && p.round===nextRound) myTrio=p;
     });
     if(myTrio){
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
-      kmkMultiPlayMyRound(myTrio.trio, nextRound, data.roundsTotal||kmkMultiRoundsTotal, myTrio.pickedBy);
+      kmkMultiPlayMyRound(myTrio.trio, nextRound, data.roundsTotal||kmkMultiRoundsTotal);
     }
-    // Affiche les résultats des autres en direct
-    var html='';
-    kmkMultiOpponents().forEach(function(opp){
-      var res=(data.results||[]).filter(function(r){return r.playedBy===opp;});
-      if(res.length>0){
-        html+='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">'+escHtml(opp)+' (en direct)</div>';
-        html+=kmkBuildResultHtml(res.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
-      }
-    });
-    if(html) document.getElementById('kmk-multi-wait-results').innerHTML=html;
+    // Affiche les résultats de l'adversaire si déjà jouées
+    var theirRes=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+    if(theirRes.length>0){
+      var html='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Réponses de '+escHtml(kmkMultiOpponent)+' (en direct)</div>';
+      html+=kmkBuildResultHtml(theirRes.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
+      document.getElementById('kmk-multi-wait-results').innerHTML=html;
+    }
+    // Vérifie si partie terminée
     if(data.status==='done'){
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
       kmkMultiShowFinalResult(data);
@@ -2253,8 +2232,8 @@ function kmkMultiListenForMyTrio(){
   });
 }
 
-// Jouer une manche (trios choisis par un autre joueur pour moi)
-function kmkMultiPlayMyRound(trio, round, total, chosenBy){
+// Jouer une manche (trios choisis par l'adversaire pour moi)
+function kmkMultiPlayMyRound(trio, round, total){
   kmkMultiMyPlayRound=round;
   kmkTrio=trio;
   kmkAssigned={};
@@ -2262,7 +2241,7 @@ function kmkMultiPlayMyRound(trio, round, total, chosenBy){
   hide('screen-kmk-multi-wait');
   document.getElementById('kmk-round-info').textContent='Manche '+round+' / '+total;
   document.getElementById('kmk-multi-play-banner').classList.remove('hidden');
-  document.getElementById('kmk-multi-play-chooser').textContent=chosenBy||kmkMultiOpponents()[0]||'';
+  document.getElementById('kmk-multi-play-chooser').textContent=kmkMultiOpponent;
   var trioNamesEl=document.getElementById('kmk-trio-names');
   trioNamesEl.innerHTML='';
   kmkTrio.forEach(function(name){
@@ -2279,6 +2258,7 @@ function kmkMultiAfterPlayRound(roundResult){
   var resultEntry={
     round:roundResult.round,
     playedBy:currentPseudo,
+    forChosenBy:kmkMultiOpponent,
     kiss:roundResult.kiss,
     marry:roundResult.marry,
     kill:roundResult.kill
@@ -2287,24 +2267,27 @@ function kmkMultiAfterPlayRound(roundResult){
   db.collection('kmk_parties').doc(kmkMultiGameId).update({
     results:firebase.firestore.FieldValue.arrayUnion(resultEntry)
   }).then(function(){
+    // Vérifie si j'ai joué toutes mes manches
     if(kmkMultiMyPlayRound>=kmkMultiRoundsTotal){
+      // J'ai tout joué — regarde si l'adversaire aussi
       db.collection('kmk_parties').doc(kmkMultiGameId).get().then(function(doc){
         var data=doc.data();
-        var players=data.players||[data.creator];
-        var allDone=players.every(function(p){
-          return (data.results||[]).filter(function(r){return r.playedBy===p;}).length>=kmkMultiRoundsTotal;
-        });
+        var theirResults=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+        var allDone=(theirResults.length>=kmkMultiRoundsTotal);
         if(allDone){
           db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'done'});
+          kmkMultiTheirResults=theirResults;
           kmkMultiShowFinalResult(data);
         } else {
-          document.getElementById('kmk-multi-wait-text').textContent='Tu as terminé ! En attente des autres...';
-          document.getElementById('kmk-multi-wait-sub').textContent="Tous les joueurs n'ont pas encore fini.";
+          // J'attends que l'adversaire finisse
+          document.getElementById('kmk-multi-wait-text').textContent=kmkMultiOpponent+' joue encore...';
+          document.getElementById('kmk-multi-wait-sub').textContent='Tu as terminé toutes tes manches !';
           hideAll(); show('screen-kmk-multi-wait');
           kmkMultiListenForEndGame();
         }
       });
     } else {
+      // Prochain tour : je dois attendre que l'adversaire choisisse le prochain trio pour moi
       kmkMultiWaitForPick();
     }
   }).catch(function(err){showToast('Erreur sync : '+err.message,'error');});
@@ -2315,23 +2298,17 @@ function kmkMultiListenForEndGame(){
   kmkMultiListener=db.collection('kmk_parties').doc(kmkMultiGameId).onSnapshot(function(doc){
     if(!doc.exists)return;
     var data=doc.data();
-    var players=data.players||[data.creator];
-    // Affiche les résultats des autres en direct
-    var html='';
-    kmkMultiOpponents().forEach(function(opp){
-      var res=(data.results||[]).filter(function(r){return r.playedBy===opp;});
-      if(res.length>0){
-        html+='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">'+escHtml(opp)+' (en direct)</div>';
-        html+=kmkBuildResultHtml(res.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
-      }
-    });
-    if(html) document.getElementById('kmk-multi-wait-results').innerHTML=html;
-    var allDone=players.every(function(p){
-      return (data.results||[]).filter(function(r){return r.playedBy===p;}).length>=kmkMultiRoundsTotal;
-    });
-    if(data.status==='done' || allDone){
+    var theirRes=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
+    // Affiche en direct
+    if(theirRes.length>0){
+      var html='<div style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Réponses de '+escHtml(kmkMultiOpponent)+' (en direct)</div>';
+      html+=kmkBuildResultHtml(theirRes.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};}));
+      document.getElementById('kmk-multi-wait-results').innerHTML=html;
+    }
+    if(data.status==='done' || theirRes.length>=kmkMultiRoundsTotal){
       if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
       if(data.status!=='done') db.collection('kmk_parties').doc(kmkMultiGameId).update({status:'done'});
+      kmkMultiTheirResults=theirRes;
       kmkMultiShowFinalResult(data);
     }
   });
@@ -2340,41 +2317,25 @@ function kmkMultiListenForEndGame(){
 function kmkMultiShowFinalResult(data){
   if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
   kmkAllResults=kmkMultiMyResults;
-  kmkMultiAllResults={};
-  var players=data.players||[data.creator];
-  players.forEach(function(p){
-    kmkMultiAllResults[p]=(data.results||[]).filter(function(r){return r.playedBy===p;});
-  });
+  kmkMultiTheirResults=(data.results||[]).filter(function(r){return r.playedBy===kmkMultiOpponent;});
   hideAll(); show('screen-kmk-result');
   show('kmk-result-tabs');
-  document.getElementById('kmk-result-sub').textContent='Partie terminée · '+kmkMultiRoundsTotal+' manche(s) · '+players.length+' joueurs';
-  // Affiche tabs pour chaque autre joueur
-  var opponents=kmkMultiOpponents();
-  var p2=opponents[0]||null, p3=opponents[1]||null;
-  var tab2=document.getElementById('kmk-res-tab-p2');
-  var tab3=document.getElementById('kmk-res-tab-p3');
-  if(p2){ document.getElementById('kmk-res-tab-p2-name').textContent=p2; tab2.style.display=''; }
-  else { tab2.style.display='none'; }
-  if(p3){ document.getElementById('kmk-res-tab-p3-name').textContent=p3; tab3.style.display=''; }
-  else { tab3.style.display='none'; }
+  document.getElementById('kmk-result-sub').textContent='Partie terminée · '+kmkMultiRoundsTotal+' manche(s) chacun';
+  document.getElementById('kmk-res-tab-them-name').textContent=kmkMultiOpponent;
   kmkResultShowTab('me');
 }
 
 var kmkResultCurrentTab='me';
 function kmkResultShowTab(tab){
   kmkResultCurrentTab=tab;
-  ['me','p2','p3'].forEach(function(t){
-    var el=document.getElementById('kmk-res-tab-'+t);
-    if(el) el.className='tab'+(t===tab?' active':'');
-  });
+  document.getElementById('kmk-res-tab-me').className='tab'+(tab==='me'?' active':'');
+  document.getElementById('kmk-res-tab-them').className='tab'+(tab==='them'?' active':'');
   if(tab==='me'){
     document.getElementById('kmk-result-list').innerHTML=kmkBuildResultHtml(kmkAllResults);
   } else {
-    var pseudo=tab==='p2'?kmkMultiOpponents()[0]:kmkMultiOpponents()[1];
-    var res=pseudo?(kmkMultiAllResults[pseudo]||[]):[];
-    var formatted=res.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};});
-    document.getElementById('kmk-result-list').innerHTML=formatted.length>0
-      ? kmkBuildResultHtml(formatted)
+    var theirFormatted=kmkMultiTheirResults.map(function(r,i){return{round:i+1,kiss:r.kiss,marry:r.marry,kill:r.kill};});
+    document.getElementById('kmk-result-list').innerHTML=theirFormatted.length>0
+      ? kmkBuildResultHtml(theirFormatted)
       : '<div style="color:#444;text-align:center;padding:30px">Pas encore de résultats...</div>';
   }
 }
@@ -2390,10 +2351,10 @@ function kmkMultiQuit(){
 function kmkMultiCleanup(){
   if(kmkMultiListener){kmkMultiListener();kmkMultiListener=null;}
   kmkMultiGameId=null;
-  kmkMultiPlayers=[];
+  kmkMultiOpponent='';
   kmkMultiIsCreator=false;
   kmkMultiMyResults=[];
-  kmkMultiAllResults={};
+  kmkMultiTheirResults=[];
   kmkMultiCurrentPickRound=0;
   kmkMultiMyPlayRound=0;
   kmkIsMulti=false;
@@ -2458,7 +2419,7 @@ function exportClassementPDF(){
   });
   // Footer
   doc.setTextColor(60,60,80); doc.setFontSize(9);
-  doc.text('labitedu57.netlify.app', 105, 292, {align:'center'});
+  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
   doc.save('classement-'+currentPseudo+'-'+date+'.pdf');
   showToast('📄 PDF téléchargé !','info');
 }
@@ -2467,7 +2428,7 @@ function exportClassementMail(){
   var lines=getClassementLines();
   var body='Mon classement — '+currentPseudo+'\n'+new Date().toLocaleDateString('fr-FR')+'\n\n';
   body+=lines.join('\n');
-  body+='\n\nlabitedu57.netlify.app';
+  body+='\n\nclovisseetjulles.netlify.app';
   var subject=encodeURIComponent('Mon classement — '+currentPseudo);
   window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
 }
@@ -2537,7 +2498,7 @@ function exportKMKPDF(){
   }
 
   doc.setTextColor(60,60,80); doc.setFontSize(9);
-  doc.text('labitedu57.netlify.app', 105, 292, {align:'center'});
+  doc.text('clovisseetjulles.netlify.app', 105, 292, {align:'center'});
   doc.save('kmk-'+currentPseudo+'-'+date+'.pdf');
   showToast('📄 PDF téléchargé !','info');
 }
@@ -2552,7 +2513,7 @@ function exportKMKMail(){
     body+='\nRÉPONSES DE '+kmkMultiOpponent.toUpperCase()+'\n';
     body+=getKMKLines(theirFmt).join('\n');
   }
-  body+='\nlabitedu57.netlify.app';
+  body+='\nclovisseetjulles.netlify.app';
   var subject=encodeURIComponent('Kiss Marry Kill — '+currentPseudo);
   window.location.href='mailto:?subject='+subject+'&body='+encodeURIComponent(body);
 }
@@ -2563,45 +2524,6 @@ document.getElementById('btn-export-mail-kmk').addEventListener('click', exportK
 // =====================
 //  PARAMÈTRES — THÈMES, AVATARS, ACCENT, BIO, SOCIAL
 // =====================
-var SETTINGS_KEY = 'jdc_settings';
-
-var AVATARS = ['🐱','🦊','🐸','🦋','🌙','⚡','🔥','💎','🌈','🎭','👾','🦄','🐺','🦁','🐼','🌸','💀','🎯','🏆','🎪'];
-
-var THEMES = [
-  { id:'dark',    label:'Sombre',    bg:'#0a0a1a',   style:'background:#0a0a1a' },
-  { id:'purple',  label:'Violet',    bg:'linear-gradient(135deg,#0d0020,#1a0035)', style:'background:linear-gradient(135deg,#0d0020,#1a0035)' },
-  { id:'stars',   label:'Étoilé',    bg:'#060618',   style:'background:#060618', stars:true },
-  { id:'midnight',label:'Minuit',    bg:'linear-gradient(180deg,#000510,#001030)', style:'background:linear-gradient(180deg,#000510,#001030)' },
-  { id:'forest',  label:'Forêt',     bg:'linear-gradient(135deg,#010d05,#021a0a)', style:'background:linear-gradient(135deg,#010d05,#021a0a)' },
-  { id:'sunset',  label:'Coucher',   bg:'linear-gradient(135deg,#1a0505,#1a0a00)', style:'background:linear-gradient(135deg,#1a0505,#1a0a00)' },
-  { id:'light',   label:'Clair',     bg:'#f0f0f8',   style:'background:#f0f0f8', light:true },
-];
-
-var ACCENTS = [
-  { id:'gold',   color:'#FFD700', label:'Or' },
-  { id:'pink',   color:'#ff6b9d', label:'Rose' },
-  { id:'blue',   color:'#4488ff', label:'Bleu' },
-  { id:'green',  color:'#22bb55', label:'Vert' },
-  { id:'purple', color:'#cc44ff', label:'Violet' },
-  { id:'orange', color:'#ff8800', label:'Orange' },
-  { id:'red',    color:'#ff4444', label:'Rouge' },
-  { id:'cyan',   color:'#00ccdd', label:'Cyan' },
-];
-
-var userSettings = {
-  visibilityClassement:'all', visibilityKmk:'all',
-  leaderboard:true, stealth:false, autosave:true,
-  confirmQuit:true, animations:true, kmkDefaultRounds:3,
-  publicProfile:true,
-  avatar:'🐱', theme:'dark', accent:'gold', bio:''
-};
-
-function loadSettings(){
-  try{ var raw=localStorage.getItem(SETTINGS_KEY); if(raw) Object.assign(userSettings,JSON.parse(raw)); }catch(e){}
-  applyTheme(userSettings.theme);
-  applyAccent(userSettings.accent);
-  applySettingsToUI();
-}
 
 function saveSettings(){
   userSettings.visibilityClassement=document.getElementById('settings-visibility-classement').value;
@@ -2773,7 +2695,6 @@ function openSettings(){
   renderThemeGrid();
   renderAccentGrid();
   loadSettingsStats();
-
 }
 
 function loadSettingsStats(){
@@ -3028,13 +2949,18 @@ document.getElementById('confirm-delete-account').addEventListener('click',funct
     db.collection('pauses').doc(pseudo.toLowerCase()).delete(),
     db.collection('users').doc(pseudo.toLowerCase()).delete()
   ]).then(function(){
-    authClearSession(); try{localStorage.removeItem(SETTINGS_KEY);}catch(e){}
-    currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
-    document.getElementById('auth-user-bar').classList.add('hidden');
-    document.getElementById('tab-saved').classList.add('hidden');
-    document.getElementById('auth-pseudo').value=''; document.getElementById('auth-mdp').value='';
-    closeModal('modal-delete-account'); hideAll(); show('screen-auth');
-    showToast('💀 Compte supprimé','error');
+    try{localStorage.removeItem(SETTINGS_KEY);}catch(e){}
+    // Supprime aussi le compte Firebase Auth
+    var user=auth.currentUser;
+    if(user) user.delete().catch(function(){});
+    auth.signOut().then(function(){
+      currentPseudo=''; sortState=null; previousSortState=null; isPartial=false; currentGame=null;
+      document.getElementById('auth-user-bar').classList.add('hidden');
+      document.getElementById('tab-saved').classList.add('hidden');
+      document.getElementById('auth-pseudo').value=''; document.getElementById('auth-mdp').value='';
+      closeModal('modal-delete-account'); hideAll(); show('screen-auth');
+      showToast('💀 Compte supprimé','error');
+    });
   }).catch(function(err){ btn.disabled=false; btn.textContent='SUPPRIMER MON COMPTE'; showToast('Erreur : '+err.message,'error'); closeModal('modal-delete-account'); });
 });
 
@@ -3045,84 +2971,6 @@ document.getElementById('confirm-delete-account').addEventListener('click',funct
 
 // Charge les settings au démarrage
 loadSettings();
-
-// =====================
-//  NOTIFS IN-APP (Firestore)
-// =====================
-var notifListener = null;
-
-function setupNotifs(pseudo){
-  startNotifListener(pseudo);
-}
-
-function clearNotifs(){
-  stopNotifListener();
-}
-
-function sendPushNotif(toPseudo, title, message){
-  if(!toPseudo || toPseudo === currentPseudo) return;
-  // Notif Firestore in-app
-  db.collection('notifications').doc(toPseudo).collection('items').add({
-    title: title, message: message, from: currentPseudo,
-    seen: false, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).catch(function(){});
-}
-
-function startNotifListener(pseudo){
-  if(notifListener) notifListener();
-  notifListener = db.collection('notifications').doc(pseudo).collection('items')
-    .where('seen', '==', false)
-    .onSnapshot(function(snap){
-      snap.docChanges().forEach(function(change){
-        if(change.type !== 'added') return;
-        var d = change.doc.data();
-        // Ne pas notifier si le doc vient d'être créé côté serveur (timestamp null = local)
-        if(!d.createdAt) return;
-        showInAppNotif(d.title, d.message);
-        // Marquer comme vue
-        change.doc.ref.update({ seen: true }).catch(function(){});
-      });
-    });
-}
-
-function stopNotifListener(){
-  if(notifListener){ notifListener(); notifListener = null; }
-}
-
-// Bannière de notif in-app
-function showInAppNotif(title, message){
-  var el = document.getElementById('inapp-notif');
-  if(!el){
-    el = document.createElement('div');
-    el.id = 'inapp-notif';
-    el.style.cssText = [
-      'position:fixed','top:18px','left:50%','transform:translateX(-50%) translateY(-120px)',
-      'background:#1e1e40','border:2px solid var(--accent)','border-radius:16px',
-      'padding:14px 20px','z-index:9999','max-width:320px','width:90%',
-      'box-shadow:0 8px 32px rgba(0,0,0,0.5)',
-      'transition:transform 0.35s cubic-bezier(.175,.885,.32,1.275)',
-      'cursor:pointer'
-    ].join(';');
-    el.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--accent)" id="inapp-notif-title"></div>'
-                 + '<div style="font-size:12px;color:#ccc;margin-top:4px" id="inapp-notif-msg"></div>';
-    el.addEventListener('click', function(){ hideInAppNotif(); });
-    document.body.appendChild(el);
-  }
-  document.getElementById('inapp-notif-title').textContent = title;
-  document.getElementById('inapp-notif-msg').textContent = message;
-  // Slide in
-  requestAnimationFrame(function(){
-    el.style.transform = 'translateX(-50%) translateY(0)';
-  });
-  // Auto-hide après 4s
-  clearTimeout(el._timer);
-  el._timer = setTimeout(hideInAppNotif, 4000);
-}
-
-function hideInAppNotif(){
-  var el = document.getElementById('inapp-notif');
-  if(el) el.style.transform = 'translateX(-50%) translateY(-120px)';
-}
 
 // =====================
 //  AMIS, STATUTS & MESSAGERIE
@@ -3149,94 +2997,25 @@ function timeAgo(ts){
 // --- Présence ---
 function setOnline(){
   if(!currentPseudo) return;
-  db.collection('users').doc(currentPseudo).update({online:true,lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+  db.collection('users').doc(currentPseudo).update({online:true, lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
 }
 function setOffline(){
   if(!currentPseudo) return;
-  db.collection('users').doc(currentPseudo).update({online:false,lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+  db.collection('users').doc(currentPseudo).update({online:false, lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
 }
 function startPresence(){
   setOnline();
   clearInterval(statusInterval);
-  statusInterval=setInterval(setOnline,60000);
-  window.addEventListener('beforeunload',setOffline);
-  document.addEventListener('visibilitychange',function(){
+  statusInterval=setInterval(setOnline, 60000);
+  window.addEventListener('beforeunload', setOffline);
+  document.addEventListener('visibilitychange', function(){
     if(document.hidden) setOffline(); else setOnline();
   });
 }
 
-// --- Badges de notifs non lues ---
-var unreadRequestsCount=0, unreadMessagesCount=0;
-function updateFriendsBadge(){
-  var total=unreadRequestsCount+unreadMessagesCount;
-  var btn=document.getElementById('btn-open-friends');
-  if(!btn) return;
-  var badge=btn.querySelector('.notif-badge');
-  if(total>0){
-    if(!badge){
-      badge=document.createElement('span');
-      badge.className='notif-badge';
-      badge.style.cssText='display:inline-block;background:#cc3333;color:#fff;border-radius:50%;font-size:10px;font-weight:900;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 3px;margin-left:4px;';
-      btn.appendChild(badge);
-    }
-    badge.textContent=total>9?'9+':total;
-  } else {
-    if(badge) badge.remove();
-  }
-}
-
-// --- Écoute globale des demandes (pour badge) ---
-var globalRequestsListener=null;
-var globalChatListeners=[];
-function startGlobalListeners(){
-  if(!currentPseudo) return;
-  // Demandes d'amis reçues
-  if(globalRequestsListener) globalRequestsListener();
-  globalRequestsListener=db.collection('friend_requests').where('to','==',currentPseudo)
-    .onSnapshot(function(snap){
-      var prev=unreadRequestsCount;
-      unreadRequestsCount=snap.size;
-      // Notif si nouvelle demande
-      if(unreadRequestsCount>prev){
-        snap.docChanges().forEach(function(change){
-          if(change.type==='added'){
-            var from=change.doc.data().from;
-            showToast('👥 Demande d\'ami de '+from,'info');
-          }
-        });
-      }
-      updateFriendsBadge();
-    });
-  // Nouveaux messages non lus (on écoute les amis)
-  db.collection('friends').where('members','array-contains',currentPseudo).get()
-    .then(function(snap){
-      snap.forEach(function(doc){
-        var partner=doc.data().members.find(function(m){return m!==currentPseudo;});
-        var chatId=getChatId(currentPseudo,partner);
-        var listener=db.collection('chats').doc(chatId).collection('messages')
-          .where('to','==',currentPseudo)
-          .orderBy('createdAt','desc').limit(1)
-          .onSnapshot(function(msgSnap){
-            if(msgSnap.empty) return;
-            msgSnap.docChanges().forEach(function(change){
-              if(change.type==='added' && chatPartner!==partner){
-                var text=change.doc.data().text||'';
-                showToast('💬 '+partner+' : '+text.substring(0,40),'info');
-                unreadMessagesCount++;
-                updateFriendsBadge();
-                // App déjà ouverte — le toast suffit, pas de notif push redondante
-              }
-            });
-          });
-        globalChatListeners.push(listener);
-      });
-    });
-}
-
 // --- Ouvrir amis ---
-document.getElementById('btn-open-friends').addEventListener('click',function(){
-  if(!currentPseudo){showToast('Connecte-toi d\'abord','error');return;}
-  unreadRequestsCount=0; unreadMessagesCount=0; updateFriendsBadge();
+document.getElementById('btn-open-friends').addEventListener('click', function(){
+  if(!currentPseudo){ showToast('Connecte-toi d\'abord','error'); return; }
   hideAll(); show('screen-friends');
   document.getElementById('friends-add-result').textContent='';
   document.getElementById('friends-add-input').value='';
@@ -3244,64 +3023,84 @@ document.getElementById('btn-open-friends').addEventListener('click',function(){
   loadFriends();
 });
 
-// --- Ajouter un ami ---
-document.getElementById('btn-friends-add').addEventListener('click',function(){
+// --- Ajouter un ami (logique corrigée et linéaire) ---
+document.getElementById('btn-friends-add').addEventListener('click', function(){
   var btn=this;
   var target=document.getElementById('friends-add-input').value.trim().toLowerCase();
   var resultEl=document.getElementById('friends-add-result');
+
   resultEl.style.color='#555'; resultEl.textContent='';
-  if(!target){resultEl.style.color='#cc3333';resultEl.textContent='Entre un pseudo.';return;}
-  if(target===currentPseudo){resultEl.style.color='#cc3333';resultEl.textContent='C\'est toi-même !';return;}
+  if(!target){ resultEl.style.color='#cc3333'; resultEl.textContent='Entre un pseudo.'; return; }
+  if(target===currentPseudo){ resultEl.style.color='#cc3333'; resultEl.textContent='C\'est toi-même !'; return; }
+
   btn.disabled=true; btn.textContent='...';
   resultEl.style.color='#555'; resultEl.textContent='Recherche...';
-  db.collection('users').doc(target).get().then(function(userDoc){
-    if(!userDoc.exists){
-      resultEl.style.color='#cc3333';resultEl.textContent='Joueur "'+target+'" introuvable.';
-      btn.disabled=false;btn.textContent='Ajouter';return;
-    }
-    var friendId=getChatId(currentPseudo,target);
-    db.collection('friends').doc(friendId).get().then(function(friendDoc){
-      if(friendDoc.exists){
-        resultEl.style.color='#cc3333';resultEl.textContent='Vous êtes déjà amis !';
-        btn.disabled=false;btn.textContent='Ajouter';return;
+
+  // Étape 1 : est-ce que le joueur existe ?
+  db.collection('users').doc(target).get()
+    .then(function(userDoc){
+      if(!userDoc.exists){
+        resultEl.style.color='#cc3333'; resultEl.textContent='Joueur "'+target+'" introuvable.';
+        btn.disabled=false; btn.textContent='Ajouter';
+        return;
       }
-      var reqId=currentPseudo+'_to_'+target;
-      db.collection('friend_requests').doc(reqId).get().then(function(reqDoc){
-        if(reqDoc.exists){
-          resultEl.style.color='#cc3333';resultEl.textContent='Demande déjà envoyée.';
-          btn.disabled=false;btn.textContent='Ajouter';return;
-        }
-        db.collection('friend_requests').doc(reqId).set({
-          from:currentPseudo,to:target,
-          createdAt:firebase.firestore.FieldValue.serverTimestamp()
-        }).then(function(){
-          resultEl.style.color='#22bb55';
-          resultEl.textContent='✅ Demande envoyée à '+target+' !';
-          document.getElementById('friends-add-input').value='';
-          btn.disabled=false;btn.textContent='Ajouter';
-          // Notif push au destinataire
-          sendPushNotif(target,'👥 Demande d\'ami',currentPseudo+' veut t\'ajouter en ami !');
+      // Étape 2 : déjà amis ?
+      var friendId=getChatId(currentPseudo, target);
+      db.collection('friends').doc(friendId).get()
+        .then(function(friendDoc){
+          if(friendDoc.exists){
+            resultEl.style.color='#cc3333'; resultEl.textContent='Vous êtes déjà amis !';
+            btn.disabled=false; btn.textContent='Ajouter';
+            return;
+          }
+          // Étape 3 : demande déjà envoyée ?
+          var reqId=currentPseudo+'_to_'+target;
+          db.collection('friend_requests').doc(reqId).get()
+            .then(function(reqDoc){
+              if(reqDoc.exists){
+                resultEl.style.color='#cc3333'; resultEl.textContent='Demande déjà envoyée à '+target+'.';
+                btn.disabled=false; btn.textContent='Ajouter';
+                return;
+              }
+              // Étape 4 : envoyer la demande
+              db.collection('friend_requests').doc(reqId).set({
+                from:currentPseudo, to:target,
+                createdAt:firebase.firestore.FieldValue.serverTimestamp()
+              }).then(function(){
+                resultEl.style.color='#22bb55';
+                resultEl.textContent='✅ Demande envoyée à '+target+' !';
+                document.getElementById('friends-add-input').value='';
+                btn.disabled=false; btn.textContent='Ajouter';
+              }).catch(function(err){
+                resultEl.style.color='#cc3333'; resultEl.textContent='Erreur envoi : '+err.message;
+                btn.disabled=false; btn.textContent='Ajouter';
+              });
+            }).catch(function(err){
+              resultEl.style.color='#cc3333'; resultEl.textContent='Erreur : '+err.message;
+              btn.disabled=false; btn.textContent='Ajouter';
+            });
         }).catch(function(err){
-          resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;
-          btn.disabled=false;btn.textContent='Ajouter';
+          resultEl.style.color='#cc3333'; resultEl.textContent='Erreur : '+err.message;
+          btn.disabled=false; btn.textContent='Ajouter';
         });
-      }).catch(function(err){resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;btn.disabled=false;btn.textContent='Ajouter';});
-    }).catch(function(err){resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;btn.disabled=false;btn.textContent='Ajouter';});
-  }).catch(function(err){resultEl.style.color='#cc3333';resultEl.textContent='Erreur : '+err.message;btn.disabled=false;btn.textContent='Ajouter';});
+    }).catch(function(err){
+      resultEl.style.color='#cc3333'; resultEl.textContent='Erreur : '+err.message;
+      btn.disabled=false; btn.textContent='Ajouter';
+    });
 });
 
-document.getElementById('friends-add-input').addEventListener('keydown',function(e){
+document.getElementById('friends-add-input').addEventListener('keydown', function(e){
   if(e.key==='Enter') document.getElementById('btn-friends-add').click();
 });
 
 // --- Demandes reçues ---
 function loadFriendRequests(){
-  if(requestsListener){requestsListener();requestsListener=null;}
+  if(requestsListener){ requestsListener(); requestsListener=null; }
   requestsListener=db.collection('friend_requests').where('to','==',currentPseudo)
     .onSnapshot(function(snap){
       var section=document.getElementById('friends-requests-section');
       var list=document.getElementById('friends-requests-list');
-      if(snap.empty){section.classList.add('hidden');return;}
+      if(snap.empty){ section.classList.add('hidden'); return; }
       section.classList.remove('hidden');
       var html='';
       snap.forEach(function(doc){
@@ -3315,57 +3114,58 @@ function loadFriendRequests(){
       });
       list.innerHTML=html;
       list.querySelectorAll('.btn-accept').forEach(function(btn){
-        btn.addEventListener('click',function(){
+        btn.addEventListener('click', function(){
           var from=this.getAttribute('data-from');
           var reqId=this.getAttribute('data-id');
-          var friendId=getChatId(currentPseudo,from);
+          var friendId=getChatId(currentPseudo, from);
           db.collection('friends').doc(friendId).set({
-            members:[currentPseudo,from],
+            members:[currentPseudo, from],
             createdAt:firebase.firestore.FieldValue.serverTimestamp()
           }).then(function(){
             db.collection('friend_requests').doc(reqId).delete();
             showToast('✅ '+from+' ajouté !','info');
-            // Notif push à celui qui avait envoyé la demande
-            sendPushNotif(from,'✅ Demande acceptée',currentPseudo+' a accepté ta demande d\'ami !');
-          }).catch(function(err){showToast('Erreur : '+err.message,'error');});
+          }).catch(function(err){ showToast('Erreur : '+err.message,'error'); });
         });
       });
       list.querySelectorAll('.btn-decline').forEach(function(btn){
-        btn.addEventListener('click',function(){
+        btn.addEventListener('click', function(){
           db.collection('friend_requests').doc(this.getAttribute('data-id')).delete();
         });
       });
-    },function(err){console.error('Requests error:',err);});
+    }, function(err){ console.error('Requests error:', err); });
 }
 
 // --- Liste d'amis ---
 function loadFriends(){
-  if(friendsListener){friendsListener();friendsListener=null;}
+  if(friendsListener){ friendsListener(); friendsListener=null; }
   var list=document.getElementById('friends-list');
   list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Chargement...</div>';
   friendsListener=db.collection('friends').where('members','array-contains',currentPseudo)
     .onSnapshot(function(snap){
-      if(snap.empty){list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami pour l\'instant.</div>';return;}
+      if(snap.empty){ list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami pour l\'instant.</div>'; return; }
       var friends=[];
       snap.forEach(function(doc){
-        doc.data().members.forEach(function(m){if(m!==currentPseudo) friends.push({fid:doc.id,pseudo:m});});
+        doc.data().members.forEach(function(m){ if(m!==currentPseudo) friends.push({fid:doc.id,pseudo:m}); });
       });
-      var done=0,results=[];
+      var done=0;
+      var results=[];
       friends.forEach(function(f,i){
         db.collection('users').doc(f.pseudo).get().then(function(d){
-          results[i]={fid:f.fid,pseudo:f.pseudo,data:d.exists?d.data():{}};
-          done++;if(done===friends.length) renderFriendsList(results);
+          results[i]={fid:f.fid, pseudo:f.pseudo, data:d.exists?d.data():{}};
+          done++;
+          if(done===friends.length) renderFriendsList(results);
         }).catch(function(){
-          results[i]={fid:f.fid,pseudo:f.pseudo,data:{}};
-          done++;if(done===friends.length) renderFriendsList(results);
+          results[i]={fid:f.fid, pseudo:f.pseudo, data:{}};
+          done++;
+          if(done===friends.length) renderFriendsList(results);
         });
       });
-    },function(){list.innerHTML='<div style="color:#cc3333;text-align:center;padding:20px;">Erreur</div>';});
+    }, function(err){ list.innerHTML='<div style="color:#cc3333;text-align:center;padding:20px;">Erreur</div>'; });
 }
 
 function renderFriendsList(friends){
   var list=document.getElementById('friends-list');
-  if(!friends.length){list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami.</div>';return;}
+  if(!friends.length){ list.innerHTML='<div style="color:#444;text-align:center;padding:30px;">Aucun ami.</div>'; return; }
   var html='';
   friends.forEach(function(f){
     var online=f.data.online===true;
@@ -3382,17 +3182,17 @@ function renderFriendsList(friends){
   });
   list.innerHTML=html;
   list.querySelectorAll('.friend-row').forEach(function(row){
-    row.addEventListener('click',function(){openChat(this.getAttribute('data-pseudo'));});
+    row.addEventListener('click', function(){ openChat(this.getAttribute('data-pseudo')); });
   });
   list.querySelectorAll('.btn-chat-open').forEach(function(btn){
-    btn.addEventListener('click',function(e){e.stopPropagation();openChat(this.getAttribute('data-pseudo'));});
+    btn.addEventListener('click', function(e){ e.stopPropagation(); openChat(this.getAttribute('data-pseudo')); });
   });
   list.querySelectorAll('.btn-unfriend').forEach(function(btn){
-    btn.addEventListener('click',function(e){
+    btn.addEventListener('click', function(e){
       e.stopPropagation();
-      var fid=this.getAttribute('data-fid'),pseudo=this.getAttribute('data-pseudo');
+      var fid=this.getAttribute('data-fid'), pseudo=this.getAttribute('data-pseudo');
       if(confirm('Supprimer '+pseudo+' de tes amis ?')){
-        db.collection('friends').doc(fid).delete().then(function(){showToast('Ami supprimé','info');});
+        db.collection('friends').doc(fid).delete().then(function(){ showToast('Ami supprimé','info'); });
       }
     });
   });
@@ -3401,13 +3201,14 @@ function renderFriendsList(friends){
 // --- Chat ---
 function openChat(pseudo){
   chatPartner=pseudo;
-  if(chatListener){chatListener();chatListener=null;}
-  hideAll();show('screen-chat');
+  if(chatListener){ chatListener(); chatListener=null; }
+  hideAll(); show('screen-chat');
   document.getElementById('chat-header-avatar').textContent='👤';
   document.getElementById('chat-header-name').textContent=pseudo;
   document.getElementById('chat-header-status').textContent='';
   document.getElementById('chat-messages').innerHTML='<div style="color:#444;text-align:center;padding:20px;">Chargement...</div>';
   document.getElementById('chat-input').value='';
+  // Infos du partenaire
   db.collection('users').doc(pseudo).get().then(function(doc){
     if(doc.exists){
       var d=doc.data();
@@ -3417,15 +3218,16 @@ function openChat(pseudo){
       document.getElementById('chat-header-status').style.color=online?'#22bb55':'#555';
     }
   });
-  var chatId=getChatId(currentPseudo,pseudo);
+  var chatId=getChatId(currentPseudo, pseudo);
+  // Listener messages
   chatListener=db.collection('chats').doc(chatId).collection('messages')
     .orderBy('createdAt','asc').limit(100)
     .onSnapshot(function(snap){
       var el=document.getElementById('chat-messages');
-      if(snap.empty){el.innerHTML='<div style="color:#444;text-align:center;padding:20px;">Aucun message — dites bonjour ! 👋</div>';return;}
+      if(snap.empty){ el.innerHTML='<div style="color:#444;text-align:center;padding:20px;">Aucun message — dites bonjour ! 👋</div>'; return; }
       var html='';
       snap.forEach(function(doc){
-        var d=doc.data();var mine=d.from===currentPseudo;
+        var d=doc.data(); var mine=d.from===currentPseudo;
         html+='<div class="msg-wrap '+(mine?'mine':'theirs')+'">';
         html+='<div class="msg-bubble msg-'+(mine?'mine':'theirs')+'">'+escHtml(d.text)+'</div>';
         html+='<div class="msg-time">'+(d.createdAt?formatTime(d.createdAt):'')+'</div>';
@@ -3433,45 +3235,40 @@ function openChat(pseudo){
       });
       el.innerHTML=html;
       el.scrollTop=el.scrollHeight;
-    },function(err){console.error('Chat error:',err);});
+    }, function(err){ console.error('Chat error:',err); });
 }
 
 function sendMessage(){
   var input=document.getElementById('chat-input');
   var text=input.value.trim();
   if(!text||!chatPartner) return;
-  input.value='';input.style.height='';
-  var chatId=getChatId(currentPseudo,chatPartner);
+  input.value=''; input.style.height='';
+  var chatId=getChatId(currentPseudo, chatPartner);
   db.collection('chats').doc(chatId).collection('messages').add({
-    from:currentPseudo,to:chatPartner,text:text,
+    from:currentPseudo, to:chatPartner, text:text,
     createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  }).then(function(){
-    // Notif push au destinataire
-    sendPushNotif(chatPartner,'💬 Message de '+currentPseudo, text.substring(0,100));
-  }).catch(function(err){showToast('Erreur : '+err.message,'error');});
+  }).catch(function(err){ showToast('Erreur : '+err.message,'error'); });
 }
 
-document.getElementById('btn-chat-send').addEventListener('click',sendMessage);
-document.getElementById('chat-input').addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+document.getElementById('btn-chat-send').addEventListener('click', sendMessage);
+document.getElementById('chat-input').addEventListener('keydown', function(e){
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
 });
-document.getElementById('chat-input').addEventListener('input',function(){
-  this.style.height='';this.style.height=Math.min(this.scrollHeight,120)+'px';
+document.getElementById('chat-input').addEventListener('input', function(){
+  this.style.height=''; this.style.height=Math.min(this.scrollHeight,120)+'px';
 });
-document.getElementById('btn-chat-back').addEventListener('click',function(){
-  if(chatListener){chatListener();chatListener=null;}
+document.getElementById('btn-chat-back').addEventListener('click', function(){
+  if(chatListener){ chatListener(); chatListener=null; }
   chatPartner='';
-  hideAll();show('screen-friends');
-  loadFriendRequests();loadFriends();
+  hideAll(); show('screen-friends');
+  loadFriendRequests();
+  loadFriends();
 });
-
-// Démarrage
-init();
 </script>
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',function(){
+  window.addEventListener('load', function(){
     navigator.serviceWorker.register('sw.js').catch(function(){});
   });
 }
