@@ -7,6 +7,7 @@
 <title>Jeux de collégiens</title>
 
 <!-- PWA -->
+
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#FFD700" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1085,6 +1086,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- AMIS -->
+
   <div id="screen-friends" class="hidden">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
       <button onclick="goToGameSelect()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -1110,6 +1112,7 @@ cursor: pointer; font-family: inherit; -webkit-appearance: none; transition: all
   </div>
 
   <!-- CHAT -->
+
   <div id="screen-chat" class="hidden">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <button id="btn-chat-back" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;padding:4px;">←</button>
@@ -1553,19 +1556,12 @@ function authSuccess(pseudo){
 
 // Point d'entrée unique — Firebase Auth notifie l'état de connexion
 function init(){
-  hideAll();
-  // Petit spinner pendant que Firebase vérifie la session
-  document.body.insertAdjacentHTML('beforeend',
-    '<div id="auth-loading" style="position:fixed;inset:0;background:#0a0a1a;display:flex;align-items:center;justify-content:center;z-index:9999;font-size:32px;">⏳</div>'
-  );
   auth.onAuthStateChanged(function(user){
-    var loader=document.getElementById('auth-loading');
-    if(loader) loader.remove();
     if(user){
-      // Récupère le pseudo depuis Firestore (email → pseudo)
       var pseudo=user.email.replace('@jdc.app','');
       authSuccess(pseudo);
     } else {
+      hideAll();
       show('screen-auth');
     }
   });
@@ -3273,5 +3269,6 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+
 </body>
 </html>
