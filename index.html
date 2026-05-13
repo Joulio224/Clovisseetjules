@@ -1557,7 +1557,7 @@ function authSuccess(pseudo){
 function init(){
   auth.onAuthStateChanged(function(user){
     if(user){
-      var pseudo=user.email.replace('@jdc.app','');
+      var pseudo=user.email.replace('@jdc.app','').toLowerCase();
       authSuccess(pseudo);
     } else {
       hideAll();
